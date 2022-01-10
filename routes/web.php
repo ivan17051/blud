@@ -14,6 +14,9 @@
 Route::get('/', function () {
     return view('dashboard');
 });
-Route::get('/coba', function () {
-    return view('welcome');
+Route::get('/login', function () {
+    return view('auth/login');
+});
+Route::get('/tu', function () {
+    return view('tu');
 });
