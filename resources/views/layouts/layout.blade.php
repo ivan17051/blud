@@ -23,6 +23,8 @@
     <link href="{{asset('public/css/sb-admin-2.css')}}" rel="stylesheet">
     <!-- Custom styles for datatables -->
     <link href="{{asset('public/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{asset('public/css/custom.css')}}">
 
 </head>
 
@@ -302,7 +304,33 @@
 
     <!-- Page level custom scripts -->
     <script src="{{asset('public/js/demo/datatables-demo.js')}}"></script>
-
+    <script type="text/javascript">
+        $.extend( true, $.fn.dataTable.defaults, {
+            "language": {
+                "emptyTable":     "Tidak ada data.",
+                "info":           "Menampilkan _START_ s/d _END_ dari _TOTAL_ data",
+                "infoEmpty":      "",
+                "infoFiltered":   "(filter dari _MAX_ total data)",
+                "thousands":      ".",
+                "lengthMenu":     "Menampilkan _MENU_ data",
+                "loadingRecords": "Memuat...",
+                "processing":     "Memproses...",
+                "search":         "Cari:",
+                "zeroRecords":    "Tidak ada yang cocok.",
+                "paginate": {
+                    "first":      "Awal",
+                    "last":       "Akhir",
+                    "next":       "Lanjut",
+                    "previous":   "Balik"
+                },
+                "aria": {
+                    "sortAscending":  ": activate to sort column ascending",
+                    "sortDescending": ": activate to sort column descending"
+                }
+            }
+        } );
+    </script>
+    @yield('script')
 </body>
 
 </html>
