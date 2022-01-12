@@ -23,6 +23,8 @@
     <link href="{{asset('public/css/sb-admin-2.css')}}" rel="stylesheet">
     <!-- Custom styles for datatables -->
     <link href="{{asset('public/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
+    <!-- Bootstrap-select styles -->
+    <link href="{{asset('public/vendor/bootstrap-select/css/bootstrap-select.min.css')}}" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{asset('public/css/custom.css')}}">
 
@@ -284,6 +286,9 @@
     <!-- Bootstrap core JavaScript-->
     <script src="{{asset('public/vendor/jquery/jquery.min.js')}}"></script>
     <script src="{{asset('public/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+
+    <!-- Bootstrap-Select javascript -->
+    <script src="{{asset('public/vendor/bootstrap-select/js/bootstrap-select.min.js')}}"></script>
 
     <!-- Core plugin JavaScript-->
     <script src="{{asset('public/vendor/jquery-easing/jquery.easing.min.js')}}"></script>

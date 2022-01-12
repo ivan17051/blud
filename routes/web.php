@@ -11,6 +11,8 @@
 |
 */
 
+Auth::routes();
+
 Route::get('/','DataController@dashboard');
 
 Route::get('/kegiatan','DataController@kegiatan');
