@@ -14,21 +14,22 @@ active
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah Rekanan</h5>
+                <h5 class="modal-title" id="tambahLabel">Tambah Rekanan</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="" method="POST">
+            <form action="{{route('rekanan.update')}}" method="POST">
             @csrf
+            @method('PUT')
             <div class="modal-body">
-                <div class="form-group">
-                    <label><b>Kode SubKegiatan</b></label>
-                    <input type="text" id="kodeKegiatan" name="kodeKegiatan" class="form-control" placeholder="Kode Kegiatan" required>
-                </div>
                 <div class="form-group">
                     <label><b>Nama</b></label>
                     <input type="text" id="nama" name="nama" class="form-control" placeholder="Nama" required>
+                </div>
+                <div class="form-group">
+                    <label><b>Alamat</b></label>
+                    <input type="text" id="alamat" name="alamat" class="form-control" placeholder="Alamat" required>
                 </div>
             </div>
             <div class="modal-footer">
@@ -39,6 +40,46 @@ active
         </div>
     </div>
 </div>
+
+<!-- Modal Sunting Rekanan -->
+<div class="modal modal-danger fade" id="sunting" tabindex="-1" role="dialog" aria-labelledby="Sunting Rekanan" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="suntingLabel">Sunting Rekanan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{route('rekanan.update')}}" method="POST">
+            @csrf
+            @method('PUT')
+            <input type="hidden" name="id">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label><b>Nama</b></label>
+                    <input type="text" name="nama" class="form-control" placeholder="Nama" required>
+                </div>
+                <div class="form-group">
+                    <label><b>Alamat</b></label>
+                    <input type="text" name="alamat" class="form-control" placeholder="Alamat" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Form -->
+<form hidden action="{{route('rekanan.update')}}" method="POST" id="delete">
+    @csrf
+    @method('delete')
+    <input type="hidden" name="id">
+</form>
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -66,25 +107,29 @@ active
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>Kode Rekening</th>
+                            <th hidden>ID</th>
                             <th>Nama</th>
+                            <th>Alamat</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
-                            <th>Kode Rekening</th>
+                            <th hidden>ID</th>
                             <th>Nama</th>
+                            <th>Alamat</th>
                             <th>Aksi</th>
                         </tr>
                     </tfoot>
                     <tbody>
                         @foreach($rekanan as $unit)
                         <tr>
+                            <th hidden>{{$unit->id}}</th>
                             <td>{{$unit->nama}}</td>
                             <td>{{$unit->alamat}}</td>
                             <td>
-                                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#tambah" data-placement="top" title="Lihat Rekening"><i class="fas fa-fw fa-eye"></i></button>
+                                <button onclick="edit(this)" class="btn btn-sm btn-outline-primary border-0" data-toggle="modal" data-target="#sunting" data-placement="top" title="sunting"><i class="fas fa-edit fa-sm"></i></button>
+                                <button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" title="delete"><i class="fas fa-trash fa-sm"></i></button>
                             </td>
                         </tr>
                         @endforeach
@@ -99,5 +144,45 @@ active
 @endsection
 
 @section('script')
-    @include('layouts.alert')
+@include('layouts.alert')
+<script>
+function edit(self){
+    var $modal=$('#sunting');
+    var tr = $(self).closest('tr');
+    var data=oTable.row(tr).data().reduce(function(res,val,i){
+        res[oTable.cols[i]]=val;
+        return res;
+    },{});
+    
+    $modal.find('input[name=id]').val(data['ID']);
+    $modal.find('input[name=nama]').val(data['Nama']);
+    $modal.find('input[name=alamat]').val(data['Alamat']);
+}
+
+function hapus(self){
+    var tr = $(self).closest('tr');
+    var data=oTable.row(tr).data().reduce(function(res,val,i){
+        res[oTable.cols[i]]=val;
+        return res;
+    },{});
+    $('#delete').find('input[name=id]').val(data['ID']);
+    Swal.fire({
+        customClass: {
+            confirmButton: 'btn btn-primary mr-2',
+            cancelButton: 'btn btn-dark'
+        },
+        buttonsStyling: false,
+        icon: 'warning',
+        iconColor: '#f4b619',
+        title: 'Yakin ingin menghapus?',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $('#delete').submit();
+        }
+    })
+}
+</script>
 @endsection

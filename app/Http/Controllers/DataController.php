@@ -56,7 +56,7 @@ class DataController extends Controller
         $userId = Auth::id();
         $input = array_map('trim', $request->all());
         $validator = Validator::make($input, [
-            'id' => 'nullable',
+            'id' => 'nullable|exists:mpejabat,id',
             'idunitkerja' => 'required|exists:munitkerja,id',
             'nama' => 'required|string',
             'nik' => 'required|string',
@@ -65,12 +65,12 @@ class DataController extends Controller
             'jabatan' => 'nullable|string',
             'rekening' => 'nullable|string'
         ]);
-        if ($validator->fails()) return back()->withErrors($validator)->withInput();
+        if ($validator->fails()) return back()->with('error','Gagal menyimpan');
 
         $input = $validator->valid();
-        if(isset($input->id)){
+        if(isset($input['id'])){
             $model = Pejabat::firstOrNew([
-                'id' => $input->id
+                'id' => $input['id']
             ]);
             $model->fill([
                 'idm'=>$userId
@@ -88,19 +88,20 @@ class DataController extends Controller
     }
 
     public function storeUpdateRekanan(Request $request){
-        $userId = Auth::id();
+        // $userId = Auth::id();
+        $userId = 1;
         $input = array_map('trim', $request->all());
         $validator = Validator::make($input, [
-            'id' => 'nullable',
+            'id' => 'nullable|exists:mrekanan,id',
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
         ]);
-        if ($validator->fails()) return back()->withErrors($validator)->withInput();
+        if ($validator->fails()) return back()->with('error','Gagal menyimpan');
 
         $input = $validator->valid();
-        if(isset($input->id)){
+        if(isset($input['id'])){
             $model = Rekanan::firstOrNew([
-                'id' => $input->id
+                'id' => $input['id']
             ]);
             $model->fill([
                 'idm'=>$userId

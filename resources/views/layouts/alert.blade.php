@@ -5,6 +5,10 @@ const Toast = Swal.mixin({
   position: 'top-end',
   showConfirmButton: false,
   timer: 3000,
+  customClass: {
+    popup: 'colored-toast'
+  },
+  iconColor: 'white',
   timerProgressBar: true,
   didOpen: (toast) => {
     toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -25,6 +29,10 @@ const Toast = Swal.mixin({
   position: 'top-end',
   showConfirmButton: false,
   timer: 3000,
+  customClass: {
+    popup: 'colored-toast'
+  },
+  iconColor: 'white',
   timerProgressBar: true,
   didOpen: (toast) => {
     toast.addEventListener('mouseenter', Swal.stopTimer)
