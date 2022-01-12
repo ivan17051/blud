@@ -24,4 +24,8 @@ class SubKegiatan extends Model
         "idc",
         "idm"
     ];
+
+    public function getKegiatan(){
+        return $this->belongsTo(Kegiatan::class, 'idkegiatan');
+    }
 }

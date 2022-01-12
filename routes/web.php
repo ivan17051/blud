@@ -11,9 +11,20 @@
 |
 */
 
-Route::get('/', function () {
-    return view('dashboard');
-});
+Route::get('/','DataController@dashboard');
+
+Route::get('/kegiatan','DataController@kegiatan');
+
+Route::get('/subkegiatan','DataController@subkegiatan');
+
+Route::get('/rekening','DataController@rekening');
+
+Route::get('/pejabat','DataController@pejabat');
+
+Route::get('/unitKerja','DataController@unitKerja');
+
+Route::get('/rekanan','DataController@rekanan');
+
 Route::get('/login', function () {
     return view('auth/login');
 });
