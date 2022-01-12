@@ -112,4 +112,28 @@ class DataController extends Controller
         $model->save();
         return back()->with('success','Berhasil menyimpan');
     }
+
+    public function deletePejabat(Request $request){
+        $userId = Auth::id();
+        try {
+            $model=Pejabat::find($request->input('id'));
+            $model->isactive=0;
+            $model->save();
+            return back()->with('success','Berhasil menghapus');
+        } catch (\Throwable $th) {
+            return back()->with('error','Gagal menghapus');
+        }
+    }
+
+    public function deleteRekanan(Request $request){
+        $userId = Auth::id();
+        try {
+            $model=Rekanan::find($request->input('id'));
+            $model->isactive=0;
+            $model->save();
+            return back()->with('success','Berhasil menghapus');
+        } catch (\Throwable $th) {
+            return back()->with('error','Gagal menghapus');
+        }
+    }
 }
