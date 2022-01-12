@@ -27,6 +27,10 @@ Route::get('/unitKerja','DataController@unitKerja');
 
 Route::get('/rekanan','DataController@rekanan');
 
+Route::put('/pejabat','DataController@storeUpdatePejabat')->name('pejabat.update');
+
+Route::put('/rekanan','DataController@storeUpdateRekanan')->name('rekanan.update');
+
 Route::get('/login', function () {
     return view('auth/login');
 });

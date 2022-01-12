@@ -9,6 +9,9 @@ use App\SubKegiatan;
 use App\Pejabat;
 use App\Rekanan;
 use App\Rekening;
+use App\User;
+use Validator;
+use Illuminate\Support\Facades\Auth;
 
 class DataController extends Controller
 {
@@ -43,5 +46,70 @@ class DataController extends Controller
 
     public function rekanan(){
         return view('masterData.rekanan');
+    }
+
+    public function storeUpdatePejabat(Request $request){
+        $userId = Auth::id();
+        $input = array_map('trim', $request->all());
+        $validator = Validator::make($input, [
+            'id' => 'nullable',
+            'idunitkerja' => 'required|exists:munitkerja,id',
+            'nama' => 'required|string',
+            'nik' => 'required|string',
+            'nip' => 'nullable|string',
+            'golongan' => 'nullable|string',
+            'jabatan' => 'nullable|string',
+            'rekening' => 'nullable|string'
+        ]);
+        if ($validator->fails()) return back()->withErrors($validator)->withInput();
+
+        $input = $validator->valid();
+        if(isset($input->id)){
+            $model = Pejabat::firstOrNew([
+                'id' => $input->id
+            ]);
+            $model->fill([
+                'idm'=>$userId
+            ]);
+        }else{
+            $model = new Pejabat();
+            $model->fill([
+                'idc'=>$userId,
+                'idm'=>$userId
+            ]);
+        }
+        $model->fill($input);
+        $model->save();
+        return back()->with('success','Berhasil menyimpan');
+    }
+
+    public function storeUpdateRekanan(Request $request){
+        $userId = Auth::id();
+        $input = array_map('trim', $request->all());
+        $validator = Validator::make($input, [
+            'id' => 'nullable',
+            'nama' => 'required|string|max:255',
+            'alamat' => 'required|string|max:255',
+        ]);
+        if ($validator->fails()) return back()->withErrors($validator)->withInput();
+
+        $input = $validator->valid();
+        if(isset($input->id)){
+            $model = Rekanan::firstOrNew([
+                'id' => $input->id
+            ]);
+            $model->fill([
+                'idm'=>$userId
+            ]);
+        }else{
+            $model = new Rekanan();
+            $model->fill([
+                'idc'=>$userId,
+                'idm'=>$userId
+            ]);
+        }
+        $model->fill($input);
+        $model->save();
+        return back()->with('success','Berhasil menyimpan');
     }
 }
