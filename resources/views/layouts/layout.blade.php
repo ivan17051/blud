@@ -307,6 +307,9 @@
     <script src="{{asset('public/vendor/datatables/jquery.dataTables.min.js')}}"></script>
     <script src="{{asset('public/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
 
+    <!-- Sweetalert -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- Page level custom scripts -->
     <script src="{{asset('public/js/demo/datatables-demo.js')}}"></script>
     <script type="text/javascript">

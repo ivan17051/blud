@@ -28,23 +28,23 @@ active
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>Nama Alias</th>
                             <th>Nama</th>
+                            <th>Nama Alias</th>
                             <th style="width:40%;">Alamat</th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
-                            <th>Nama Alias</th>
                             <th>Nama</th>
+                            <th>Nama Alias</th>
                             <th>Alamat</th>
                         </tr>
                     </tfoot>
                     <tbody>
                         @foreach($unitKerja as $unit)
                         <tr>
-                            <td>{{$unit->nama_alias}}</td>
                             <td>{{$unit->nama}}</td>
+                            <td>{{$unit->nama_alias}}</td>
                             <td>{{$unit->alamat}}</td>
                         </tr>
                         @endforeach
@@ -56,4 +56,8 @@ active
 
 </div>
 <!-- /.container-fluid -->
+@endsection
+
+@section('script')
+    @include('layouts.alert')
 @endsection

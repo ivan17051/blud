@@ -112,3 +112,7 @@ active
 </div>
 <!-- /.container-fluid -->
 @endsection
+
+@section('script')
+    @include('layouts.alert')
+@endsection

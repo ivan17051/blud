@@ -37,15 +37,19 @@ class DataController extends Controller
     }
 
     public function rekening(){
-        return view('masterData.rekening');
+        $listSubKegiatan = SubKegiatan::all();
+        $rekening = Rekening::where('isactive', 1)->get();
+        return view('masterData.rekening', ['subkegiatan' => $listSubKegiatan, 'rekening' => $rekening]);
     }
 
     public function pejabat(){
-        return view('masterData.pejabat');
+        $pejabat = Pejabat::where('isactive', 1)->get();
+        return view('masterData.pejabat', ['pejabat' => $pejabat]);
     }
 
     public function rekanan(){
-        return view('masterData.rekanan');
+        $rekanan = Rekanan::where('isactive', 1)->get();
+        return view('masterData.rekanan', ['rekanan' => $rekanan]);
     }
 
     public function storeUpdatePejabat(Request $request){
