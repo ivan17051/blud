@@ -75,7 +75,7 @@ active
 </div>
 
 <!-- Form -->
-<form hidden action="{{route('rekanan.update')}}" method="POST" id="delete">
+<form hidden action="{{route('rekanan.delete')}}" method="POST" id="delete">
     @csrf
     @method('delete')
     <input type="hidden" name="id">

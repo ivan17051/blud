@@ -19,12 +19,13 @@ active
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="" method="POST">
+            <form action="{{route('subkegiatan.update')}}" method="POST">
             @csrf
+            @method('PUT')
             <div class="modal-body">
                 <div class="form-group">
                     <label><b>Kegiatan</b></label>
-                    <select id="kegiatan" class="form-control" name="kegiatan" required>
+                    <select id="idkegiatan" class="form-control" name="idkegiatan" required>
                         <option value="" selected disabled>Pilih Kegiatan</option>
                         @foreach($kegiatan as $unit)
                         <option value="{{$unit->id}}">{{$unit->kode}} : {{$unit->nama}}</option>
@@ -32,12 +33,34 @@ active
                     </select>
                 </div>
                 <div class="form-group">
-                    <label><b>Kode SubKegiatan</b></label>
-                    <input type="text" id="kodeKegiatan" name="kodeKegiatan" class="form-control" placeholder="Kode Kegiatan" required>
+                    <label><b>Kelompok Subkegiatan</b></label>
+                    <select id="idgrup" class="form-control" name="idgrup" required>
+                        <option value="" selected disabled>Pilih SubKegiatan</option>
+                        @foreach($grupSubkeg as $unit)
+                        <option value="{{$unit->idgrup}}">{{$unit->kode}} : {{$unit->nama}}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label><b>Nama</b></label>
+                    <label><b>Kode SubKegiatan</b></label>
+                    <input type="text" id="kode" name="kode" class="form-control" placeholder="Kode Kegiatan" required>
+                </div>
+                <div class="form-group">
+                    <label><b>Nama Subkegiatan</b></label>
                     <input type="text" id="nama" name="nama" class="form-control" placeholder="Nama" required>
+                </div>
+                <div class="form-group">
+                    <label><b>Penanggung Jawab</b></label>
+                    <select id="idpejabat" class="form-control" name="idpejabat" required>
+                        <option value="" selected disabled>Pilih Penanggung Jawab</option>
+                        @foreach($pejabat as $unit)
+                        <option value="{{$unit->id}}">{{$unit->nama}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><b>Tahun</b></label>
+                    <input type="text" id="tahun" name="tahun" class="form-control" placeholder="Tahun" required>
                 </div>
             </div>
             <div class="modal-footer">
@@ -48,6 +71,77 @@ active
         </div>
     </div>
 </div>
+
+<!-- Modal Sunting Kegiatan -->
+<div class="modal modal-danger fade" id="sunting" tabindex="-1" role="dialog" aria-labelledby="Sunting SubKegiatan" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="suntingLabel">Sunting SubKegiatan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{route('subkegiatan.update')}}" method="POST">
+            @csrf
+            @method('PUT')
+            <input type="hidden" name="id">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label><b>Kegiatan</b></label>
+                    <select id="idkegiatan" class="form-control" name="idkegiatan" required>
+                        <option value="" selected disabled>Pilih Kegiatan</option>
+                        @foreach($kegiatan as $unit)
+                        <option value="{{$unit->id}}">{{$unit->kode}} : {{$unit->nama}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><b>Kelompok Subkegiatan</b></label>
+                    <select id="idgrup" class="form-control" name="idgrup" required>
+                        <option value="" selected disabled>Pilih SubKegiatan</option>
+                        @foreach($grupSubkeg as $unit)
+                        <option value="{{$unit->idgrup}}">{{$unit->kode}} : {{$unit->nama}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><b>Kode SubKegiatan</b></label>
+                    <input type="text" id="kode" name="kode" class="form-control" placeholder="Kode Kegiatan" required>
+                </div>
+                <div class="form-group">
+                    <label><b>Nama Subkegiatan</b></label>
+                    <input type="text" id="nama" name="nama" class="form-control" placeholder="Nama" required>
+                </div>
+                <div class="form-group">
+                    <label><b>Penanggung Jawab</b></label>
+                    <select id="idpejabat" class="form-control" name="idpejabat" required>
+                        <option value="" selected disabled>Pilih Penanggung Jawab</option>
+                        @foreach($pejabat as $unit)
+                        <option value="{{$unit->id}}">{{$unit->nama}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><b>Tahun</b></label>
+                    <input type="text" id="tahun" name="tahun" class="form-control" placeholder="Tahun" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Hapus -->
+<form hidden action="{{route('subkegiatan.delete')}}" method="POST" id="delete">
+    @csrf
+    @method('delete')
+    <input type="hidden" name="id">
+</form>
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -75,6 +169,10 @@ active
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
+                            <th hidden>ID</th>
+                            <th hidden>ID Grup</th>
+                            <th hidden>ID pejabat</th>
+                            <th hidden>ID kegiatan</th>
                             <th>Kode Kegiatan</th>
                             <th>Kegiatan</th>
                             <th>Nama</th>
@@ -84,6 +182,10 @@ active
                     </thead>
                     <tfoot>
                         <tr>
+                            <th hidden>ID</th>
+                            <th hidden>ID Grup</th>
+                            <th hidden>ID pejabat</th>
+                            <th hidden>ID kegiatan</th>
                             <th>Kode Kegiatan</th>
                             <th>Kegiatan</th>
                             <th>Nama</th>
@@ -94,12 +196,17 @@ active
                     <tbody>
                         @foreach($subkegiatan as $unit)
                         <tr>
+                            <td hidden>{{$unit->id}}</td>
+                            <td hidden>{{$unit->idgrup}}</td>
+                            <td hidden>{{$unit->idpejabat}}</td>
+                            <td hidden>{{$unit->idkegiatan}}</td>
                             <td>{{$unit->kode}}</td>
                             <td>{{$unit->getKegiatan->kode}} : {{$unit->getKegiatan->nama}}</td>
                             <td>{{$unit->nama}}</td>
                             <td>{{$unit->tahun}}</td>
                             <td>
-                                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#tambah" data-placement="top" title="Lihat Detail Siswa"><i class="fas fa-fw fa-eye"></i></button>
+                                <button onclick="edit(this)" class="btn btn-sm btn-outline-warning border-0" data-toggle="modal" data-target="#sunting" data-placement="top" title="sunting"><i class="fas fa-edit fa-sm"></i></button>
+                                <button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" title="delete"><i class="fas fa-trash fa-sm"></i></button>
                             </td>
                         </tr>
                         @endforeach
@@ -115,4 +222,48 @@ active
 
 @section('script')
     @include('layouts.alert')
+<script>
+function edit(self){
+    var $modal=$('#sunting');
+    var tr = $(self).closest('tr');
+    var data=oTable.row(tr).data().reduce(function(res,val,i){
+        res[oTable.cols[i]]=val;
+        return res;
+    },{});
+    console.log(data);
+    $modal.find('input[name=id]').val(data['ID']);
+    $modal.find('select[name=idgrup]').val(data['ID Grup']).change();
+    $modal.find('select[name=idkegiatan]').val(data['ID Kegiatan']).change();
+    $modal.find('select[name=idpejabat]').val(data['ID Pejabat']).change();
+    $modal.find('input[name=kode]').val(data['Kode Kegiatan']);
+    $modal.find('input[name=nama]').val(data['Nama']);
+    $modal.find('input[name=tahun]').val(data['Tahun']);
+}
+
+function hapus(self){
+    var tr = $(self).closest('tr');
+    var data=oTable.row(tr).data().reduce(function(res,val,i){
+        res[oTable.cols[i]]=val;
+        return res;
+    },{});
+    $('#delete').find('input[name=id]').val(data['ID']);
+    Swal.fire({
+        customClass: {
+            confirmButton: 'btn btn-primary mr-2',
+            cancelButton: 'btn btn-dark'
+        },
+        buttonsStyling: false,
+        icon: 'warning',
+        iconColor: '#f4b619',
+        title: 'Yakin ingin menghapus?',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $('#delete').submit();
+        }
+    })
+}
+</script>
 @endsection
