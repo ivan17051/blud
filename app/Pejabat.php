@@ -16,13 +16,13 @@ class Pejabat extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        "kode",
         "nama",
         "nik",
         "nip",
         "golongan",
         "jabatan",
         "rekening",
+        "idunitkerja",
 	    "isactive",
         "idc",
         "idm"

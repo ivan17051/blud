@@ -64,7 +64,7 @@ class DataController extends Controller
             'golongan' => 'nullable|string',
             'jabatan' => 'nullable|string',
             'rekening' => 'nullable|string'
-        ]);
+        ]);        
         if ($validator->fails()) return back()->with('error','Gagal menyimpan');
 
         $input = $validator->valid();
@@ -88,8 +88,7 @@ class DataController extends Controller
     }
 
     public function storeUpdateRekanan(Request $request){
-        // $userId = Auth::id();
-        $userId = 1;
+        $userId = Auth::id();
         $input = array_map('trim', $request->all());
         $validator = Validator::make($input, [
             'id' => 'nullable|exists:mrekanan,id',
@@ -123,6 +122,7 @@ class DataController extends Controller
         try {
             $model=Pejabat::find($request->input('id'));
             $model->isactive=0;
+            $model->idm=$userId;
             $model->save();
             return back()->with('success','Berhasil menghapus');
         } catch (\Throwable $th) {
@@ -135,6 +135,7 @@ class DataController extends Controller
         try {
             $model=Rekanan::find($request->input('id'));
             $model->isactive=0;
+            $model->idm=$userId;
             $model->save();
             return back()->with('success','Berhasil menghapus');
         } catch (\Throwable $th) {
