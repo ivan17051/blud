@@ -16,7 +16,9 @@ class SubKegiatan extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        "idgrup",
         "idkegiatan",
+        "idpejabat",
         "kode",
         "nama",
         "tahun",

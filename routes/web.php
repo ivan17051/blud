@@ -27,12 +27,14 @@ Route::get('/unitKerja','DataController@unitKerja');
 
 Route::get('/rekanan','DataController@rekanan');
 
+Route::put('/kegiatan','DataController@storeUpdateKegiatan')->name('kegiatan.update');
+Route::put('/subkegiatan','DataController@storeUpdateSubKegiatan')->name('subkegiatan.update');
 Route::put('/pejabat','DataController@storeUpdatePejabat')->name('pejabat.update');
-
 Route::put('/rekanan','DataController@storeUpdateRekanan')->name('rekanan.update');
 
+Route::delete('/kegiatan','DataController@deleteKegiatan')->name('kegiatan.delete');
+Route::delete('/subkegiatan','DataController@deleteSubKegiatan')->name('subkegiatan.delete');
 Route::delete('/pejabat','DataController@deletePejabat')->name('pejabat.delete');
-
 Route::delete('/rekanan','DataController@deleteRekanan')->name('rekanan.delete');
 
 Route::get('/login', function () {
@@ -41,3 +43,4 @@ Route::get('/login', function () {
 Route::get('/tu', function () {
     return view('tu');
 });
+Route::get('/coba', 'DataController@coba');

@@ -30,10 +30,13 @@ class DataController extends Controller
     }
 
     public function subkegiatan(){
-        $listKegiatan = Kegiatan::all();
+        $listKegiatan = Kegiatan::where('isactive', 1)->get();
+        $grupSubkeg = SubKegiatan::where('isactive', 1)->get();
+        $pejabat = Pejabat::where('isactive', 1)->get();
         $subkegiatan = SubKegiatan::with(['getKegiatan' => function($query) { 
             $query->select('id', 'kode', 'nama');}])->where('isactive', 1)->get();
-        return view('masterData.subkegiatan', ['subkegiatan' => $subkegiatan, 'kegiatan' => $listKegiatan]);
+        return view('masterData.subkegiatan', ['subkegiatan' => $subkegiatan, 'kegiatan' => $listKegiatan, 
+            'grupSubkeg' => $grupSubkeg, 'pejabat' => $pejabat]);
     }
 
     public function rekening(){
@@ -50,6 +53,74 @@ class DataController extends Controller
     public function rekanan(){
         $rekanan = Rekanan::where('isactive', 1)->get();
         return view('masterData.rekanan', ['rekanan' => $rekanan]);
+    }
+
+    public function storeUpdateKegiatan(Request $request){
+        $userId = Auth::id();
+        
+        $input = array_map('trim', $request->all());
+        $validator = Validator::make($input, [
+            'id' => 'nullable|exists:mkegiatan,id',
+            'kode' => 'required|string',
+            'nama' => 'required|string',
+        ]);
+        if ($validator->fails()) return back()->with('error','Gagal menyimpan');
+        
+        $input = $validator->valid();
+        if(isset($input['id'])){
+            $model = Kegiatan::firstOrNew([
+                'id' => $input['id']
+            ]);
+            $model->fill([
+                'idm'=>$userId
+            ]);
+        }else{
+            $model = new Kegiatan();
+            $model->fill([
+                'idc'=>$userId,
+                'idm'=>$userId
+            ]);
+        }
+        $model->fill($input);
+        $model->save();
+        return back()->with('success','Berhasil menyimpan');
+    }
+
+    public function storeUpdateSubKegiatan(Request $request){
+        // $userId = Auth::id();
+        $userId = 1;
+        $input = array_map('trim', $request->all());
+        $validator = Validator::make($input, [
+            'id' => 'nullable|exists:mkegiatan,id',
+            'idgrup' => 'required|integer',
+            'idkegiatan' => 'required|integer',
+            'idpejabat' => 'required|integer',
+            'kode' => 'required|string',
+            'nama' => 'required|string',
+            'tahun' => 'required|string',
+        ]);
+        if ($validator->fails()) return back()->with('error','Gagal menyimpan');
+        
+        $input = $validator->valid();
+        // dd($input);
+        if(isset($input['id'])){
+            $model = SubKegiatan::firstOrNew([
+                'id' => $input['id']
+            ]);
+            $model->fill([
+                'idm'=>$userId
+            ]);
+        }else{
+            $model = new SubKegiatan();
+            $model->fill([
+                'idc'=>$userId,
+                'idm'=>$userId
+            ]);
+        }
+        $model->fill($input);
+        // dd($model);
+        $model->save();
+        return back()->with('success','Berhasil menyimpan');
     }
 
     public function storeUpdatePejabat(Request $request){
@@ -88,8 +159,8 @@ class DataController extends Controller
     }
 
     public function storeUpdateRekanan(Request $request){
-        // $userId = Auth::id();
-        $userId = 1;
+        $userId = Auth::id();
+        
         $input = array_map('trim', $request->all());
         $validator = Validator::make($input, [
             'id' => 'nullable|exists:mrekanan,id',
@@ -118,10 +189,37 @@ class DataController extends Controller
         return back()->with('success','Berhasil menyimpan');
     }
 
+    public function deleteKegiatan(Request $request){
+        $userId = Auth::id();
+        try {
+            $model=Kegiatan::find($request->input('id'));
+            $model->idm=$userId;
+            $model->isactive=0;
+            $model->save();
+            return back()->with('success','Berhasil menghapus');
+        } catch (\Throwable $th) {
+            return back()->with('error','Gagal menghapus');
+        }
+    }
+
+    public function deleteSubKegiatan(Request $request){
+        $userId = Auth::id();
+        try {
+            $model=Kegiatan::find($request->input('id'));
+            $model->idm=$userId;
+            $model->isactive=0;
+            $model->save();
+            return back()->with('success','Berhasil menghapus');
+        } catch (\Throwable $th) {
+            return back()->with('error','Gagal menghapus');
+        }
+    }
+
     public function deletePejabat(Request $request){
         $userId = Auth::id();
         try {
             $model=Pejabat::find($request->input('id'));
+            $model->idm=$userId;
             $model->isactive=0;
             $model->save();
             return back()->with('success','Berhasil menghapus');
@@ -134,6 +232,7 @@ class DataController extends Controller
         $userId = Auth::id();
         try {
             $model=Rekanan::find($request->input('id'));
+            $model->idm=$userId;
             $model->isactive=0;
             $model->save();
             return back()->with('success','Berhasil menghapus');
