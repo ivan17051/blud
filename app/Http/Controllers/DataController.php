@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\UnitKerja;
 use App\Kegiatan;
@@ -99,22 +100,35 @@ class DataController extends Controller
     }
 
     public function storeUpdateSubKegiatan(Request $request){
-        // $userId = Auth::id();
-        $userId = 1;
+        $userId = Auth::id();
+        
         $input = array_map('trim', $request->all());
         $validator = Validator::make($input, [
             'id' => 'nullable|exists:mkegiatan,id',
-            'idgrup' => 'required|integer',
+            'idgrup' => 'integer',
             'idkegiatan' => 'required|integer',
             'idpejabat' => 'required|integer',
             'kode' => 'required|string',
             'nama' => 'required|string',
-            'tahun' => 'required|string',
+            'tanggal' => 'required|string',
         ]);
         if ($validator->fails()) return back()->with('error','Gagal menyimpan');
         
         $input = $validator->valid();
-        // dd($input);
+        // Menonaktifkan subkegiatan lama
+        if(!empty($input['idgrup'])){
+            $sublama = SubKegiatan::where('idgrup', $input['idgrup'])->where('isactive', 1)->get();
+            foreach($sublama as $unit){
+                $unit->isactive = 0;
+                $unit->save();
+            }
+        }
+        // Jika tdk menggantikan subkegiatan lama, maka buat grup baru
+        else{
+            DB::table('grupsubkegiatan')->insert(['isactive'=>1]);
+            $input['idgrup']=DB::table('grupsubkegiatan')->max('id');
+        }
+        
         if(isset($input['id'])){
             $model = SubKegiatan::firstOrNew([
                 'id' => $input['id']
@@ -130,7 +144,6 @@ class DataController extends Controller
             ]);
         }
         $model->fill($input);
-        // dd($model);
         $model->save();
         return back()->with('success','Berhasil menyimpan');
     }
@@ -251,9 +264,10 @@ class DataController extends Controller
     }
 
     public function deleteSubKegiatan(Request $request){
-        $userId = Auth::id();
+        // $userId = Auth::id();
+        $userId = 1;
         try {
-            $model=Kegiatan::find($request->input('id'));
+            $model=SubKegiatan::find($request->input('id'));
             $model->idm=$userId;
             $model->isactive=0;
             $model->save();

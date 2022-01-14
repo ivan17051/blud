@@ -21,7 +21,7 @@ class SubKegiatan extends Model
         "idpejabat",
         "kode",
         "nama",
-        "tahun",
+        "tanggal",
 	    "isactive",
         "idc",
         "idm"
