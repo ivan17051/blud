@@ -38,19 +38,32 @@
                             <div class="text-center">
                                 <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                             </div>
-                            <form class="user">
+                            <form class="user" method="POST" action="{{ route('login') }}">
+                                @csrf
                                 <div class="form-group">
-                                    <input type="email" class="form-control form-control-user"
+                                    <input type="text" class="form-control form-control-user {{ $errors->has('username') ? ' is-invalid' : '' }}"
                                         id="exampleInputEmail" aria-describedby="emailHelp"
-                                        placeholder="Enter Email Address...">
+                                        placeholder="Username" name="username" value="{{ old('username') }}" required autofocus>
+                                    @if ($errors->has('username'))
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $errors->first('username') }}</strong>
+                                        </span>
+                                    @endif
                                 </div>
                                 <div class="form-group">
-                                    <input type="password" class="form-control form-control-user"
-                                        id="exampleInputPassword" placeholder="Password">
+                                    <input type="password" class="form-control form-control-user {{ $errors->has('password') ? ' is-invalid' : '' }}"
+                                        id="exampleInputPassword" placeholder="Password"
+                                        name="password" required>
+                                    @if ($errors->has('password'))
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $errors->first('password') }}</strong>
+                                        </span>
+                                    @endif
                                 </div>
-                                <a href="{{url('/')}}" class="btn btn-primary btn-user btn-block">
+                                <br>
+                                <button type="submit" class="btn btn-primary btn-user btn-block">
                                     Login
-                                </a>
+                                </button>
                             </form>
                         </div>
                     </div>
@@ -71,7 +84,9 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{asset('public/js/sb-admin-2.min.js')}}"></script>
-
+    @section('script')
+    @include('layouts.alert')
+    @endsection
 </body>
 
 </html>
