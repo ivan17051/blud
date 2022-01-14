@@ -12,6 +12,7 @@ use App\Rekening;
 use App\User;
 use Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class DataController extends Controller
 {
@@ -59,6 +60,11 @@ class DataController extends Controller
     public function rekanan(){
         $rekanan = Rekanan::where('isactive', 1)->get();
         return view('masterData.rekanan', ['rekanan' => $rekanan]);
+    }
+
+    public function user(){
+        $user = User::where('isactive', 1)->with('unitkerja')->get();
+        return view('masterData.user', ['user' => $user]);
     }
 
     public function storeUpdateKegiatan(Request $request){
@@ -194,6 +200,43 @@ class DataController extends Controller
         return back()->with('success','Berhasil menyimpan');
     }
 
+    public function storeUpdateUser(Request $request){
+        $input = array_map('trim', $request->all());
+        $validator = Validator::make($input, [
+            'id' => 'nullable|exists:muser,id',
+            'username' => 'required|string|max:191',
+            'nama' => 'required|string|max:20',
+            'password' => 'required_without:id|string|min:1|confirmed',
+            'role'=>'required|string',
+            'idunitkerja'=>'required|exists:munitkerja,id',
+        ]);
+        if ($validator->fails()) return back()->with('error','Gagal menyimpan');
+
+        $input = $validator->valid();
+        $input['isactive']=1;
+
+        // cek username terpakai sebelumnya tidak
+        $model=User::where('username',$input['username'])->first();
+        if($model->isactive===1){
+            return back()->with('error','Username telah digunakan');
+        }
+
+        if (isset($input['password'])) {
+            $input['password']=Hash::make($input['password']);
+        }
+
+        if(isset($input['id']) and isset($model)===FALSE){
+            $model = User::firstOrNew([
+                'id' => $input['id']
+            ]);
+        }else if(isset($model)===FALSE){
+            $model = new User();
+        }
+        $model->fill($input);
+        $model->save();
+        return back()->with('success','Berhasil menyimpan');
+    }
+
     public function deleteKegiatan(Request $request){
         $userId = Auth::id();
         try {
@@ -241,6 +284,18 @@ class DataController extends Controller
             $model->idm=$userId;
             $model->isactive=0;
             $model->idm=$userId;
+            $model->save();
+            return back()->with('success','Berhasil menghapus');
+        } catch (\Throwable $th) {
+            return back()->with('error','Gagal menghapus');
+        }
+    }
+
+    public function deleteUser(Request $request){
+        $userId = Auth::id();
+        try {
+            $model=User::find($request->input('id'));
+            $model->isactive=0;
             $model->save();
             return back()->with('success','Berhasil menghapus');
         } catch (\Throwable $th) {

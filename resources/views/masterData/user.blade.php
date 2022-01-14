@@ -4,22 +4,22 @@
 show
 @endsection
 
-@section('pejabatStatus')
+@section('userStatus')
 active
 @endsection
 
 @section('content')
-<!-- Modal Tambah Pejabat -->
+<!-- Modal Tambah User -->
 <div class="modal modal-danger fade" id="tambah" tabindex="-1" role="dialog" aria-labelledby="Tambah Rekanan" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="tambahLabel">Tambah Pejabat</h5>
+                <h5 class="modal-title" id="tambahLabel">Tambah User</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{route('pejabat.update')}}" method="POST">
+            <form action="{{route('user.update')}}" method="POST">
             @csrf
             @method('PUT')
             <div class="modal-body">
@@ -28,7 +28,6 @@ active
                     <div class="form-group">
                         <label class="d-block"><b>Unit Kerja</b></label>
                         <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idunitkerja" required>
-                        @if( in_array($role,['admin','PIH']) )
                             <option value="">--Pilih--</option>
                             <option value="1">Dinas Kesehatan Kota Surabaya, DKK</option>
                             <option value="2">Bagian Sekretariat, SEKRETARIAT</option>
@@ -128,52 +127,52 @@ active
                             <option value="148">Puskesmas Balas Klumprik, BALASKLUMPRIK</option>
                             <option value="151">Puskesmas Siwalankerto, SIWALANKERTO</option>
                             <option value="984">Puskesmas Sawah Pulo, SAWAHPULO</option>
-                        @else
-                            @foreach($unitkerja as $uk)
-                            <option value="">--Pilih--</option>
-                            <option value="{{$uk->id}}">{{$uk->nama.', '.$uk->nama_alias}}</option>
-                            @endforeach
-                        @endif
                         </select>
                     </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>Role</b></label>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="role" required>
+                                <option value="">--Pilih--</option>
+                                <option value="PIH">Sungram</option>
+                                <option value="KEU">Keuangan</option>
+                                <option value="PKM">Puskesmas</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label><b>Nama</b></label>
                     <input type="text" id="nama" name="nama" class="form-control" placeholder="Nama" required>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label><b>NIK</b></label>
-                            <input type="text" id="nik" name="nik" class="form-control" placeholder="NIK" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label><b>NIP</b></label>
-                            <input type="text" id="nip" name="nip" class="form-control" placeholder="NIP" required>
-                        </div>  
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label><b>Golongan</b></label>
-                            <input type="text" id="golongan" name="golongan" class="form-control" placeholder="Golongan" >
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label><b>Jabatan</b></label>
-                            <input type="text" id="jabatan" name="jabatan" class="form-control" placeholder="Jabatan" >
-                        </div>
-                    </div>
-                </div>                
                 <div class="form-group">
-                    <label><b>Rekening</b></label>
-                    <input type="text" id="rekening" name="rekening" class="form-control" placeholder="Rekening" >
+                    <label><b>Username</b></label>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Username" >
                 </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>Password</b></label>
+                            <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>Konfirmasi Password</b></label>
+                            <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="Password" required>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="form-group">
+                    <label><b>Status</b></label>
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="isactive" name="isactive">
+                        <label class="custom-control-label" for="isactive"></label>
+                        <label class="custom-control-status-1" for="isactive"></label>
+                    </div>
+                </div>   -->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
@@ -184,17 +183,17 @@ active
     </div>
 </div>
 
-<!-- Modal Sunting Pejabat -->
+<!-- Modal Sunting User -->
 <div class="modal modal-danger fade" id="sunting" tabindex="-1" role="dialog" aria-labelledby="Sunting Rekanan" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="suntingLabel">Sunting Pejabat</h5>
+                <h5 class="modal-title" id="suntingLabel">Sunting User</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{route('pejabat.update')}}" method="POST">
+            <form action="{{route('user.update')}}" method="POST">
             @csrf
             @method('PUT')
             <input type="hidden" name="id">
@@ -204,7 +203,6 @@ active
                     <div class="form-group">
                         <label class="d-block"><b>Unit Kerja</b></label>
                         <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idunitkerja" required>
-                        @if( in_array($role,['admin','PIH']) )
                             <option value="">--Pilih--</option>
                             <option value="1">Dinas Kesehatan Kota Surabaya, DKK</option>
                             <option value="2">Bagian Sekretariat, SEKRETARIAT</option>
@@ -304,52 +302,38 @@ active
                             <option value="148">Puskesmas Balas Klumprik, BALASKLUMPRIK</option>
                             <option value="151">Puskesmas Siwalankerto, SIWALANKERTO</option>
                             <option value="984">Puskesmas Sawah Pulo, SAWAHPULO</option>
-                        @else
-                            @foreach($unitkerja as $uk)
-                            <option value="">--Pilih--</option>
-                            <option value="{{$uk->id}}">{{$uk->nama.', '.$uk->nama_alias}}</option>
-                            @endforeach
-                        @endif
                         </select>
                     </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>Role</b></label>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="role" required>
+                                <option value="">--Pilih--</option>
+                                <option value="PIH">Sungram</option>
+                                <option value="KEU">Keuangan</option>
+                                <option value="PKM">Puskesmas</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label><b>Nama</b></label>
                     <input type="text" name="nama" class="form-control" placeholder="Nama" required>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label><b>NIK</b></label>
-                            <input type="text" name="nik" class="form-control" placeholder="NIK" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label><b>NIP</b></label>
-                            <input type="text" name="nip" class="form-control" placeholder="NIP" required>
-                        </div>  
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label><b>Golongan</b></label>
-                            <input type="text" name="golongan" class="form-control" placeholder="Golongan" >
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label><b>Jabatan</b></label>
-                            <input type="text" name="jabatan" class="form-control" placeholder="Jabatan" >
-                        </div>
-                    </div>
-                </div>                
                 <div class="form-group">
-                    <label><b>Rekening</b></label>
-                    <input type="text" name="rekening" class="form-control" placeholder="Rekening" >
+                    <label><b>Username</b></label>
+                    <input type="text"  class="form-control" name="username" placeholder="Username" disabled="disabled" >
                 </div>
+                <!-- <div class="form-group">
+                    <label><b>Status</b></label>
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="isactive" name="isactive">
+                        <label class="custom-control-label" for="isactive"></label>
+                        <label class="custom-control-status-1" for="isactive"></label>
+                    </div>
+                </div>   -->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
@@ -361,7 +345,7 @@ active
 </div>
 
 <!-- Form -->
-<form hidden action="{{route('pejabat.update')}}" method="POST" id="delete">
+<form hidden action="{{route('user.delete')}}" method="POST" id="delete">
     @csrf
     @method('delete')
     <input type="hidden" name="id">
@@ -371,7 +355,7 @@ active
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800">Data Pejabat</h1>
+    <h1 class="h3 mb-2 text-gray-800">Data User</h1>
     <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
         For more information about DataTables, please visit the <a target="_blank"
             href="https://datatables.net">official DataTables documentation</a>.</p>
@@ -381,7 +365,7 @@ active
         <div class="card-header py-3">
             <div class="row">
                 <div class="col">
-                    <h6 class="m-0 font-weight-bold text-primary">Data Pejabat</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Data User</h6>
                 </div>
                 <div class="col text-right">
                     <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#tambah" data-placement="top" title="Lihat Detail Siswa">Tambah</button>        
@@ -394,44 +378,57 @@ active
                     <thead>
                         <tr>
                             <th>Nama</th>
-                            <th>NIP</th>
-                            <th style="width:40%;">Jabatan</th>
+                            <th>Unit Kerja</th>
+                            <th>Username</th>
+                            <th>Role</th>
                             <th>Aksi</th>
-                            <th hidden>nik</th>
-                            <th hidden>golongan</th>
-                            <th hidden>rekening</th>
                             <th hidden>idunitkerja</th>
                             <th hidden>ID</th>
+                            <th hidden>role</th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
                             <th>Nama</th>
-                            <th>NIP</th>
-                            <th>Jabatan</th>
+                            <th>Unit Kerja</th>
+                            <th>Username</th>
+                            <th>Role</th>
                             <th>Aksi</th>
-                            <th hidden>nik</th>
-                            <th hidden>golongan</th>
-                            <th hidden>rekening</th>
                             <th hidden>idunitkerja</th>
                             <th hidden>ID</th>
+                            <th hidden>role</th>
                         </tr>
                     </tfoot>
                     <tbody>
-                        @foreach($pejabat as $unit)
+                        @foreach($user as $unit)
                         <tr>
                             <td>{{$unit->nama}}</td>
-                            <td>{{$unit->nip}}</td>
-                            <td>{{$unit->jabatan}}</td>
+                            <td>{{$unit->unitkerja->nama.', '.$unit->unitkerja->nama_alias}}</td>
+                            <td>{{$unit->username}}</td>
                             <td>
-                                <button onclick="edit(this)" class="btn btn-sm btn-outline-primary border-0" data-toggle="modal" data-target="#sunting" data-placement="top" title="sunting"><i class="fas fa-edit fa-sm"></i></button>
-                                <button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" title="delete"><i class="fas fa-trash fa-sm"></i></button>
+                                @php
+                                switch($unit->role){
+                                    case 'PIH':
+                                        echo 'Sungram';
+                                        break;
+                                    case 'KEU':
+                                        echo 'Keuangan';
+                                        break;
+                                    case 'PKM':
+                                        echo 'Puskesmas';
+                                        break;
+                                    case 'admin':
+                                        echo 'Admin';
+                                }
+                                @endphp
                             </td>
-                            <td hidden>{{$unit->nik}}</td>
-                            <td hidden>{{$unit->golongan}}</td>
-                            <td hidden>{{$unit->rekening}}</td>
+                            <td>
+                                <button onclick="edit(this)" class="btn btn-sm btn-outline-warning border-0" data-toggle="modal" data-target="#sunting" data-placement="top" title="sunting"><i class="fas fa-edit fa-sm"></i></button>
+                                <button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" title="delete"><i class="fas fa-trash fa-sm"></i></button>
+                            </td>                    
                             <td hidden>{{$unit->idunitkerja}}</td>
-                            <td hidden>{{$unit->ID}}</td>
+                            <td hidden>{{$unit->id}}</td>
+                            <td hidden>{{$unit->role}}</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -458,11 +455,9 @@ function edit(self){
     $modal.find('select[name=idunitkerja]').val(data['idunitkerja']).change();
     $modal.find('input[name=id]').val(data['ID']);
     $modal.find('input[name=nama]').val(data['Nama']);
-    $modal.find('input[name=nip]').val(data['NIP']);
-    $modal.find('input[name=nik]').val(data['nik']);
-    $modal.find('input[name=golongan]').val(data['golongan']);
-    $modal.find('input[name=jabatan]').val(data['Jabatan']);
-    $modal.find('input[name=rekening]').val(data['rekening']);
+    $modal.find('input[name=username]').val(data['Username']);
+    $modal.find('select[name=role]').val(data['role']).change();
+    // $modal.find('input[name=status]').val(data['Status']);
 }
 
 function hapus(self){

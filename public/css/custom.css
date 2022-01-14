@@ -7,11 +7,11 @@
 }
 
 .colored-toast.swal2-icon-success {
-    background-color: #1cc88a !important;
+    background-color: var(--success) !important;
 }
 
 .colored-toast.swal2-icon-error {
-    background-color: #e74a3b !important;
+    background-color: var(--danger) !important;
 }
 
 .colored-toast.swal2-icon-warning {
@@ -37,3 +37,16 @@
 .colored-toast .swal2-html-container {
     color: white;
 }
+
+/* START: Custom Control Status */
+.custom-control-status-1::after {
+    content: "Off";
+    color: var(--danger);
+    font-weight: bold;
+}
+
+.custom-control-input:checked ~ .custom-control-status-1::after {
+    content: "Aktif";
+    color: var(--primary);
+}
+/* END: Custom Control Status */

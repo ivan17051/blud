@@ -36,6 +36,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/rekanan', 'DataController@rekanan');
         Route::put('/rekanan', 'DataController@storeUpdateRekanan')->name('rekanan.update');        
         Route::delete('/rekanan', 'DataController@deleteRekanan')->name('rekanan.delete');
+
+        Route::get('/user', 'DataController@user');
+        Route::put('/user', 'DataController@storeUpdateUser')->name('user.update');
+        Route::delete('/user', 'DataController@deleteUser')->name('user.delete');
+        
     });
 });
 Route::get('/tu', function () {

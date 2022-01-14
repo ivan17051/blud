@@ -32,7 +32,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'nama', 'password','idunitkerja','username','role'
+        'nama', 'password','idunitkerja','username','role','isactive'
     ];
 
     /**
@@ -43,4 +43,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'token',
     ];
+
+    public function unitkerja(){
+        return $this->belongsTo(UnitKerja::class, 'idunitkerja');
+    }
 }
