@@ -11,7 +11,7 @@ active
 @section('content')
 <!-- Modal Tambah SubKegiatan -->
 <div class="modal modal-danger fade" id="tambah" tabindex="-1" role="dialog" aria-labelledby="Tambah SubKegiatan" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Tambah SubKegiatan</h5>
@@ -23,44 +23,48 @@ active
             @csrf
             @method('PUT')
             <div class="modal-body">
-                <div class="form-group">
-                    <label><b>Kegiatan</b></label>
-                    <select id="idkegiatan" class="form-control" name="idkegiatan" required>
-                        <option value="" selected disabled>Pilih Kegiatan</option>
-                        @foreach($kegiatan as $unit)
-                        <option value="{{$unit->id}}">{{$unit->kode}} : {{$unit->nama}}</option>
-                        @endforeach
-                    </select>
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label><b>Kegiatan</b></label>
+                        <select id="idkegiatan" class="form-control" name="idkegiatan" required>
+                            <option value="" selected disabled>Pilih Kegiatan</option>
+                            @foreach($kegiatan as $unit)
+                            <option value="{{$unit->id}}">{{$unit->kode}} : {{$unit->nama}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label><b>Kelompok Subkegiatan</b></label>
+                        <select id="idgrup" class="form-control" name="idgrup">
+                            <option value="" selected>Pilih SubKegiatan</option>
+                            @foreach($grupSubkeg as $unit)
+                            <option value="{{$unit->idgrup}}">{{$unit->kode}} : {{$unit->nama}}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label><b>Kelompok Subkegiatan</b></label>
-                    <select id="idgrup" class="form-control" name="idgrup" required>
-                        <option value="" selected disabled>Pilih SubKegiatan</option>
-                        @foreach($grupSubkeg as $unit)
-                        <option value="{{$unit->idgrup}}">{{$unit->kode}} : {{$unit->nama}}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label><b>Kode SubKegiatan</b></label>
-                    <input type="text" id="kode" name="kode" class="form-control" placeholder="Kode Kegiatan" required>
+                <div class="row">
+                    <div class="col-md-4 form-group">
+                        <label><b>Kode SubKegiatan</b></label>
+                        <input type="text" id="kode" name="kode" class="form-control" placeholder="Kode Kegiatan" required>
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label><b>Tanggal</b></label>
+                        <input type="date" id="tanggal" name="tanggal" class="form-control" placeholder="Tanggal" required>
+                    </div>
+                    <div class="col-md-5 form-group">
+                        <label><b>Penanggung Jawab</b></label>
+                        <select id="idpejabat" class="form-control" name="idpejabat" required>
+                            <option value="" selected disabled>Pilih Penanggung Jawab</option>
+                            @foreach($pejabat as $unit)
+                            <option value="{{$unit->id}}">{{$unit->nama}}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label><b>Nama Subkegiatan</b></label>
                     <input type="text" id="nama" name="nama" class="form-control" placeholder="Nama" required>
-                </div>
-                <div class="form-group">
-                    <label><b>Penanggung Jawab</b></label>
-                    <select id="idpejabat" class="form-control" name="idpejabat" required>
-                        <option value="" selected disabled>Pilih Penanggung Jawab</option>
-                        @foreach($pejabat as $unit)
-                        <option value="{{$unit->id}}">{{$unit->nama}}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label><b>Tahun</b></label>
-                    <input type="text" id="tahun" name="tahun" class="form-control" placeholder="Tahun" required>
                 </div>
             </div>
             <div class="modal-footer">
@@ -74,10 +78,10 @@ active
 
 <!-- Modal Sunting Kegiatan -->
 <div class="modal modal-danger fade" id="sunting" tabindex="-1" role="dialog" aria-labelledby="Sunting SubKegiatan" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="suntingLabel">Sunting SubKegiatan</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Sunting SubKegiatan</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -85,46 +89,51 @@ active
             <form action="{{route('subkegiatan.update')}}" method="POST">
             @csrf
             @method('PUT')
-            <input type="hidden" name="id">
             <div class="modal-body">
-                <div class="form-group">
-                    <label><b>Kegiatan</b></label>
-                    <select id="idkegiatan" class="form-control" name="idkegiatan" required>
-                        <option value="" selected disabled>Pilih Kegiatan</option>
-                        @foreach($kegiatan as $unit)
-                        <option value="{{$unit->id}}">{{$unit->kode}} : {{$unit->nama}}</option>
-                        @endforeach
-                    </select>
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label><b>Kegiatan</b></label>
+                        <input type="hidden" name="idkegiatan">
+                        <select id="idkegiatan" class="form-control" name="idkegiatan" required disabled>
+                            <option value="" selected disabled>Pilih Kegiatan</option>
+                            @foreach($kegiatan as $unit)
+                            <option value="{{$unit->id}}">{{$unit->kode}} : {{$unit->nama}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label><b>Kelompok Subkegiatan</b></label>
+                        <input type="hidden" name="idgrup">
+                        <select id="idgrup" class="form-control" name="idgrup" disabled>
+                            <option value="" selected>Pilih SubKegiatan</option>
+                            @foreach($grupSubkeg as $unit)
+                            <option value="{{$unit->idgrup}}">{{$unit->kode}} : {{$unit->nama}}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label><b>Kelompok Subkegiatan</b></label>
-                    <select id="idgrup" class="form-control" name="idgrup" required>
-                        <option value="" selected disabled>Pilih SubKegiatan</option>
-                        @foreach($grupSubkeg as $unit)
-                        <option value="{{$unit->idgrup}}">{{$unit->kode}} : {{$unit->nama}}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label><b>Kode SubKegiatan</b></label>
-                    <input type="text" id="kode" name="kode" class="form-control" placeholder="Kode Kegiatan" required>
+                <div class="row">
+                    <div class="col-md-4 form-group">
+                        <label><b>Kode SubKegiatan</b></label>
+                        <input type="text" id="kode" name="kode" class="form-control" placeholder="Kode Kegiatan" required>
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label><b>Tanggal</b></label>
+                        <input type="date" id="tanggal" name="tanggal" class="form-control" placeholder="Tanggal" required>
+                    </div>
+                    <div class="col-md-5 form-group">
+                        <label><b>Penanggung Jawab</b></label>
+                        <select id="idpejabat" class="form-control" name="idpejabat" required>
+                            <option value="" selected disabled>Pilih Penanggung Jawab</option>
+                            @foreach($pejabat as $unit)
+                            <option value="{{$unit->id}}">{{$unit->nama}}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label><b>Nama Subkegiatan</b></label>
                     <input type="text" id="nama" name="nama" class="form-control" placeholder="Nama" required>
-                </div>
-                <div class="form-group">
-                    <label><b>Penanggung Jawab</b></label>
-                    <select id="idpejabat" class="form-control" name="idpejabat" required>
-                        <option value="" selected disabled>Pilih Penanggung Jawab</option>
-                        @foreach($pejabat as $unit)
-                        <option value="{{$unit->id}}">{{$unit->nama}}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label><b>Tahun</b></label>
-                    <input type="text" id="tahun" name="tahun" class="form-control" placeholder="Tahun" required>
                 </div>
             </div>
             <div class="modal-footer">
@@ -171,12 +180,12 @@ active
                         <tr>
                             <th hidden>ID</th>
                             <th hidden>ID Grup</th>
-                            <th hidden>ID pejabat</th>
-                            <th hidden>ID kegiatan</th>
-                            <th>Kode Kegiatan</th>
+                            <th hidden>ID Pejabat</th>
+                            <th hidden>ID Kegiatan</th>
+                            <th>Kode SubKegiatan</th>
                             <th>Kegiatan</th>
                             <th>Nama</th>
-                            <th>Tahun</th>
+                            <th>Tanggal</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -184,12 +193,12 @@ active
                         <tr>
                             <th hidden>ID</th>
                             <th hidden>ID Grup</th>
-                            <th hidden>ID pejabat</th>
-                            <th hidden>ID kegiatan</th>
-                            <th>Kode Kegiatan</th>
+                            <th hidden>ID Pejabat</th>
+                            <th hidden>ID Kegiatan</th>
+                            <th>Kode SubKegiatan</th>
                             <th>Kegiatan</th>
-                            <th>Nama</th>
-                            <th>Tahun</th>
+                            <th>Nama SubKegiatan</th>
+                            <th>Tanggal</th>
                             <th>Aksi</th>
                         </tr>
                     </tfoot>
@@ -203,7 +212,7 @@ active
                             <td>{{$unit->kode}}</td>
                             <td>{{$unit->getKegiatan->kode}} : {{$unit->getKegiatan->nama}}</td>
                             <td>{{$unit->nama}}</td>
-                            <td>{{$unit->tahun}}</td>
+                            <td>{{$unit->tanggal}}</td>
                             <td>
                                 <button onclick="edit(this)" class="btn btn-sm btn-outline-warning border-0" data-toggle="modal" data-target="#sunting" data-placement="top" title="sunting"><i class="fas fa-edit fa-sm"></i></button>
                                 <button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" title="delete"><i class="fas fa-trash fa-sm"></i></button>
@@ -233,11 +242,13 @@ function edit(self){
     console.log(data);
     $modal.find('input[name=id]').val(data['ID']);
     $modal.find('select[name=idgrup]').val(data['ID Grup']).change();
+    $modal.find('input[name=idgrup]').val(data['ID Grup']);
     $modal.find('select[name=idkegiatan]').val(data['ID Kegiatan']).change();
+    $modal.find('input[name=idkegiatan]').val(data['ID Kegiatan']);
     $modal.find('select[name=idpejabat]').val(data['ID Pejabat']).change();
-    $modal.find('input[name=kode]').val(data['Kode Kegiatan']);
+    $modal.find('input[name=kode]').val(data['Kode SubKegiatan']);
     $modal.find('input[name=nama]').val(data['Nama']);
-    $modal.find('input[name=tahun]').val(data['Tahun']);
+    $modal.find('input[name=tanggal]').val(data['Tanggal']);
 }
 
 function hapus(self){
