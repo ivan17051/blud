@@ -46,8 +46,14 @@ class DataController extends Controller
     }
 
     public function pejabat(){
-        $pejabat = Pejabat::where('isactive', 1)->get();
-        return view('masterData.pejabat', ['pejabat' => $pejabat]);
+        $user = Auth::user();
+        $unitKerja=UnitKerja::where('id',$user->idunitkerja)->select('id','nama','nama_alias')->get();
+        if(in_array($user->role,['admin','PIH'])){
+            $pejabat = Pejabat::where('isactive', 1)->get();
+        }else{
+            $pejabat = Pejabat::where('isactive', 1)->where('idunitkerja',$user->idunitkerja)->get();
+        }        
+        return view('masterData.pejabat', ['pejabat' => $pejabat, 'role' =>$user->role, 'unitkerja'=>$unitKerja]);
     }
 
     public function rekanan(){

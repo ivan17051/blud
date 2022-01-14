@@ -2,6 +2,10 @@
     border: 0;
 }
 
+.dropdown.bootstrap-select{
+    width: 100%!important;
+}
+
 .colored-toast.swal2-icon-success {
     background-color: #1cc88a !important;
 }
