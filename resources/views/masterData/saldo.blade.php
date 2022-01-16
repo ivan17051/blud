@@ -14,7 +14,7 @@ active
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="tambahLabel">Tambah Saldo</h5>
+                <h5 class="modal-title" id="tambahLabel">Ubah Saldo</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -22,14 +22,20 @@ active
             <form action="{{route('saldo.update')}}" method="POST">
             @csrf
             @method('PUT')
+            <input type="hidden" name="idgrup">
+            <input type="hidden" name="idunitkerja">
             <div class="modal-body">
                 <div class="form-group">
-                    <label><b>Nama</b></label>
-                    <input type="text" id="nama" name="nama" class="form-control" placeholder="Nama" required>
+                    <label><b>Tanggal</b></label>
+                    <input type="date" id="tanggal" name="tanggal" class="form-control" placeholder="Tanggal" required>
                 </div>
                 <div class="form-group">
-                    <label><b>Alamat</b></label>
-                    <input type="text" id="alamat" name="alamat" class="form-control" placeholder="Alamat" required>
+                    <label><b>Saldo</b></label>
+                    <input type="text" id="saldo" name="saldo" class="form-control" placeholder="Saldo" pattern="[^0][\d]*$" required>
+                </div>
+                <div class="form-group">
+                    <label><b>Keterangan</b></label>
+                    <textarea id="keterangan" name="keterangan" class="form-control" placeholder="Keterangan" maxlength="99" rows="3" style="resize: none;"></textarea>
                 </div>
             </div>
             <div class="modal-footer">
@@ -59,8 +65,7 @@ active
             </div>
         </div>
         <div class="card-body">
-            <form action="{{route('saldo')}}" method="POST">
-            @csrf
+            <form action="{{route('saldo')}}" method="GET">
             <div class="row">
                 <div class="col-md-5">
                     <div class="form-group">
@@ -162,7 +167,7 @@ active
                     <h6 class="m-0 font-weight-bold text-primary">Histori Saldo</h6>
                 </div>
                 <div class="col text-right">
-                    <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#tambah" data-placement="top" title="Lihat Detail Siswa">Tambah</button>        
+                    <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#tambah" data-placement="top" title="Lihat Detail Siswa">Ubah</button>        
                 </div>
             </div>
         </div>
@@ -175,7 +180,7 @@ active
                             <th>Tanggal</th>
                             <th>Tipe</th>
                             <th>Saldo</th>
-                            <th></th>
+                            <th>Ket.</th>
                         </tr>
                     </thead>
                     <tfoot>
@@ -184,46 +189,29 @@ active
                             <th>Tanggal</th>
                             <th>Tipe</th>
                             <th>Saldo</th>
-                            <th></th>
+                            <th>Ket.</th>
                         </tr>
                     </tfoot>
                     <tbody>
+                        @foreach($saldos as $key=>$s)
                         <tr>
-                            <td>1</td>
-                            <td>12 Januari 2021</td>
-                            <th>Inisial</th>
-                            <td>12.000.000</td>
-                            <td>
-                                <button onclick="edit(this)" class="btn btn-sm btn-outline-primary border-0" data-toggle="modal" data-target="#sunting" data-placement="top" title="sunting"><i class="fas fa-edit fa-sm"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>15 Februari 2021</td>
+                            <td>{{$key+1}}</td>
+                            <td>{{ Carbon\Carbon::parse($s->tanggal)->translatedFormat('d M Y') }}</td>
+                            @if($s->tipe==='inisial')
+                            <th><span class="badge bg-info text-white">Inisial</span></th>
+                            @elseif($s->tipe==='revisi')
+                            <th><span class="badge bg-success text-white">Revisi</span></th>
+                            @else
                             <th></th>
-                            <td>7.000.000</td>
+                            @endif
+                            <td>{{ number_format($s->saldo,2) }}</td>
                             <td>
-                                <button onclick="edit(this)" class="btn btn-sm btn-outline-primary border-0" data-toggle="modal" data-target="#sunting" data-placement="top" title="sunting"><i class="fas fa-edit fa-sm"></i></button>
+                                @if(isset($s->keterangan) and trim($s->keterangan)!=='')
+                                <button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" data-toggle="modal" data-target="#show" data-placement="top" title="info"><i class="fas fa-info fa-sm"></i></button>
+                                @endif
                             </td>
                         </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>25 Maret 2021</td>
-                            <th></th>
-                            <td>2.000.000</td>
-                            <td>
-                                <button onclick="edit(this)" class="btn btn-sm btn-outline-primary border-0" data-toggle="modal" data-target="#sunting" data-placement="top" title="sunting"><i class="fas fa-edit fa-sm"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>27 Maret 2021</td>
-                            <th>Revisi</th>
-                            <td>42.000.000</td>
-                            <td>
-                                <button onclick="edit(this)" class="btn btn-sm btn-outline-primary border-0" data-toggle="modal" data-target="#sunting" data-placement="top" title="sunting"><i class="fas fa-edit fa-sm"></i></button>
-                            </td>
-                        </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -234,12 +222,19 @@ active
 <!-- /.container-fluid -->
 @endsection
 @section('script')
+@include('layouts.alert')
 <script type="text/javascript">
 $(document).ready(function(){
     @if(isset($input))
     const input = @json($input);
     $('select[name=idunitkerja]').val(input['idunitkerja']).change();
     $('select[name=idgrup]').val(input['idgrup']).change();
+    const $form=$('#tambah');
+    $form.find('input[name=idunitkerja]').val(input['idunitkerja']);
+    $form.find('input[name=idgrup]').val(input['idgrup']);
+    $form.find('input[name=tanggal]')
+        .val(@json(Carbon\Carbon::now()->format('Y-m-d')))
+        .attr('readonly',true);
     @endif
 });
 </script>

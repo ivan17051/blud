@@ -72,14 +72,17 @@ class DataController extends Controller
     public function saldo(Request $request){
         $subkegiatan=SubKegiatan::where('isactive', 1)->get();
         $saldos=NULL;
-        if ($request->isMethod('post')){
+        if ($request->input('idgrup') and $request->input('idunitkerja')){
             $saldos=Saldo::where('idgrup',$request->input('idgrup'))
                 ->where('idunitkerja',$request->input('idunitkerja'))
+                ->orderBy('tanggal', 'asc')
+                ->orderBy('id', 'asc')
                 ->get();
+
             return view('masterData.saldo', ['subkegiatan'=>$subkegiatan, 'saldos'=>$saldos])
                 ->withInput($request->input());
         }
-        return view('masterData.saldo', ['subkegiatan'=>$subkegiatan, 'saldos'=>$saldos]);
+        return view('masterData.saldo', ['subkegiatan'=>$subkegiatan, 'saldos'=>$saldos])->with('success','Berhasil menyimpan');
     }
 
     public function storeUpdateKegiatan(Request $request){
@@ -262,6 +265,36 @@ class DataController extends Controller
         $model->fill($input);
         $model->save();
         return back()->with('success','Berhasil menyimpan');
+    }
+
+    public function storeSaldo(Request $request){
+        $userId = Auth::id();
+        $input = array_map('trim', $request->all());
+        $validator = Validator::make($input, [
+            'idunitkerja'=>'required|exists:munitkerja,id',
+            'idgrup'=>'required|exists:grupsubkegiatan,id',
+            'saldo'=>'required',
+            'tanggal'=>'required',
+            'keterangan'=>'nullable'
+        ]);
+        if ($validator->fails()) {
+            return redirect()->route('saldo',$input)->with('success','Gagal menyimpan');;
+        }
+
+        $input = $validator->valid();
+        $saldos=Saldo::where('idgrup',$request->input('idgrup'))
+                ->where('idunitkerja',$request->input('idunitkerja'))
+                ->get();
+        $newsaldo=new Saldo();
+        $newsaldo->fill($input);
+        $newsaldo->fill(['idc'=>$userId,'idm'=>$userId]);
+        if($saldos->count()){
+            $newsaldo->tipe='revisi';
+        }else{
+            $newsaldo->tipe='inisial';
+        }
+        $newsaldo->save();
+        return redirect()->route('saldo',$input)->with('success','Berhasil menyimpan');
     }
 
     public function deleteKegiatan(Request $request){
