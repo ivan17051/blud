@@ -35,6 +35,7 @@
                 <a class="collapse-item @yield('rekananStatus')" href="{{url('rekanan')}}">Rekanan</a>
                 <a class="collapse-item @yield('pejabatStatus')" href="{{url('pejabat')}}">Pejabat</a>
                 <a class="collapse-item @yield('userStatus')" href="{{url('user')}}">User</a>
+                <a class="collapse-item @yield('saldoStatus')" href="{{url('saldo')}}">Saldo</a>
             </div>
         </div>
     </li>

@@ -11,6 +11,7 @@ use App\Pejabat;
 use App\Rekanan;
 use App\Rekening;
 use App\User;
+use App\Saldo;
 use Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -66,6 +67,19 @@ class DataController extends Controller
     public function user(){
         $user = User::where('isactive', 1)->with('unitkerja')->get();
         return view('masterData.user', ['user' => $user]);
+    }
+
+    public function saldo(Request $request){
+        $subkegiatan=SubKegiatan::where('isactive', 1)->get();
+        $saldos=NULL;
+        if ($request->isMethod('post')){
+            $saldos=Saldo::where('idgrup',$request->input('idgrup'))
+                ->where('idunitkerja',$request->input('idunitkerja'))
+                ->get();
+            return view('masterData.saldo', ['subkegiatan'=>$subkegiatan, 'saldos'=>$saldos])
+                ->withInput($request->input());
+        }
+        return view('masterData.saldo', ['subkegiatan'=>$subkegiatan, 'saldos'=>$saldos]);
     }
 
     public function storeUpdateKegiatan(Request $request){

@@ -40,6 +40,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/user', 'DataController@user');
         Route::put('/user', 'DataController@storeUpdateUser')->name('user.update');
         Route::delete('/user', 'DataController@deleteUser')->name('user.delete');
+
+        Route::match(['get', 'post'],'/saldo', 'DataController@saldo')->name('saldo');
+        Route::put('/saldo', 'DataController@storeSaldo')->name('saldo.update');
         
     });
 });
