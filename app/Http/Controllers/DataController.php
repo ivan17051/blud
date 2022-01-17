@@ -165,6 +165,38 @@ class DataController extends Controller
         return back()->with('success','Berhasil menyimpan');
     }
 
+    public function storeUpdateRekening(Request $request){
+        $userId = Auth::id();
+        $input = array_map('trim', $request->all());
+        
+        $validator = Validator::make($input, [
+            'id' => 'nullable|exists:mrekening,id',
+            'kode' => 'required|string',
+            'nama' => 'required|string',
+        ]);        
+        if ($validator->fails()) return back()->with('error','Gagal menyimpan');
+
+        $input = $validator->valid();
+        if(isset($input['id'])){
+            $model = Rekening::firstOrNew([
+                'id' => $input['id']
+            ]);
+            $model->fill([
+                'idm'=>$userId
+            ]);
+        }else{
+            $model = new Rekening();
+            $model->fill([
+                'idc'=>$userId,
+                'idm'=>$userId
+            ]);
+        }
+        $model->fill($input);
+        
+        $model->save();
+        return back()->with('success','Berhasil menyimpan');
+    }
+
     public function storeUpdatePejabat(Request $request){
         $userId = Auth::id();
         $input = array_map('trim', $request->all());
@@ -324,13 +356,25 @@ class DataController extends Controller
         }
     }
 
+    public function deleteRekening(Request $request){
+        $userId = Auth::id();
+        try {
+            $model=Rekening::find($request->input('id'));
+            $model->idm=$userId;
+            $model->isactive=0;
+            $model->save();
+            return back()->with('success','Berhasil menghapus');
+        } catch (\Throwable $th) {
+            return back()->with('error','Gagal menghapus');
+        }
+    }
+
     public function deletePejabat(Request $request){
         $userId = Auth::id();
         try {
             $model=Pejabat::find($request->input('id'));
             $model->idm=$userId;
             $model->isactive=0;
-            $model->idm=$userId;
             $model->save();
             return back()->with('success','Berhasil menghapus');
         } catch (\Throwable $th) {
@@ -344,7 +388,6 @@ class DataController extends Controller
             $model=Rekanan::find($request->input('id'));
             $model->idm=$userId;
             $model->isactive=0;
-            $model->idm=$userId;
             $model->save();
             return back()->with('success','Berhasil menghapus');
         } catch (\Throwable $th) {

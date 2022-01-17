@@ -26,6 +26,8 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/subkegiatan', 'DataController@deleteSubKegiatan')->name('subkegiatan.delete');
 
         Route::get('/rekening', 'DataController@rekening');
+        Route::put('/rekening', 'DataController@storeUpdateRekening')->name('rekening.update');
+        Route::delete('/rekening', 'DataController@deleteRekening')->name('rekening.delete');
 
         Route::get('/pejabat', 'DataController@pejabat');
         Route::put('/pejabat', 'DataController@storeUpdatePejabat')->name('pejabat.update');
