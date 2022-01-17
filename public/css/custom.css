@@ -50,3 +50,19 @@
     color: var(--primary);
 }
 /* END: Custom Control Status */
+
+.c-filter-1{
+    display: inline-block;
+    height: 2em;
+    width: calc(100% - 2.4em);
+}
+
+.c-filter-btn-1{
+    width: 2em;
+    float: right;
+    height: 2em;
+}
+
+.yadcf-filter-wrapper{
+    padding-top: 8px;
+}

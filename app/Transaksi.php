@@ -22,8 +22,11 @@ class Transaksi extends Model
         "idrekening",
         "jenis",
         "jumlah",
+        "saldo",
         "tanggal",
         "tanggalref",
+        "riwayat",
+        "status",
 	    "isactive",
         "idc",
         "idm"
