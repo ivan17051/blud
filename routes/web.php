@@ -47,6 +47,9 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/saldo', 'DataController@storeSaldo')->name('saldo.update');
         
     });
+
+    Route::get('/transaksi', 'TransaksiController@index')->name('transaksi');
+    Route::get('/transaksi/data', 'TransaksiController@data')->name('transaksi.data');
 });
 Route::get('/tu', function () {
     return view('tu');

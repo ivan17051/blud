@@ -19,7 +19,7 @@
             <span>Dashboard</span></a>
     </li>
 
-    <li class="nav-item">
+    <li class="nav-item @yield('masterShow')">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMaster"
             aria-expanded="true" aria-controls="collapseMaster">
             <i class="fas fa-fw fa-table"></i>
@@ -49,10 +49,10 @@
     </div>
 
     <!-- Nav Item - PPD -->
-    <li class="nav-item @yield('ppdStatus')">
-        <a class="nav-link" href="{{url('/ppd')}}">
+    <li class="nav-item @yield('transaksiStatus')">
+        <a class="nav-link" href="{{url('/transaksi')}}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>PPD</span></a>
+            <span>Transaksi</span></a>
     </li>
     <!-- Nav Item - SOPD -->
     <li class="nav-item @yield('sopdStatus')">
