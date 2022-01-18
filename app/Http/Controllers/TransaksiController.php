@@ -41,6 +41,9 @@ class TransaksiController extends Controller
             ->addColumn('status_raw', function ($t) {
                 return $t->status;
             })
+            ->editColumn('jumlah', function ($t){
+                return number_format($t->jumlah,2,',','.');
+            })
             ->editColumn('status', function ($t) { 
                 switch ($t->status) {
                     case 0:
@@ -61,5 +64,9 @@ class TransaksiController extends Controller
             })
             ->rawColumns(['tipe','jenis','status','action']);
         return $datatable->make(true);  
+    }
+
+    public function storeUpdateTransaksi(Request $request){
+        
     }
 }

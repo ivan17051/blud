@@ -204,7 +204,7 @@ active
                             @else
                             <th></th>
                             @endif
-                            <td>{{ number_format($s->saldo,2) }}</td>
+                            <td>{{ number_format($s->saldo,2,',','.') }}</td>
                             <td>
                                 @if(isset($s->keterangan) and trim($s->keterangan)!=='')
                                 <button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" data-toggle="modal" data-target="#show" data-placement="top" title="info"><i class="fas fa-info fa-sm"></i></button>

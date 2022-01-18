@@ -5,6 +5,44 @@ active
 @endsection
 
 @section('content')
+<!-- Modal Tambah Transaksi -->
+<div class="modal modal-danger fade" id="tambah" tabindex="-1" role="dialog" aria-labelledby="Tambah Transaksi" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tambahLabel">Ubah Transaksi</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{route('transaksi.update')}}" method="POST">
+            @csrf
+            @method('PUT')
+            <input type="hidden" name="idgrup">
+            <input type="hidden" name="idunitkerja">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label><b>Tanggal</b></label>
+                    <input type="date" id="tanggal" name="tanggal" class="form-control" placeholder="Tanggal" required>
+                </div>
+                <div class="form-group">
+                    <label><b>Transaksi</b></label>
+                    <input type="text" id="transaksi" name="transaksi" class="form-control" placeholder="Transaksi" pattern="[^0][\d]*$" required>
+                </div>
+                <div class="form-group">
+                    <label><b>Keterangan</b></label>
+                    <textarea id="keterangan" name="keterangan" class="form-control" placeholder="Keterangan" maxlength="99" rows="3" style="resize: none;"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
@@ -203,7 +241,7 @@ $(document).ready(function(){
         //         {value:"984", label:"PKM Sawah Pulo"},
         //     ]
         // },
-    ]);;
+    ]);
 });
 </script>
 @endsection

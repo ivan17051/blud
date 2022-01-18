@@ -50,6 +50,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/transaksi', 'TransaksiController@index')->name('transaksi');
     Route::get('/transaksi/data', 'TransaksiController@data')->name('transaksi.data');
+    Route::put('/transaksi', 'TransaksiController@storeUpdateTransaksi')->name('transaksi.update');
 });
 Route::get('/tu', function () {
     return view('tu');
