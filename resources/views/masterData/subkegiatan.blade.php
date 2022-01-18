@@ -26,7 +26,7 @@ active
                 <div class="row">
                     <div class="col-md-6 form-group">
                         <label><b>Kegiatan</b></label>
-                        <select id="idkegiatan" class="form-control" name="idkegiatan" required>
+                        <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idkegiatan" required >
                             <option value="" selected disabled>Pilih Kegiatan</option>
                             @foreach($kegiatan as $unit)
                             <option value="{{$unit->id}}">{{$unit->kode}} : {{$unit->nama}}</option>
@@ -35,7 +35,7 @@ active
                     </div>
                     <div class="col-md-6 form-group">
                         <label><b>Kelompok Subkegiatan</b></label>
-                        <select id="idgrup" class="form-control" name="idgrup">
+                        <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idgrup">
                             <option value="" selected>Pilih SubKegiatan</option>
                             @foreach($grupSubkeg as $unit)
                             <option value="{{$unit->idgrup}}">{{$unit->kode}} : {{$unit->nama}}</option>
@@ -54,7 +54,7 @@ active
                     </div>
                     <div class="col-md-5 form-group">
                         <label><b>Penanggung Jawab</b></label>
-                        <select id="idpejabat" class="form-control" name="idpejabat" required>
+                        <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idpejabat" required >
                             <option value="" selected disabled>Pilih Penanggung Jawab</option>
                             @foreach($pejabat as $unit)
                             <option value="{{$unit->id}}">{{$unit->nama}}</option>

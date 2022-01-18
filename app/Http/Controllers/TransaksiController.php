@@ -15,6 +15,7 @@ use App\Saldo;
 use App\Transaksi;
 use Datatables;
 use Carbon\Carbon;
+use PDF;
 
 class TransaksiController extends Controller
 {
@@ -68,5 +69,11 @@ class TransaksiController extends Controller
 
     public function storeUpdateTransaksi(Request $request){
         
+    }
+        
+    public function ppd(){
+        
+        $pdf = PDF::loadView('tu')->setPaper('a4', 'portrait')->stream('ppd.pdf');
+        return $pdf;
     }
 }

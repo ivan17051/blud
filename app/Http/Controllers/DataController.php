@@ -343,8 +343,7 @@ class DataController extends Controller
     }
 
     public function deleteSubKegiatan(Request $request){
-        // $userId = Auth::id();
-        $userId = 1;
+        $userId = Auth::id();
         try {
             $model=SubKegiatan::find($request->input('id'));
             $model->idm=$userId;
