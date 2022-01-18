@@ -41,7 +41,12 @@ class TransaksiController extends Controller
                 return $t->jenis===1?"<p class=\"text-info\"><b>debit</b></p>":"<p class=\"text-warning\"><b>kredit</b></p>";
             })
             ->addColumn('action', function ($t) { 
-                return '<button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" data-toggle="modal" data-target="#show" data-placement="top" title="info"><i class="fas fa-info fa-sm"></i></button>';
+                $html='';
+                if ($t->status===0) {
+                    $html.='<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" title="delete"><i class="fas fa-trash fa-sm"></i></button>&nbsp&nbsp';
+                }
+                $html.='<button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" title="info">&nbsp<i class="fas fa-ellipsis-v fa-sm"></i>&nbsp</button>';
+                return $html;
             })
             ->addColumn('status_raw', function ($t) {
                 return $t->status;
@@ -96,7 +101,7 @@ class TransaksiController extends Controller
             $t->fill($input);
             $t->fill([
                 'saldo'=>999999,
-                'riwayat'=>'[]',
+                'riwayat'=>array(),
                 'status'=>1,
                 'idm'=>$user->id,
             ]);
@@ -120,6 +125,19 @@ class TransaksiController extends Controller
             return back()->with('success','Berhasil menyimpan');
         }else{
             return back()->with('error','Tidak ada perubahan');
+        }
+    }
+
+    public function deleteTransaksi(Request $request){
+        $userId = Auth::id();
+        try {
+            $model=Transaksi::find($request->input('id'));
+            $model->idm=$userId;
+            $model->isactive=0;
+            $model->save();
+            return back()->with('success','Berhasil menghapus');
+        } catch (\Throwable $th) {
+            return back()->with('error','Gagal menghapus');
         }
     }
         

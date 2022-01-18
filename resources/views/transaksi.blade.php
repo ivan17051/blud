@@ -102,6 +102,13 @@ active
     </div>
 </div>
 
+<!-- Form -->
+<form hidden action="{{route('transaksi.delete')}}" method="POST" id="delete">
+    @csrf
+    @method('delete')
+    <input type="hidden" name="id">
+</form>
+
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
@@ -130,40 +137,24 @@ active
                         <tr>
                             <th>No.</th>
                             <th></th>
-                            <th></th>
                             <th>Tanggal</th>
-                            <th>Unit Kerja</th>
                             <th>Subkegiatan</th>
-                            <th>Rekening</th>
+                            <th>Ket.</th>
                             <th>Jenis</th>
                             <th>Jumlah</th>
                             <th>Aksi</th>
-                            <th hidden >ID</th>
-                            <th hidden >tanggalcreate</th>
-                            <th hidden >idgrup</th>
-                            <th hidden >idunitkerja</th>
-                            <th hidden >idrekening</th>
-                            <th hidden >saldo</th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
                             <th>No.</th>
                             <th></th>
-                            <th></th>
                             <th>Tanggal</th>
-                            <th>Unit Kerja</th>
                             <th>Subkegiatan</th>
-                            <th>Rekening</th>
+                            <th>Ket.</th>
                             <th>Jenis</th>
                             <th>Jumlah</th>
                             <th>Aksi</th>
-                            <th hidden >ID</th>
-                            <th hidden >tanggalcreate</th>
-                            <th hidden >idgrup</th>
-                            <th hidden >idunitkerja</th>
-                            <th hidden >idrekening</th>
-                            <th hidden >saldo</th>
                         </tr>
                     </tfoot>
                     <tbody></tbody>
@@ -179,28 +170,106 @@ active
 @section('script')
 @include('layouts.alert')
 <script type="text/javascript">
+    
+function hapus(self){
+    var tr = $(self).closest('tr');
+    var data=oTable.fnGetData(tr); 
+    $('#delete').find('input[name=id]').val(data['id']);
+    Swal.fire({
+        customClass: {
+            confirmButton: 'btn btn-primary mr-2',
+            cancelButton: 'btn btn-dark'
+        },
+        buttonsStyling: false,
+        icon: 'warning',
+        iconColor: '#f4b619',
+        title: 'Yakin ingin menghapus?',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $('#delete').submit();
+        }
+    })
+}
+
+function show(self){
+    var tr = $(self).closest('tr');
+    var row = oTable.api().row( tr );
+    var data=oTable.fnGetData(tr);
+
+    if ( row.child.isShown() ) {
+        // This row is already open - close it
+        row.child.hide();
+        // btn.removeClass('btn-danger');
+        // btn.addClass('btn-success');
+        // btn.html('<i class="material-icons">add</i>')
+    }
+    else {
+        row.child( format(data)).show();
+        // tr.addClass('shown'); 
+        // btn.addClass('btn-danger');
+        // btn.removeClass('btn-success');
+        // btn.html('<i class="material-icons">remove</i>')
+    }
+}
+
+function format(data){
+    var str=`<tr><td colspan="8" style="bacground-color:#f9f9f9;">
+        <div class="row">
+        <div class="col-md-4" id="riwayat">
+            <h6><b>Riwayat</b></h6>
+            <ul class="list-unstyled">
+            </ul>
+        </div>
+        </div>
+    </td></tr>`;
+    var $view=$(str);
+    
+    let max=data.riwayat.length;
+    let riwayatstr='<li>Request&nbsp'+data.tipe+
+        '<p>'+data.tanggalref+'</p>'+
+        (max===0?'':'<hr>')+
+        '</li>';
+    data.riwayat.forEach(function(e,i){
+        let msg='';
+        switch (i) {
+            case 0:
+                msg='PPD disetujui';
+                break;
+            case 1:
+                msg='SOPD disetujui';
+                break;
+            case 2:
+                msg='SPD disetujui';
+                break;
+        }
+        riwayatstr+='<li>'+msg+
+            '<button class="btn btn-sm btn-primary float-right">Print</button>'+
+            '<p>'+e[0]+'</p>'+
+            (max-1===i?'':'<hr>')+
+            '</li>';
+    });
+    $view.find('#riwayat ul').append(riwayatstr);
+    return $view;
+    return $view.prop("outerHTML");
+}
+
 $(document).ready(function(){
     oTable = $("#transaksitable").dataTable({
         processing: true,
         serverSide: true,
         ajax: {url: '{{route("transaksi.data")}}'},
         columns: [
-            { data:'DT_RowIndex', orderable: false, searchable: false, width: 1 },
+            { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' },
             { data:'tipe', orderable: false },
-            { data:'status', orderable: false},
             { data:'tanggalref'},
-            { data:'unitkerja.nama', orderable: false},
             { data:'subkegiatan.nama'},
-            { data:'rekening.nama'},
+            { data:'keterangan', orderable: false},
             { data:'jenis'},
             { data:'jumlah'},
-            { data:'action', orderable: false, searchable: false, width: 1 },
-            { data:'id', visible: false},
-            { data:'tanggal', visible: false},
-            { data:'idgrup', visible: false},
-            { data:'idunitkerja', visible: false},
-            { data:'idrekening', visible: false},
-            { data:'saldo', visible: false},
+            { data:'action', orderable: false, searchable: false, className: "text-right"},
         ],
     }).yadcf([
         {
@@ -214,19 +283,19 @@ $(document).ready(function(){
                 {value:'TU',label:'TU'},
             ]
         },
-        {
-            column_number: 2,
-            filter_default_label: 'Status',
-            filter_type: "select",
-            style_class:'c-filter-1',
-            reset_button_style_class:'c-filter-btn-1 btn btn-sm btn-warning',
-            data:[
-                {value:'0',label:'Belum'},
-                {value:'1',label:'PPD acc'},
-                {value:'2',label:'SOPD acc'},
-                {value:'3',label:'SPD acc'},
-            ]
-        },
+        // {
+        //     column_number: 2,
+        //     filter_default_label: 'Status',
+        //     filter_type: "select",
+        //     style_class:'c-filter-1',
+        //     reset_button_style_class:'c-filter-btn-1 btn btn-sm btn-warning',
+        //     data:[
+        //         {value:'0',label:'Belum'},
+        //         {value:'1',label:'PPD acc'},
+        //         {value:'2',label:'SOPD acc'},
+        //         {value:'3',label:'SPD acc'},
+        //     ]
+        // },
         // {
         //     column_number: 4,
         //     filter_default_label: 'Unit Kerja',
