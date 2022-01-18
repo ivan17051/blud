@@ -111,7 +111,7 @@ class TransaksiController extends Controller
             $t->fill($input);
             $t->fill([
                 'saldo'=>999999,
-                'riwayat'=>'[]',
+                'riwayat'=>array(),
                 'status'=>0,
                 'tanggal'=>Carbon::now()->format('Y-m-d'),
                 'idc'=>$user->id,

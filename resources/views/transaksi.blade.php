@@ -136,7 +136,7 @@ active
                     <thead>
                         <tr>
                             <th>No.</th>
-                            <th></th>
+                            <th class="mw-6rem"></th>
                             <th>Tanggal</th>
                             <th>Subkegiatan</th>
                             <th>Ket.</th>
@@ -148,7 +148,7 @@ active
                     <tfoot>
                         <tr>
                             <th>No.</th>
-                            <th></th>
+                            <th class="mw-6rem"></th>
                             <th>Tanggal</th>
                             <th>Subkegiatan</th>
                             <th>Ket.</th>
@@ -263,13 +263,13 @@ $(document).ready(function(){
         ajax: {url: '{{route("transaksi.data")}}'},
         columns: [
             { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' },
-            { data:'tipe', orderable: false },
+            { data:'tipe', orderable: false,  width: '4rem'},
             { data:'tanggalref'},
             { data:'subkegiatan.nama'},
             { data:'keterangan', orderable: false},
             { data:'jenis'},
             { data:'jumlah'},
-            { data:'action', orderable: false, searchable: false, className: "text-right"},
+            { data:'action', orderable: false, searchable: false, className: "text-right", width: '4rem'},
         ],
     }).yadcf([
         {
