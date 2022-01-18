@@ -7,10 +7,10 @@ active
 @section('content')
 <!-- Modal Tambah Transaksi -->
 <div class="modal modal-danger fade" id="tambah" tabindex="-1" role="dialog" aria-labelledby="Tambah Transaksi" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="tambahLabel">Ubah Transaksi</h5>
+                <h5 class="modal-title" id="tambahLabel">Tambah Transaksi</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -18,20 +18,79 @@ active
             <form action="{{route('transaksi.update')}}" method="POST">
             @csrf
             @method('PUT')
-            <input type="hidden" name="idgrup">
-            <input type="hidden" name="idunitkerja">
             <div class="modal-body">
+                <div class="row">
+                    <div class="col-6 col-md-3">
+                        <div class="form-group">
+                            <label><b>Tipe Transaksi</b></label>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" name="tipe" required >
+                                <option value="">--Pilih--</option>
+                                <option value="LS">LS</option>
+                                <option value="TU">TU</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-4">
+                        <div class="form-group">
+                            <label><b>Tanggal</b></label>
+                            <input type="date" id="tanggalref" name="tanggalref" class="form-control" placeholder="Tanggal" required>
+                        </div>  
+                    </div>
+                </div>                
                 <div class="form-group">
-                    <label><b>Tanggal</b></label>
-                    <input type="date" id="tanggal" name="tanggal" class="form-control" placeholder="Tanggal" required>
+                    <label><b>Subkegiatan</b></label>
+                    <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idgrup" required >
+                        <option value="">--Pilih--</option>
+                        @foreach($subkegiatan as $sk)
+                        <option value="{{$sk->idgrup}}">{{$sk->kode.', '.$sk->nama.', '.$sk->tahun}}</option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="form-group">
-                    <label><b>Transaksi</b></label>
-                    <input type="text" id="transaksi" name="transaksi" class="form-control" placeholder="Transaksi" pattern="[^0][\d]*$" required>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>Rekening</b></label>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idrekening" required >
+                                <option value="">--Pilih--</option>
+                                @foreach($rekening as $r)
+                                <option value="{{$r->id}}">{{$r->kode.', '.$r->nama}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>Rekanan</b></label>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idrekanan" required >
+                                <option value="">--Pilih--</option>
+                                @foreach($rekanan as $r)
+                                <option value="{{$r->id}}">{{$r->nama}}</option>
+                                @endforeach
+                            </select>
+                        </div>  
+                    </div>
+                </div>        
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>Jenis Transaksi</b></label>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" name="jenis" required >
+                                <option value="">--Pilih--</option>
+                                <option value="1">Debit</option>
+                                <option value="0">Kredit</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>Jumlah</b></label>
+                            <input type="text" id="jumlah" name="jumlah" class="form-control" placeholder="Jumlah" pattern="^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$" required>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label><b>Keterangan</b></label>
-                    <textarea id="keterangan" name="keterangan" class="form-control" placeholder="Keterangan" maxlength="99" rows="3" style="resize: none;"></textarea>
+                    <textarea id="keterangan" name="keterangan" class="form-control" placeholder="Keterangan" maxlength="250" rows="3" style="resize: none;" required></textarea>
                 </div>
             </div>
             <div class="modal-footer">

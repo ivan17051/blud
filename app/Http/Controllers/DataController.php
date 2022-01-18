@@ -305,7 +305,7 @@ class DataController extends Controller
         $validator = Validator::make($input, [
             'idunitkerja'=>'required|exists:munitkerja,id',
             'idgrup'=>'required|exists:grupsubkegiatan,id',
-            'saldo'=>'required',
+            'saldo'=> array('required','regex:/^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$/'), // allow float
             'tanggal'=>'required',
             'keterangan'=>'nullable'
         ]);

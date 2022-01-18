@@ -31,7 +31,7 @@ active
                 </div>
                 <div class="form-group">
                     <label><b>Saldo</b></label>
-                    <input type="text" id="saldo" name="saldo" class="form-control" placeholder="Saldo" pattern="[^0][\d]*$" required>
+                    <input type="text" id="saldo" name="saldo" class="form-control" placeholder="Saldo" pattern="^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$" required>
                 </div>
                 <div class="form-group">
                     <label><b>Keterangan</b></label>

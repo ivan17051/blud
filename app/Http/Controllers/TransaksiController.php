@@ -16,11 +16,15 @@ use App\Transaksi;
 use Datatables;
 use Carbon\Carbon;
 use PDF;
+use Validator;
 
 class TransaksiController extends Controller
 {
     public function index(){
-        return view('transaksi');
+        $subkegiatan=SubKegiatan::where('isactive', 1)->select('idgrup','idkegiatan','kode','nama')->get();
+        $rekening=Rekening::where('isactive', 1)->select('id','kode','nama')->get();
+        $rekanan=Rekanan::where('isactive', 1)->select('id','nama')->get();
+        return view('transaksi',['subkegiatan'=>$subkegiatan, 'rekening'=>$rekening, 'rekanan'=>$rekanan]);
     }
 
     public function data(Request $request){
@@ -68,7 +72,55 @@ class TransaksiController extends Controller
     }
 
     public function storeUpdateTransaksi(Request $request){
+        $user = Auth::user();
+        $input = array_map('trim', $request->all());
+        $validator = Validator::make($input, [
+            'id' => 'nullable|exists:transaksi,id',
+            'tipe' => 'required|string|in:LS,TU',
+            'jenis' => 'required|in:0,1',
+            'tanggalref' => 'required|string',
+            'idgrup' => 'integer',
+            'idrekening' => 'required|exists:mrekening,id',
+            'idrekanan' => 'required|exists:mrekanan,id',
+            'jumlah' => array('required','regex:/^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$/'), // allow float
+            'keterangan' => 'required|string|max:255',
+        ]);
+        if ($validator->fails()) return back()->with('error','Gagal menyimpan');
         
+        $input = $validator->valid();
+        $input['idunitkerja']=$user->idunitkerja;
+
+        //jika edit transaksi old
+        if(isset($input['id'])){
+            $t=Transaksi::find($input['id']);
+            $t->fill($input);
+            $t->fill([
+                'saldo'=>999999,
+                'riwayat'=>'[]',
+                'status'=>1,
+                'idm'=>$user->id,
+            ]);
+        }
+        else{
+            $t=new Transaksi();
+            $t->fill($input);
+            $t->fill([
+                'saldo'=>999999,
+                'riwayat'=>'[]',
+                'status'=>0,
+                'tanggal'=>Carbon::now()->format('Y-m-d'),
+                'idc'=>$user->id,
+                'idm'=>$user->id,
+            ]);
+        }
+
+        //cek apakah ada proses edit atau tidak
+        if($t->isDirty()){
+            $t->save();
+            return back()->with('success','Berhasil menyimpan');
+        }else{
+            return back()->with('error','Tidak ada perubahan');
+        }
     }
         
     public function ppd(){

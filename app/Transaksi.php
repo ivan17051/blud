@@ -15,11 +15,16 @@ class Transaksi extends Model
 
     public $timestamps = false;
 
+    protected $casts = [
+        'riwayat' => 'array',
+   ];
+
     protected $fillable = [
         "tipe",
         "idgrup",
         "idunitkerja",
         "idrekening",
+        "idrekanan",
         "jenis",
         "jumlah",
         "saldo",
