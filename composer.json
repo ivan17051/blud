@@ -16,8 +16,10 @@
         "laravel/tinker": "~1.0",
         "myclabs/php-enum": "1.7.7",
         "nesbot/carbon": "2.53.1 as 1.39.0",
+        "phenx/php-svg-lib": "v0.3.3",
         "phpoffice/phpspreadsheet": "1.19.0",
         "psr/container": "1.1.1",
+        "riskihajar/terbilang": "^1.2",
         "yajra/laravel-datatables": "1.2"
     },
     "require-dev": {

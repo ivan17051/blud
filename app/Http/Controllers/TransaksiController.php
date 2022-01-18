@@ -123,9 +123,11 @@ class TransaksiController extends Controller
         }
     }
         
-    public function ppd(){
-        
-        $pdf = PDF::loadView('tu')->setPaper('a4', 'portrait')->stream('ppd.pdf');
-        return $pdf;
+    public function ppd($id){
+        $transaksi = Transaksi::with(['unitkerja','subkegiatan','rekening'])->find($id);
+        // dd($transaksi);
+        // $pdf = PDF::loadView('tu', ['transaksi' => $transaksi])->stream('ppd.pdf');
+        // return $pdf;
+        return view('tu', ['transaksi' => $transaksi]);
     }
 }
