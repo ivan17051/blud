@@ -270,6 +270,6 @@ class TransaksiController extends Controller
         // dd($transaksi);
         // $pdf = PDF::loadView('tu', ['transaksi' => $transaksi])->stream('ppd.pdf');
         // return $pdf;
-        return view('tu', ['transaksi' => $transaksi]);
+        return view('reportPpd', ['transaksi' => $transaksi]);
     }
 }
