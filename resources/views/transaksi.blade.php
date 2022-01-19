@@ -335,7 +335,7 @@ $(document).ready(function(){
     oTable = $("#transaksitable").dataTable({
         processing: true,
         serverSide: true,
-        ajax: {type: "POST", url: '{{route("transaksi.data")}}', data:{'_token':'aqL8gc0tSlGs99nnn5UJlDhF1QdyLjz2W15VE1Dq'}},
+        ajax: {type: "POST", url: '{{route("transaksi.data")}}', data:{'_token':@json(csrf_token())}},
         columns: [
             { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' },
             { data:'tipe', orderable: false, width: '5.1rem'},
