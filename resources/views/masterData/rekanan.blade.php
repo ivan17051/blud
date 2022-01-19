@@ -86,9 +86,9 @@ active
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Data Rekanan</h1>
-    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
+    <!-- <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
         For more information about DataTables, please visit the <a target="_blank"
-            href="https://datatables.net">official DataTables documentation</a>.</p>
+            href="https://datatables.net">official DataTables documentation</a>.</p> -->
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
@@ -128,7 +128,7 @@ active
                             <td>{{$unit->nama}}</td>
                             <td>{{$unit->alamat}}</td>
                             <td>
-                                <button onclick="edit(this)" class="btn btn-sm btn-outline-primary border-0" data-toggle="modal" data-target="#sunting" data-placement="top" title="sunting"><i class="fas fa-edit fa-sm"></i></button>
+                                <button onclick="edit(this)" class="btn btn-sm btn-outline-warning border-0" data-toggle="modal" data-target="#sunting" data-placement="top" title="sunting"><i class="fas fa-edit fa-sm"></i></button>
                                 <button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" title="delete"><i class="fas fa-trash fa-sm"></i></button>
                             </td>
                         </tr>
