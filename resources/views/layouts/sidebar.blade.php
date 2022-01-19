@@ -18,6 +18,9 @@
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
     </li>
+    
+    <!-- Divider -->
+    <hr class="sidebar-divider">
 
     <li class="nav-item @yield('masterShow')">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseMaster"
@@ -41,31 +44,18 @@
     </li>
 
     <!-- Divider -->
-    <hr class="sidebar-divider">
+    <!-- <hr class="sidebar-divider"> -->
 
     <!-- Heading -->
-    <div class="sidebar-heading">
+    <!-- <div class="sidebar-heading">
         Transaksi
-    </div>
+    </div> -->
 
-    <!-- Nav Item - PPD -->
+    <!-- Nav Item - Transaksi -->
     <li class="nav-item @yield('transaksiStatus')">
         <a class="nav-link" href="{{url('/transaksi')}}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <i class="fas fa-fw fa-exchange-alt"></i>
             <span>Transaksi</span></a>
-    </li>
-    <!-- Nav Item - SOPD -->
-    <li class="nav-item @yield('sopdStatus')">
-        <a class="nav-link" href="{{url('/sopd')}}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>SOPD</span></a>
-    </li>
-
-    <!-- Nav Item - Tables -->
-    <li class="nav-item">
-        <a class="nav-link" href="{{url('/spd')}}">
-            <i class="fas fa-fw fa-table"></i>
-            <span>SPD</span></a>
     </li>
 
     <!-- Divider -->

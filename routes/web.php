@@ -58,4 +58,5 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/tu', function () {
     return view('tu');
 });
-Route::get('/ppd/{id}', 'TransaksiController@ppd');
+Route::get('/sptb/{id}', 'TransaksiController@sptb');
+Route::get('/spp/{id}', 'TransaksiController@spp');

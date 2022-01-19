@@ -31,7 +31,7 @@
                             <tr>
                                 @php
                                 $bulan = ['','I','II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
-                                $mytime = Carbon\Carbon::now()->setTimeZone('Asia/Jakarta');
+                                $mytime = Carbon\Carbon::make($transaksi->tanggal);
                                 @endphp
                                 <td class="headerFont fontCenter paddingfont" style="font-size:12px">NOMOR :00146/{{$transaksi->unitkerja->id}}/{{$transaksi->tipe}}.BLUD/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
                             </tr>

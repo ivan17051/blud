@@ -265,11 +265,16 @@ class TransaksiController extends Controller
         }
     }
         
-    public function ppd($id){
+    public function sptb($id){
         $transaksi = Transaksi::with(['unitkerja','subkegiatan','rekening'])->find($id);
-        // dd($transaksi);
-        // $pdf = PDF::loadView('tu', ['transaksi' => $transaksi])->stream('ppd.pdf');
-        // return $pdf;
-        return view('reportPpd', ['transaksi' => $transaksi]);
+        return view('reportSptb', ['transaksi' => $transaksi]);
+    }
+    public function spp($id){
+        $transaksi = Transaksi::with(['unitkerja','subkegiatan','rekening'])->find($id);
+        return view('reportSpp', ['transaksi' => $transaksi]);
+    }
+    public function spm($id){
+        $transaksi = Transaksi::with(['unitkerja','subkegiatan','rekening'])->find($id);
+        return view('reportSpm', ['transaksi' => $transaksi]);
     }
 }
