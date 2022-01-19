@@ -25,6 +25,8 @@
     <link href="{{asset('public/vendor/datatables/dataTables.bootstrap4.min.css')}}" rel="stylesheet">
     <!-- Bootstrap-select styles -->
     <link href="{{asset('public/vendor/bootstrap-select/css/bootstrap-select.min.css')}}" rel="stylesheet">
+    <!-- Date time picker style -->
+    <link rel="stylesheet" href="{{asset('public/vendor/bootstrap-datetimepicker/tempusdominus-bootstrap-4.min.css')}}" />
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{asset('public/css/custom.css')}}">
 
@@ -310,6 +312,13 @@
     <script src="{{asset('public/vendor/datatables/jquery.dataTables.min.js')}}"></script>
     <script src="{{asset('public/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/yadcf/0.9.4/jquery.dataTables.yadcf.min.js" integrity="sha512-WQDeHtbJgUPNqiWyZN0pLuJrVU8kE7LOsQ8FCbdabl0kk0yfRrE/l9lFpn6xQ1mIj5OtGuvIMC19Fd07oEb2+A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Plugin for the momentJs  -->
+    <script src="{{asset('public/vendor/moment/moment.min.js')}}"></script>
+    <script src="{{asset('public/vendor/moment/id.min.js')}}"></script>
+
+    <!-- Date time picker -->
+    <script src="{{asset('public/vendor/bootstrap-datetimepicker/tempusdominus-bootstrap-4.min.js')}}"></script>
 
     <!-- Sweetalert -->
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>

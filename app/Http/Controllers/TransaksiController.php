@@ -17,6 +17,7 @@ use Datatables;
 use Carbon\Carbon;
 use PDF;
 use Validator;
+use Illuminate\Support\Facades\DB;
 
 class TransaksiController extends Controller
 {
@@ -161,18 +162,31 @@ class TransaksiController extends Controller
         $input = $validator->valid();
         $input['idunitkerja']=$user->idunitkerja;
 
-        //jika edit transaksi old
+        //jika edit transaksi old [NOT USED YET]
         if(isset($input['id'])){
             $t=Transaksi::find($input['id']);
             $t->fill($input);
             $t->fill([
-                'saldo'=>999999,
                 'riwayat'=>array(),
                 'status'=>1,
                 'idm'=>$user->id,
             ]);
         }
         else{
+            //get saldo teraktual
+            $saldo=Saldo::where('idgrup',$input['idgrup'])
+                ->where('idunitkerja',$input['idunitkerja'])
+                ->orderBy('tanggal', 'DESC')
+                ->orderBy('id', 'DESC')
+                ->first();
+
+            if(isset($saldo)===FALSE){  //belum ada saldo sama sekali
+                return back()->with('error','Sub-Kegiatan belum memiliki saldo');
+            }
+            elseif($saldo->saldo-floatval($input['jumlah']) < 0){   //cek kecukupan saldo
+                return back()->with('error','Saldo tidak mencukupi');
+            }
+
             $t=new Transaksi();
             $t->fill($input);
             $t->fill([
@@ -223,6 +237,7 @@ class TransaksiController extends Controller
     public function accTransaksi(Request $request){
         $userId = Auth::id();
         try {
+            DB::beginTransaction();
             $tgl=Carbon::now()->format('Y-m-d');
             $model=Transaksi::find($request->input('id'));
             $oldstatus=$request->input('oldstatus');
@@ -255,13 +270,71 @@ class TransaksiController extends Controller
             }
 
             if($model->isClean()){
-                throw new Exception('Tidak ada perubahan');
+                throw new \Exception('Tidak ada perubahan');
+            }
+
+            //Persetujjuan pertama kali akan melakukan pengurangan saldo
+            if($model->status === 1){
+                $tgl=Carbon::createFromDate($model->tanggalref);
+                $tgl->day = 1;
+                $saldos=Saldo::where('idgrup',$model->idgrup)
+                    ->where('idunitkerja',$model->idunitkerja)
+                    ->whereDate('tanggal','>=',$tgl->format('Y-m-d'))
+                    ->orderBy('tanggal', 'DESC')
+                    ->orderBy('id', 'DESC')
+                    ->get();
+            
+                if($saldos->isEmpty() OR in_array($saldos[0]->tipe, ['inisial','revisi']) ){
+                    //get saldo teraktual
+                    $s=Saldo::where('idgrup',$model->idgrup)
+                        ->where('idunitkerja',$model->idunitkerja)
+                        ->orderBy('tanggal', 'DESC')
+                        ->orderBy('id', 'DESC')
+                        ->first();
+                    
+                    //cek kecukupan saldo
+                    $newjumlah=$s->saldo-floatval($model->jumlah);
+                    if($newjumlah < 0){  
+                        throw new \Exception('Saldo tidak mencukupi');
+                    }
+
+                    // jika kosong atau belum saldo tipe NON-inisial atau NON-revisi
+                    $newsaldo=new Saldo();
+                    $newsaldo->fill([
+                        'idunitkerja'=>$model->idunitkerja,
+                        'idgrup'=>$model->idgrup,
+                        'saldo'=>$newjumlah,
+                        'tanggal'=>$tgl,
+                        'idm'=>$userId,
+                        'idc'=>$userId
+                    ]);
+                    $newsaldo->save();
+                }else{
+                    //update saldo-saldo tanggal tsb hingga saat ini
+                    foreach ($saldos as $s) {
+
+                        //cek kecukupan saldo
+                        $newjumlah=$s->saldo-floatval($model->jumlah);
+                        if($newjumlah < 0){  
+                            throw new \Exception('Saldo tidak mencukupi');
+                        }
+
+                        $s->fill([
+                            'saldo' => $newjumlah,
+                            'idm' => $userId
+                        ]);
+                        $s->save();
+                    }
+                }
+
             }
 
             $model->save();
+            DB::commit();
             return back()->with('success','Berhasil menyetujui');
-        } catch (\Throwable $th) {
-            return back()->with('error','Gagal menyetujui');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error',$e->getMessage());
         }
     }
         

@@ -66,3 +66,25 @@
 .yadcf-filter-wrapper{
     padding-top: 8px;
 }
+
+td.day{
+    position:relative;  
+}
+
+td.day.disabled:hover:before {
+    content: 'Tanggal non aktif';
+    color: red;
+    background-color: white;
+    top: -22px;
+    position: absolute;
+    width: 136px;
+    left: -34px;
+    z-index: 1000;
+    text-align: center;
+    padding: 2px;
+}
+
+td.day.disabled{
+    background-color: rgb(212, 212, 212)!important;
+    border-radius: 0!important;
+}

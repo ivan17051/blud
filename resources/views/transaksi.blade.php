@@ -33,7 +33,14 @@ active
                     <div class="col-sm-6 col-md-4">
                         <div class="form-group">
                             <label><b>Tanggal</b></label>
-                            <input type="date" id="tanggalref" name="tanggalref" class="form-control" placeholder="Tanggal" required>
+                            <div class="input-group date" id="datetimepicker" data-target-input="nearest">
+                                <input readonly type="text" class="form-control datetimepicker-input" data-target="#datetimepicker" id="tanggalref" name="tanggalref" required/>
+                                <div class="input-group-append" data-target="#datetimepicker" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                            <!-- <label><b>Tanggal</b></label>
+                            <input type="text"  class="form-control" placeholder="Tanggal" required> -->
                         </div>  
                     </div>
                 </div>                
@@ -76,7 +83,7 @@ active
                             <label><b>Jenis Transaksi</b></label>
                             <select class="selectpicker" data-style-base="form-control" data-style="" name="jenis" required >
                                 <option value="">--Pilih--</option>
-                                <option value="1">Debit</option>
+                                <option value="1" disabled>Debit</option>
                                 <option value="0">Kredit</option>
                             </select>
                         </div>
@@ -332,6 +339,24 @@ function format(data){
 }
 
 $(document).ready(function(){
+    $('#tambah').find('select[name=jenis]').val('0').change().attr('readonly',true);
+
+    @php
+    $date=Carbon\Carbon::now();
+    $maxDate=$date->format('Y-m-d');
+    $date->day=1;
+    $minDate=$date->format('Y-m-d');
+    @endphp
+    const maxDate='{{$maxDate}}';
+    const minDate='{{$minDate}}';
+    $('#datetimepicker').datetimepicker({
+        locale: 'id',
+        format: 'L',
+        defaultDate: maxDate,
+        maxDate: maxDate,
+        minDate: minDate,
+    });
+
     oTable = $("#transaksitable").dataTable({
         processing: true,
         serverSide: true,
