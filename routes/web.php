@@ -52,6 +52,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/transaksi/data', 'TransaksiController@data')->name('transaksi.data');
     Route::put('/transaksi', 'TransaksiController@storeUpdateTransaksi')->name('transaksi.update');
     Route::delete('/transaksi', 'TransaksiController@deleteTransaksi')->name('transaksi.delete');
+    Route::put('/transaksi/acc', 'TransaksiController@accTransaksi')->name('transaksi.acc');
+    Route::delete('/transaksi/tolak', 'TransaksiController@tolakTransaksi')->name('transaksi.tolak');
 });
 Route::get('/tu', function () {
     return view('tu');

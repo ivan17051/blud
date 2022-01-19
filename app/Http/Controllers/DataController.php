@@ -279,7 +279,7 @@ class DataController extends Controller
 
         // cek username terpakai sebelumnya tidak
         $model=User::where('username',$input['username'])->first();
-        if($model->isactive===1){
+        if($model['isactive']===1){
             return back()->with('error','Username telah digunakan');
         }
 

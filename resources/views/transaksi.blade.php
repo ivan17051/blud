@@ -108,6 +108,19 @@ active
     @method('delete')
     <input type="hidden" name="id">
 </form>
+<!-- Form -->
+<form hidden action="{{route('transaksi.tolak')}}" method="POST" id="tolak">
+    @csrf
+    @method('delete')
+    <input type="hidden" name="id">
+</form>
+<!-- Form -->
+<form hidden action="{{route('transaksi.acc')}}" method="POST" id="acc">
+    @csrf
+    @method('put')
+    <input type="hidden" name="id">
+    <input type="hidden" name="oldstatus">
+</form>
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -125,9 +138,11 @@ active
                 <div class="col">
                     <h6 class="m-0 font-weight-bold text-primary">Data Transaksi</h6>
                 </div>
+                @if($user->role==='PKM')
                 <div class="col text-right">
                     <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#tambah" data-placement="top" title="Lihat Detail Siswa">Tambah</button>        
                 </div>
+                @endif
             </div>
         </div>
         <div class="card-body">
@@ -139,9 +154,15 @@ active
                             <th class="mw-6rem"></th>
                             <th>Tanggal</th>
                             <th>Subkegiatan</th>
+                            <th>Rekening</th>
                             <th>Ket.</th>
                             <th>Jenis</th>
                             <th>Jumlah</th>
+                            @if($user->role==='KEU')
+                            <th>SPD</th>
+                            <th>SOPD</th>
+                            <th>SPD</th>
+                            @endif
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -151,9 +172,15 @@ active
                             <th class="mw-6rem"></th>
                             <th>Tanggal</th>
                             <th>Subkegiatan</th>
+                            <th>Rekening</th>
                             <th>Ket.</th>
                             <th>Jenis</th>
                             <th>Jumlah</th>
+                            @if($user->role==='KEU')
+                            <th>SPD</th>
+                            <th>SOPD</th>
+                            <th>SPD</th>
+                            @endif
                             <th>Aksi</th>
                         </tr>
                     </tfoot>
@@ -215,9 +242,57 @@ function show(self){
     }
 }
 
+function tolak(self){
+    var tr = $(self).closest('tr');
+    var data=oTable.fnGetData(tr); 
+    $('#tolak').find('input[name=id]').val(data['id']);
+    Swal.fire({
+        customClass: {
+            confirmButton: 'btn btn-primary mr-2',
+            cancelButton: 'btn btn-dark'
+        },
+        buttonsStyling: false,
+        icon: 'warning',
+        iconColor: '#f4b619',
+        title: 'Yakin ingin menolak?',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $('#tolak').submit();
+        }
+    })
+}
+
+function acc(self){
+    var tr = $(self).closest('tr');
+    var data=oTable.fnGetData(tr); 
+    var $acc= $('#acc');
+    $acc.find('input[name=id]').val(data['id']);
+    $acc.find('input[name=oldstatus]').val(data['status_raw']);
+    Swal.fire({
+        customClass: {
+            confirmButton: 'btn btn-primary mr-2',
+            cancelButton: 'btn btn-dark'
+        },
+        buttonsStyling: false,
+        icon: 'warning',
+        iconColor: '#f4b619',
+        title: 'Yakin ingin menyetujui?',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $('#acc').submit();
+        }
+    })
+}
+
 function format(data){
-    var str=`<tr><td colspan="8" style="bacground-color:#f9f9f9;">
-        <div class="row">
+    var str='<tr><td></td><td colspan="'+ @if($user->role==='KEU') '11' @else '8' @endif +'" style="bacground-color:#f9f9f9;">'+
+        `<div class="row">
         <div class="col-md-4" id="riwayat">
             <h6><b>Riwayat</b></h6>
             <ul class="list-unstyled">
@@ -263,12 +338,18 @@ $(document).ready(function(){
         ajax: {url: '{{route("transaksi.data")}}'},
         columns: [
             { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' },
-            { data:'tipe', orderable: false,  width: '4rem'},
+            { data:'tipe', orderable: false, width: '5.1rem'},
             { data:'tanggalref'},
-            { data:'subkegiatan.nama'},
-            { data:'keterangan', orderable: false},
+            { data:'subkegiatan.nama',orderable: false},
+            { data:'rekening.nama',orderable: false, width: '7rem'},
+            { data:'keterangan', orderable: false, width: '23rem'},
             { data:'jenis'},
             { data:'jumlah'},
+            @if($user->role==='KEU')
+            { data:'ppd', orderable: false, searchable: false,  width: '3.5rem'},
+            { data:'sopd', orderable: false, searchable: false,  width: '3.5rem'},
+            { data:'spd', orderable: false, searchable: false,  width: '3.5rem'},
+            @endif
             { data:'action', orderable: false, searchable: false, className: "text-right", width: '4rem'},
         ],
     }).yadcf([
@@ -283,92 +364,6 @@ $(document).ready(function(){
                 {value:'TU',label:'TU'},
             ]
         },
-        // {
-        //     column_number: 2,
-        //     filter_default_label: 'Status',
-        //     filter_type: "select",
-        //     style_class:'c-filter-1',
-        //     reset_button_style_class:'c-filter-btn-1 btn btn-sm btn-warning',
-        //     data:[
-        //         {value:'0',label:'Belum'},
-        //         {value:'1',label:'PPD acc'},
-        //         {value:'2',label:'SOPD acc'},
-        //         {value:'3',label:'SPD acc'},
-        //     ]
-        // },
-        // {
-        //     column_number: 4,
-        //     filter_default_label: 'Unit Kerja',
-        //     filter_type: "select",
-        //     style_class:'c-filter-1',
-        //     reset_button_style_class:'c-filter-btn-1 btn btn-sm btn-warning',
-        //     data:[
-        //         {value:"37", label:"LAB KESDA"},
-        //         {value:"38", label:"PKM Tanjungsari"},
-        //         {value:"39", label:"PKM Simomulyo"},
-        //         {value:"40", label:"PKM Manukan Kulon"},
-        //         {value:"41", label:"PKM Balongsari"},
-        //         {value:"42", label:"PKM Asemrowo"},
-        //         {value:"43", label:"PKM Sememi"},
-        //         {value:"44", label:"PKM Benowo"},
-        //         {value:"45", label:"PKM Jeruk"},
-        //         {value:"46", label:"PKM Lidah Kulon"},
-        //         {value:"47", label:"PKM Lontar"},
-        //         {value:"48", label:"PKM Peneleh"},
-        //         {value:"49", label:"PKM Ketabang"},
-        //         {value:"50", label:"PKM Kedungdoro"},
-        //         {value:"51", label:"PKM Dr. Soetomo"},
-        //         {value:"52", label:"PKM Tembok Dukuh"},
-        //         {value:"53", label:"PKM Gundih"},
-        //         {value:"54", label:"PKM Tambakrejo"},
-        //         {value:"55", label:"PKM Simolawang"},
-        //         {value:"56", label:"PKM Perak Timur"},
-        //         {value:"57", label:"PKM Pegirian"},
-        //         {value:"58", label:"PKM Sidotopo"},
-        //         {value:"59", label:"PKM Wonokusumo"},
-        //         {value:"60", label:"PKM Krembangan Selatan"},
-        //         {value:"61", label:"PKM Dupak"},
-        //         {value:"62", label:"PKM Kenjeran"},
-        //         {value:"63", label:"PKM Tanah Kali Kedinding"},
-        //         {value:"64", label:"PKM Sidotopo Wetan"},
-        //         {value:"65", label:"PKM Rangkah"},
-        //         {value:"66", label:"PKM Pacar Keling"},
-        //         {value:"67", label:"PKM Gading"},
-        //         {value:"68", label:"PKM Pucangsewu"},
-        //         {value:"69", label:"PKM Mojo"},
-        //         {value:"70", label:"PKM Kalirungkut"},
-        //         {value:"71", label:"PKM Medokan Ayu"},
-        //         {value:"72", label:"PKM Tenggilis"},
-        //         {value:"73", label:"PKM Gunung Anyar"},
-        //         {value:"74", label:"PKM Menur"},
-        //         {value:"75", label:"PKM Klampis Ngasem"},
-        //         {value:"76", label:"PKM Mulyorejo"},
-        //         {value:"77", label:"PKM Sawahan"},
-        //         {value:"78", label:"PKM Putat Jaya"},
-        //         {value:"79", label:"PKM Banyu Urip"},
-        //         {value:"80", label:"PKM Pakis"},
-        //         {value:"81", label:"PKM Jagir"},
-        //         {value:"82", label:"PKM Wonokromo"},
-        //         {value:"83", label:"PKM Ngagel Rejo"},
-        //         {value:"84", label:"PKM Kedurus"},
-        //         {value:"85", label:"PKM Dukuh Kupang"},
-        //         {value:"86", label:"PKM Wiyung"},
-        //         {value:"87", label:"PKM Gayungan"},
-        //         {value:"88", label:"PKM Jemursari"},
-        //         {value:"89", label:"PKM Sidosermo"},
-        //         {value:"90", label:"PKM Kebonsari"},
-        //         {value:"103", label:"PKM Bangkingan"},
-        //         {value:"104", label:"PKM Made"},
-        //         {value:"117", label:"PKM Moro Krembangan ,"},
-        //         {value:"121", label:"PKM Tambak Wedi"},
-        //         {value:"122", label:"PKM Bulak Banteng"},
-        //         {value:"135", label:"PKM Keputih"},
-        //         {value:"138", label:"PKM Kalijudan"},
-        //         {value:"148", label:"PKM Balas Klumprik"},
-        //         {value:"151", label:"PKM Siwalankerto"},
-        //         {value:"984", label:"PKM Sawah Pulo"},
-        //     ]
-        // },
     ]);
 });
 </script>
