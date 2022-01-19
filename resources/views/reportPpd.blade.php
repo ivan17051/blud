@@ -60,7 +60,7 @@
                                                     <td class="paddingfont paddingBawah" width="30">3. </td>
                                                     <td class="paddingfont paddingBawah" width="160">Tanggal / No. DPA</td>
                                                     <td class="paddingfont paddingBawah" width="26">:</td>
-                                                    <td class="paddingfont paddingBawah" width="600">{{$transaksi->tanggal }}/1 02 0100 1.02.05.2.01</td>
+                                                    <td class="paddingfont paddingBawah" width="600">{{Carbon\Carbon::make($transaksi->tanggal)->translatedFormat('d M Y')}}/{{$transaksi->unitkerja->id}} 1.02.05.2.01</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="paddingfont paddingBawah" width="30">4. </td>
@@ -154,7 +154,7 @@
                                                                     <td>&nbsp;</td>
                                                                 </tr>
                                                                 <tr>
-                                                                    <td width="50%" height="10">Surabaya, {{$mytime->format('d F Y')}}</td>
+                                                                    <td width="50%" height="10">Surabaya, {{$mytime->translatedFormat('d F Y')}}</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>&nbsp;</td>
@@ -196,7 +196,10 @@
                     </tbody></table>
                 </td>
             </tr>
-        </tbody></table>
-    
-
-</body></html>
+        </tbody>
+    </table>
+    <script>
+        window.print();
+    </script>
+</body>
+</html>
