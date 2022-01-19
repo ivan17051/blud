@@ -1,8 +1,10 @@
 @section('sidebar')
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
+@php
+$user = Auth::user()->role;
+@endphp
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{url('/')}}">
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
         </div>
@@ -31,14 +33,21 @@
         <div id="collapseMaster" class="collapse @yield('masterShow')" aria-labelledby="headingMaster" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Data Master</h6>
+                @if($user=='admin')
+                <a class="collapse-item @yield('userStatus')" href="{{url('user')}}">User</a>
+                @endif
+                @if(in_array($user, array('admin', 'KEU')))
                 <a class="collapse-item @yield('unitKerjaStatus')" href="{{url('unitKerja')}}">Unit Kerja</a>
                 <a class="collapse-item @yield('kegiatanStatus')" href="{{url('kegiatan')}}">Kegiatan</a>
                 <a class="collapse-item @yield('subkegiatanStatus')" href="{{url('subkegiatan')}}">Subkegiatan</a>
                 <a class="collapse-item @yield('rekeningStatus')" href="{{url('rekening')}}">Rekening</a>
+                @endif
+                @if(in_array($user, array('admin', 'PKM')))
                 <a class="collapse-item @yield('rekananStatus')" href="{{url('rekanan')}}">Rekanan</a>
                 <a class="collapse-item @yield('pejabatStatus')" href="{{url('pejabat')}}">Pejabat</a>
-                <a class="collapse-item @yield('userStatus')" href="{{url('user')}}">User</a>
+                @elseif(in_array($user, array('PIH')))
                 <a class="collapse-item @yield('saldoStatus')" href="{{url('saldo')}}">Saldo</a>
+                @endif
             </div>
         </div>
     </li>
