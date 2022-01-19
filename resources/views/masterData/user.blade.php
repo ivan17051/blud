@@ -205,7 +205,7 @@ active
                         <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idunitkerja" required>
                             <option value="">--Pilih--</option>
                             <option value="1">Dinas Kesehatan Kota Surabaya, DKK</option>
-                            <option value="2">Bagian Sekretariat, SEKRETARIAT</option>
+                            <!-- <option value="2">Bagian Sekretariat, SEKRETARIAT</option>
                             <option value="3">Sub. Bag. Penyusunan Program, SUNGRAM</option>
                             <option value="4">Sub. Bag. Tata Usaha, TU</option>
                             <option value="5">UNIT PEGAWAIAN, UP</option>
@@ -237,7 +237,7 @@ active
                             <option value="32">Seksi Wabah dan Bencana, WABEN</option>
                             <option value="33">Seksi Kesehatan Lingkungan, KESLING</option>
                             <option value="34">IMUNISASI, IMUNISASI</option>
-                            <option value="35">PONDOK ASI,PONDOK  ASI</option>
+                            <option value="35">PONDOK ASI,PONDOK  ASI</option> -->
                             <option value="37">Laboratorium Kesehatan Daerah Kota Surabaya,LAB  DKK</option>
                             <option value="38">Puskesmas Tanjungsari, TANJUNGSARI</option>
                             <option value="39">Puskesmas Simomulyo, SIMOMULYO</option>

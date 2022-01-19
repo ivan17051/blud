@@ -266,7 +266,7 @@ class DataController extends Controller
         $input = array_map('trim', $request->all());
         $validator = Validator::make($input, [
             'id' => 'nullable|exists:muser,id',
-            'username' => 'required|string|max:191',
+            'username' => 'required_without:id|string|max:191',
             'nama' => 'required|string|max:20',
             'password' => 'required_without:id|string|min:1|confirmed',
             'role'=>'required|string',
@@ -278,9 +278,11 @@ class DataController extends Controller
         $input['isactive']=1;
 
         // cek username terpakai sebelumnya tidak
-        $model=User::where('username',$input['username'])->first();
-        if($model['isactive']===1){
-            return back()->with('error','Username telah digunakan');
+        if(isset($input['username'])){
+            $model=User::where('username',$input['username'])->first();
+            if(isset($model) AND $model['isactive']===1){
+                return back()->with('error','Username telah digunakan');
+            }
         }
 
         if (isset($input['password'])) {
