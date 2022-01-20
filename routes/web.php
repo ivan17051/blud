@@ -55,10 +55,18 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/transaksi/acc', 'TransaksiController@accTransaksi')->name('transaksi.acc');
     Route::delete('/transaksi/tolak', 'TransaksiController@tolakTransaksi')->name('transaksi.tolak');
 });
-Route::get('/tu', function () {
-    return view('tu');
+Route::get('/cobaspp', function () {
+    return view('report.spp');
+});
+Route::get('/cobasppup', function () {
+    return view('report.sppup');
+});
+Route::get('/cobaspm', function () {
+    return view('report.spm');
 });
 Route::get('/sptb/{id}', 'TransaksiController@sptb');
 Route::get('/spp/{id}', 'TransaksiController@spp');
+Route::get('/sppup/{id}', 'TransaksiController@sppup');
+Route::get('/spm/{id}', 'TransaksiController@spm');
 
 Route::get('/pejabat/byunitkerja/{idunitkerja}','DataController@getPejabatByUnitKerja')->name('pejabat.byunitkerja');

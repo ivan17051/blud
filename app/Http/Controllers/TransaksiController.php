@@ -343,12 +343,14 @@ class TransaksiController extends Controller
     }
         
     public function sptb(Request $request, $id){
+        dd($request);
         $transaksi = Transaksi::with(['unitkerja','subkegiatan','rekening'])->find($id);
         return view('reportSptb', ['transaksi' => $transaksi]);
     }
     public function spp(Request $request, $id){
+        $otorisator = Pejabat::findOrFail($request->idpejabat);
         $transaksi = Transaksi::with(['unitkerja','subkegiatan','rekening'])->find($id);
-        return view('reportSpp', ['transaksi' => $transaksi]);
+        return view('report.spp', ['transaksi' => $transaksi, 'otorisator' => $otorisator]);
     }
     public function spm(Request $request, $id){
         $transaksi = Transaksi::with(['unitkerja','subkegiatan','rekening'])->find($id);
