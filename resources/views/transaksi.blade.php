@@ -20,40 +20,67 @@ active
             @method('PUT')
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-6 col-md-3">
-                        <div class="form-group">
-                            <label><b>Tipe Transaksi</b></label>
-                            <select class="selectpicker" data-style-base="form-control" data-style="" name="tipe" required >
-                                <option value="">--Pilih--</option>
-                                <option value="LS">LS</option>
-                                <option value="TU">TU</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4">
-                        <div class="form-group">
-                            <label><b>Tanggal</b></label>
-                            <div class="input-group date" id="datetimepicker" data-target-input="nearest">
-                                <input readonly type="text" class="form-control datetimepicker-input" data-target="#datetimepicker" id="tanggalref" name="tanggalref" required/>
-                                <div class="input-group-append" data-target="#datetimepicker" data-toggle="datetimepicker">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    <div class="col-md-6">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label><b>UPLS</b></label>
+                                    <select class="selectpicker" data-style-base="form-control" data-style="" name="tipe" required >
+                                        <option value="">--Pilih--</option>
+                                        <option value="UP">UP</option>
+                                        <option value="LS">LS</option>
+                                        <option value="TU">TU</option>
+                                    </select>
                                 </div>
                             </div>
-                            <!-- <label><b>Tanggal</b></label>
-                            <input type="text"  class="form-control" placeholder="Tanggal" required> -->
-                        </div>  
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label><b>Tanggal</b></label>
+                                    <div class="input-group date" id="datetimepicker" data-target-input="nearest">
+                                        <input readonly type="text" class="form-control datetimepicker-input" data-target="#datetimepicker" id="tanggalref" name="tanggalref" required/>
+                                        <div class="input-group-append" data-target="#datetimepicker" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                    <!-- <label><b>Tanggal</b></label>
+                                    <input type="text"  class="form-control" placeholder="Tanggal" required> -->
+                                </div>  
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label><b>Subkegiatan</b></label>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idgrup" required >
+                                <option value="">--Pilih--</option>
+                                @foreach($subkegiatan as $sk)
+                                <option value="{{$sk->idgrup}}">{{$sk->kode.', '.$sk->nama.', '.$sk->tahun}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label><b>Bayar Kepada</b></label>
+                                    <select class="form-control" name="dibayarkan" required onchange="filterFormulirOnChange(this)">
+                                        <option value="">--Pilih--</option>
+                                        <option value="1">Bendahara</option>
+                                        <option value="2">Rekanan</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label><b>.</b></label>
+                                    <select class="form-control" name="idrekanan" required >
+                                        <option value="">--Pilih--</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label><b>Keperluan</b></label>
+                            <textarea id="keterangan" name="keterangan" class="form-control" placeholder="Keterangan" maxlength="250" rows="3" style="resize: none;" required></textarea>
+                        </div>
                     </div>
-                </div>                
-                <div class="form-group">
-                    <label><b>Subkegiatan</b></label>
-                    <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idgrup" required >
-                        <option value="">--Pilih--</option>
-                        @foreach($subkegiatan as $sk)
-                        <option value="{{$sk->idgrup}}">{{$sk->kode.', '.$sk->nama.', '.$sk->tahun}}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label><b>Rekening</b></label>
@@ -64,21 +91,17 @@ active
                                 @endforeach
                             </select>
                         </div>
-                    </div>
-                    <div class="col-md-6">
                         <div class="form-group">
-                            <label><b>Rekanan</b></label>
-                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idrekanan" required >
-                                <option value="">--Pilih--</option>
-                                @foreach($rekanan as $r)
-                                <option value="{{$r->id}}">{{$r->nama}}</option>
-                                @endforeach
-                            </select>
-                        </div>  
+                            <label><b>Jumlah</b></label>
+                            <input type="text" id="jumlah" name="jumlah" class="form-control" placeholder="Jumlah" pattern="^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$" required>
+                        </div>
                     </div>
-                </div>        
+                </div>                
+                
+                
                 <div class="row">
-                    <div class="col-md-6">
+                    <input type="hidden" name="jenis" value="0">
+                    <!-- <div class="col-md-6">
                         <div class="form-group">
                             <label><b>Jenis Transaksi</b></label>
                             <select class="selectpicker" data-style-base="form-control" data-style="" name="jenis" required >
@@ -87,18 +110,9 @@ active
                                 <option value="0">Kredit</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label><b>Jumlah</b></label>
-                            <input type="text" id="jumlah" name="jumlah" class="form-control" placeholder="Jumlah" pattern="^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$" required>
-                        </div>
-                    </div>
+                    </div> -->
                 </div>
-                <div class="form-group">
-                    <label><b>Keterangan</b></label>
-                    <textarea id="keterangan" name="keterangan" class="form-control" placeholder="Keterangan" maxlength="250" rows="3" style="resize: none;" required></textarea>
-                </div>
+                
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
@@ -259,9 +273,9 @@ active
 
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800">Data Transaksi</h1>
-    <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
+    <!-- <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
         For more information about DataTables, please visit the <a target="_blank"
-            href="https://datatables.net">official DataTables documentation</a>.</p>
+            href="https://datatables.net">official DataTables documentation</a>.</p> -->
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
@@ -287,8 +301,8 @@ active
                             <th>Tanggal</th>
                             <th>Subkegiatan</th>
                             <th>Rekening</th>
-                            <th>Ket.</th>
-                            <th>Jenis</th>
+                            <th>Keperluan</th>
+                            <!-- <th>Jenis</th> -->
                             <th>Jumlah</th>
                             @if($user->role==='KEU')
                             <th>SPD</th>
@@ -305,8 +319,8 @@ active
                             <th>Tanggal</th>
                             <th>Subkegiatan</th>
                             <th>Rekening</th>
-                            <th>Ket.</th>
-                            <th>Jenis</th>
+                            <th>Keperluan</th>
+                            <!-- <th>Jenis</th> -->
                             <th>Jumlah</th>
                             @if($user->role==='KEU')
                             <th>SPD</th>
@@ -329,6 +343,27 @@ active
 @section('script')
 @include('layouts.alert')
 <script type="text/javascript">
+
+const bendahara = @json($pejabat);
+const rekanan = @json($rekanan);
+
+const filterFormulirOnChange = async function(e){
+    var val = e.value;
+    var str = '<option value="" disabled selected>--Pilih--</option>';
+    
+    var dt;
+    if(val==='1'){ //bendahara
+        dt=bendahara;
+        $('select[name=idrekanan]').empty().html(bendahara);
+    }else if(val==='2'){ //rekanan
+        dt=rekanan;
+        $('select[name=idrekanan]').empty().html(rekanan);
+    }
+    dt.forEach(e => {
+        str+=`<option value="${e.id}">${e.nama}</option>`;
+    });
+    $('select[name=idrekanan]').empty().html(str);
+}
     
 function hapus(self){
     var tr = $(self).closest('tr');
@@ -546,7 +581,6 @@ $(document).ready(function(){
             { data:'subkegiatan.nama',orderable: false},
             { data:'rekening.nama',orderable: false, width: '7rem'},
             { data:'keterangan', orderable: false, width: '23rem'},
-            { data:'jenis'},
             { data:'jumlah'},
             @if($user->role==='KEU')
             { data:'ppd', orderable: false, searchable: false,  width: '3.5rem'},
