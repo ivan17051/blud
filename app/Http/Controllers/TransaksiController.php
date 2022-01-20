@@ -33,9 +33,9 @@ class TransaksiController extends Controller
     public function data(Request $request){
         $user = Auth::user();
         if(in_array($user->role,['admin','PIH','KEU'])){
-            $data = Transaksi::where('isactive',1)->with(['unitkerja','rekening','subkegiatan']);
+            $data = Transaksi::where('isactive',1)->with(['unitkerja','subkegiatan']);
         }else{
-            $data = Transaksi::where('isactive',1)->with(['unitkerja','rekening','subkegiatan'])
+            $data = Transaksi::where('isactive',1)->with(['unitkerja','subkegiatan'])
                     ->where('idunitkerja',$user->idunitkerja);
         }
         
@@ -146,22 +146,37 @@ class TransaksiController extends Controller
 
     public function storeUpdateTransaksi(Request $request){
         $user = Auth::user();
-        $input = array_map('trim', $request->all());
+        // $input = array_map('trim', $request->all());
+        $input = $request->all();
         $validator = Validator::make($input, [
             'id' => 'nullable|exists:transaksi,id',
-            'tipe' => 'required|string|in:LS,TU',
-            'jenis' => 'required|in:0,1',
+            'tipe' => 'required|string|in:UP,LS,TU',
+            // 'jenis' => 'required|in:0,1',
             'tanggalref' => 'required|string',
             'idgrup' => 'integer',
-            'idrekening' => 'required|exists:mrekening,id',
-            'idrekanan' => 'required|exists:mrekanan,id',
-            'jumlah' => array('required','regex:/^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$/'), // allow float
+            'rekening' => 'required|array',
+            'jumlah' => 'required|array',
+            'idkepada' => 'required|integer',
+            'flagkepada' => 'required|integer',
+            // 'jumlah' => array('required','regex:/^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$/'), // allow float
             'keterangan' => 'required|string|max:255',
         ]);
         if ($validator->fails()) return back()->with('error','Gagal menyimpan');
         
         $input = $validator->valid();
         $input['idunitkerja']=$user->idunitkerja;
+
+        //membuat array rekening untuk db dng urutan [id, kode, nama rekening, jumlah]
+        $newRekeningArray=[];
+        $newJumlah=0;
+        foreach ($input['rekening'] as $i=>$idrekening) {
+            $rekening=Rekening::where('id',$idrekening)->select('id','kode','nama')->first()->toArray();
+            $newJumlah+=floatval($input['jumlah'][$i]);
+            array_push($rekening,floatval($input['jumlah'][$i]));
+            array_push($newRekeningArray,$rekening);
+        }
+        $input['rekening']=$newRekeningArray;
+        $input['jumlah']=$newJumlah;
 
         //jika edit transaksi old [NOT USED YET]
         if(isset($input['id'])){
@@ -188,6 +203,20 @@ class TransaksiController extends Controller
                 return back()->with('error','Saldo tidak mencukupi');
             }
 
+            //cari transaksi teraktual di tahun ini untuk ambil nomor
+            $year=Carbon::parse($input['tanggalref'])->year;
+            $transaksi_aktual=Transaksi::select('id','nomor')
+                ->whereYear('tanggalref',$year)
+                ->orderBy('id', 'DESC')
+                ->where('idunitkerja',$input['idunitkerja'])->first();
+            if(isset($transaksi_aktual)){
+                $nomor=intval($transaksi_aktual->nomor)+1;
+            }else{
+                $nomor=1;
+            }
+            //convert agar nomor ada leading zero
+            $nomor = substr(str_repeat(0, 5).strval($nomor), - 5);
+
             $t=new Transaksi();
             $t->fill($input);
             $t->fill([
@@ -197,6 +226,7 @@ class TransaksiController extends Controller
                 'tanggal'=>Carbon::now()->format('Y-m-d'),
                 'idc'=>$user->id,
                 'idm'=>$user->id,
+                'nomor'=>$nomor
             ]);
         }
 

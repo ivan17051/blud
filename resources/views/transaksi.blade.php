@@ -286,7 +286,6 @@ active
                             <th class="mw-6rem"></th>
                             <th>Tanggal</th>
                             <th>Subkegiatan</th>
-                            <th>Rekening</th>
                             <th>Ket.</th>
                             <th>Jenis</th>
                             <th>Jumlah</th>
@@ -304,7 +303,6 @@ active
                             <th class="mw-6rem"></th>
                             <th>Tanggal</th>
                             <th>Subkegiatan</th>
-                            <th>Rekening</th>
                             <th>Ket.</th>
                             <th>Jenis</th>
                             <th>Jumlah</th>
@@ -463,7 +461,7 @@ async function cetak(type, id){
 }
 
 function format(data){
-    var str='<tr><td></td><td colspan="'+ @if($user->role==='KEU') '11' @else '8' @endif +'" style="bacground-color:#f9f9f9;">'+
+    var str='<tr><td></td><td colspan="'+ @if($user->role==='KEU') '10' @else '7' @endif +'" style="bacground-color:#f9f9f9;">'+
         `<div class="row">
         <div class="col-md-4" id="riwayat">
             <h6><b>Riwayat</b></h6>
@@ -544,7 +542,6 @@ $(document).ready(function(){
             { data:'tipe', orderable: false, width: '5.1rem'},
             { data:'tanggalref'},
             { data:'subkegiatan.nama',orderable: false},
-            { data:'rekening.nama',orderable: false, width: '7rem'},
             { data:'keterangan', orderable: false, width: '23rem'},
             { data:'jenis'},
             { data:'jumlah'},

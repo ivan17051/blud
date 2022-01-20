@@ -17,14 +17,17 @@ class Transaksi extends Model
 
     protected $casts = [
         'riwayat' => 'array',
+        'rekening' => 'array',
    ];
 
     protected $fillable = [
         "tipe",
+        "nomor",
         "idgrup",
         "idunitkerja",
         "rekening",
-        "idrekanan",
+        "idkepada",
+        "flagkepada",
         "jenis",
         "jumlah",
         "saldo",
@@ -41,10 +44,6 @@ class Transaksi extends Model
 
     public function unitkerja(){
         return $this->belongsTo(UnitKerja::class, 'idunitkerja');
-    }
-
-    public function rekening(){
-        return $this->belongsTo(Rekening::class, 'idrekening');
     }
 
     public function subkegiatan(){
