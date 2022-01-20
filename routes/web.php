@@ -61,8 +61,4 @@ Route::get('/tu', function () {
 Route::get('/sptb/{id}', 'TransaksiController@sptb');
 Route::get('/spp/{id}', 'TransaksiController@spp');
 
-Route::get('cobs',function(){
-    $saldos=App\Saldo::where('idgrup',9)
-        ->get();
-    dd($saldos);
-});
+Route::get('/pejabat/byunitkerja/{idunitkerja}','DataController@getPejabatByUnitKerja')->name('pejabat.byunitkerja');

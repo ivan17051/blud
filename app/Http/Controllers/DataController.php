@@ -407,4 +407,9 @@ class DataController extends Controller
             return back()->with('error','Gagal menghapus');
         }
     }
+
+    public function getPejabatByUnitKerja($idunitkerja){
+        $pejabat = Pejabat::select('id','idunitkerja','nama','nip')->where('isactive', 1)->where('idunitkerja',$idunitkerja)->get();
+        return response()->json($pejabat, 200);
+    }
 }

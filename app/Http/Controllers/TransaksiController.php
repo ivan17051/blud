@@ -26,7 +26,8 @@ class TransaksiController extends Controller
         $subkegiatan=SubKegiatan::where('isactive', 1)->select('idgrup','idkegiatan','kode','nama')->get();
         $rekening=Rekening::where('isactive', 1)->select('id','kode','nama')->get();
         $rekanan=Rekanan::where('isactive', 1)->select('id','nama')->get();
-        return view('transaksi',['subkegiatan'=>$subkegiatan, 'rekening'=>$rekening, 'rekanan'=>$rekanan, 'user'=>$user]);
+        $pejabat=Pejabat::where('isactive', 1)->select('id','idunitkerja','nama','nip')->where('idunitkerja',$user->idunitkerja)->get();
+        return view('transaksi',['subkegiatan'=>$subkegiatan, 'rekening'=>$rekening, 'rekanan'=>$rekanan, 'user'=>$user, 'pejabat'=>$pejabat]);
     }
 
     public function data(Request $request){

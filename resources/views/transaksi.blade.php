@@ -109,6 +109,130 @@ active
     </div>
 </div>
 
+<!-- Modal Cetak sptb Transaksi -->
+<div class="modal modal-danger fade" id="cetaksptb" tabindex="-1" role="dialog" aria-labelledby="Cetak SPTB" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <form action="" method="POST">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cetakLabel">Cetak SPTB</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label><b>Pejabat</b></label>
+                    <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idpejabat" required >
+                        <option value="">--Pilih--</option>
+                        @foreach($pejabat as $p)
+                        <option value="{{$p->id}}">{{$p->nama.', '.$p->nip}}</option>
+                        @endforeach
+                    </select>
+                </div>  
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="submit" class="btn btn-primary">Print</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Cetak spp Transaksi -->
+<div class="modal modal-danger fade" id="cetakspp" tabindex="-1" role="dialog" aria-labelledby="Cetak SPP" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <form action="" method="POST">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cetakLabel">Cetak SPP</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label><b>Pejabat</b></label>
+                    <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idpejabat" required >
+                        <option value="">--Pilih--</option>
+                        @foreach($pejabat as $p)
+                        <option value="{{$p->id}}">{{$p->nama.', '.$p->nip}}</option>
+                        @endforeach
+                    </select>
+                </div>  
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="submit" class="btn btn-primary">Print</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Cetak spm Transaksi -->
+<div class="modal modal-danger fade" id="cetakspm" tabindex="-1" role="dialog" aria-labelledby="Cetak SPM" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <form action="" method="POST">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cetakLabel">Cetak SPM</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label><b>Pejabat</b></label>
+                    <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idpejabat" required >
+                        <option value="">--Pilih--</option>
+                        @foreach($pejabat as $p)
+                        <option value="{{$p->id}}">{{$p->nama.', '.$p->nip}}</option>
+                        @endforeach
+                    </select>
+                </div>  
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="submit" class="btn btn-primary">Print</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Cetak spd Transaksi -->
+<div class="modal modal-danger fade" id="cetakspd" tabindex="-1" role="dialog" aria-labelledby="Cetak SPD" aria-hidden="true">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <form action="" method="POST">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cetakLabel">Cetak SPD</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label><b>Pejabat</b></label>
+                    <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idpejabat" required >
+                        <option value="">--Pilih--</option>
+                        @foreach($pejabat as $p)
+                        <option value="{{$p->id}}">{{$p->nama.', '.$p->nip}}</option>
+                        @endforeach
+                    </select>
+                </div>  
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="submit" class="btn btn-primary">Print</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Form -->
 <form hidden action="{{route('transaksi.delete')}}" method="POST" id="delete">
     @csrf
@@ -297,6 +421,31 @@ function acc(self){
     })
 }
 
+var oData={};
+async function cetak(type, id){
+    var data = oData[id];
+    var pejabatPKM = await my.request.get('{{route('pejabat.byunitkerja',['idunitkerja'=>''])}}/'+id);
+    console.log(pejabatPKM);
+    switch (type) {
+        case 'sptb':
+            $('#cetaksptb form').attr('action',"{{url('sptb')}}/"+id);
+            $('#cetaksptb').modal('show');
+            break;
+        case 'spp':
+            $('#cetakspp form').attr('action',"{{url('spp')}}/"+id);
+            $('#cetakspp').modal('show');
+            break;
+        case 'spm':
+            $('#cetakspm form').attr('action',"{{url('spm')}}/"+id);
+            $('#cetakspm').modal('show');
+            break;
+        case 'spd':
+            $('#cetakspd form').attr('action',"{{url('spd')}}/"+id);
+            $('#cetakspd').modal('show');
+            break;
+    }
+}
+
 function format(data){
     var str='<tr><td></td><td colspan="'+ @if($user->role==='KEU') '11' @else '8' @endif +'" style="bacground-color:#f9f9f9;">'+
         `<div class="row">
@@ -308,27 +457,37 @@ function format(data){
         </div>
     </td></tr>`;
     var $view=$(str);
+
+    //assign data ke object oData
+    if(oData.hasOwnProperty(data['id'])===false){
+        oData[data['id']]=data;
+    }
     
     let max=data.riwayat.length;
     let riwayatstr='<li>Request&nbsp'+data.tipe+
+        '<button class="btn btn-sm btn-primary float-right" onclick="cetak(\'sptb\','+ data['id'] +')">Print</button>'+
         '<p>'+data.tanggalref+'</p>'+
         (max===0?'':'<hr>')+
         '</li>';
     data.riwayat.forEach(function(e,i){
         let msg='';
+        let tipe='';
         switch (i) {
             case 0:
                 msg='PPD disetujui';
+                tipe='spp';
                 break;
             case 1:
                 msg='SOPD disetujui';
+                tipe='spm';
                 break;
             case 2:
                 msg='SPD disetujui';
+                tipe='spd';
                 break;
         }
         riwayatstr+='<li>'+msg+
-            '<button class="btn btn-sm btn-primary float-right">Print</button>'+
+            '<button class="btn btn-sm btn-primary float-right" onclick="cetak(\''+tipe+'\','+ data['id'] +')">Print</button>'+
             '<p>'+e[0]+'</p>'+
             (max-1===i?'':'<hr>')+
             '</li>';
