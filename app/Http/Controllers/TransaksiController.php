@@ -343,7 +343,6 @@ class TransaksiController extends Controller
     }
         
     public function sptb(Request $request, $id){
-        dd($request);
         $transaksi = Transaksi::with(['unitkerja','subkegiatan','rekening'])->find($id);
         return view('reportSptb', ['transaksi' => $transaksi]);
     }
