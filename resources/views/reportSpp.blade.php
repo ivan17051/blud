@@ -187,7 +187,7 @@
                                                             <tr>
                                                                 <td class="fontCenter fontBold" width="38%">Mengetahui,</td>
                                                                 <td width="26%">&nbsp;</td>
-                                                                <td class="fontCenter" width="36%">Surabaya, {{($transaksi->riwayat[0][0])}}</td>
+                                                                <td class="fontCenter" width="36%">Surabaya, {{$transaksi->riwayat[0][0]}}</td>
                                                             </tr>
                                                             <tr>
                                                                 <td class="fontCenter fontBold">Pejabat Pelaksana Teknis Kegiatan</td>
