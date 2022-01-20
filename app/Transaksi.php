@@ -23,7 +23,7 @@ class Transaksi extends Model
         "tipe",
         "idgrup",
         "idunitkerja",
-        "idrekening",
+        "rekening",
         "idrekanan",
         "jenis",
         "jumlah",

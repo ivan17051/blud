@@ -17,7 +17,9 @@ class UnitKerja extends Model
 
     protected $fillable = [
         "nama",
+        "kode",
 	    "nama_alias",
+        "alamat",
         "idc",
         "idm"
     ];

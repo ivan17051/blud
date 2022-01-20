@@ -24,6 +24,7 @@ class Pejabat extends Model
         "rekening",
         "idunitkerja",
 	    "isactive",
+        "alamat",
         "idc",
         "idm"
     ];
