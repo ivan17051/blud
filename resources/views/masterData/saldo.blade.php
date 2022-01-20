@@ -37,6 +37,14 @@ active
                     <label><b>Keterangan</b></label>
                     <textarea id="keterangan" name="keterangan" class="form-control" placeholder="Keterangan" maxlength="99" rows="3" style="resize: none;"></textarea>
                 </div>
+                <div class="form-group">
+                    <label style="color:var(--danger);"><b>Appli untuk semua PKM <i class="fas fa-exclamation-triangle"></i></b></label>
+                    <div class="custom-control custom-switch mt-2">
+                        <input type="checkbox" class="custom-control-input" id="isall" name="isall" >
+                        <label class="custom-control-label" for="isall"></label>
+                        <label class="custom-control-status-2" for="isall" style="vertical-align: sub;"></label>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
@@ -236,6 +244,30 @@ $(document).ready(function(){
         .val(@json(Carbon\Carbon::now()->format('Y-m-d')))
         .attr('readonly',true);
     @endif
+
+    //tambahkan swal pada set isall
+    $('#isall').change(function(e){
+        var self=this;
+        if(self.checked){
+            Swal.fire({
+                customClass: {
+                    confirmButton: 'btn btn-danger mr-2',
+                    cancelButton: 'btn btn-dark'
+                },
+                buttonsStyling: false,
+                icon: 'warning',
+                iconColor: '#f4b619',
+                title: 'Yakin appli ke semua PKM?',
+                showCancelButton: true,
+                confirmButtonText: 'Ya',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed === false) {
+                    self.checked=false;
+                }
+            })
+        }
+    })
 });
 </script>
 @endsection

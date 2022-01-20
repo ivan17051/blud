@@ -244,6 +244,7 @@ active
     @csrf
     @method('delete')
     <input type="hidden" name="id">
+    <input type="hidden" name="pesanpenolakan">
 </form>
 <!-- Form -->
 <form hidden action="{{route('transaksi.acc')}}" method="POST" id="acc">
@@ -388,7 +389,22 @@ function tolak(self){
         title: 'Yakin ingin menolak?',
         showCancelButton: true,
         confirmButtonText: 'Ya',
-        cancelButtonText: 'Batal'
+        cancelButtonText: 'Batal',
+        input: 'textarea',
+        inputLabel: 'Pesan',
+        inputPlaceholder: 'Tulis pesan di sini...',
+        inputAttributes: {
+            'aria-label': 'Tulis pesan di sini...',
+            'maxlength' : '250',
+        },
+        preConfirm: (value) => {
+            var newvalue=value.replace(/^\s+|\s+$/gm,'');
+            if(newvalue===''){ 
+                alert('Harap mengisi kolom pesan.');
+                return false;
+            }
+            $('#tolak input[name=pesanpenolakan]').val(newvalue);
+        },
     }).then((result) => {
         if (result.isConfirmed) {
             $('#tolak').submit();
@@ -492,6 +508,9 @@ function format(data){
             (max-1===i?'':'<hr>')+
             '</li>';
     });
+    if(data.pesanpenolakan){
+        riwayatstr+='<li><span class="text-danger">Ditolak: </span> '+data.pesanpenolakan+'</li>';
+    }
     $view.find('#riwayat ul').append(riwayatstr);
     return $view;
     return $view.prop("outerHTML");

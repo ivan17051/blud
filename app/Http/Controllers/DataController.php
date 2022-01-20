@@ -309,26 +309,47 @@ class DataController extends Controller
             'idgrup'=>'required|exists:grupsubkegiatan,id',
             'saldo'=> array('required','regex:/^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$/'), // allow float
             'tanggal'=>'required',
-            'keterangan'=>'nullable'
+            'keterangan'=>'nullable',
+            'isall'=>'nullable'
         ]);
         if ($validator->fails()) {
-            return redirect()->route('saldo',$input)->with('success','Gagal menyimpan');;
+            return redirect()->route('saldo',$input)->with('error','Gagal menyimpan');;
         }
 
         $input = $validator->valid();
-        $saldos=Saldo::where('idgrup',$request->input('idgrup'))
-                ->where('idunitkerja',$request->input('idunitkerja'))
-                ->get();
-        $newsaldo=new Saldo();
-        $newsaldo->fill($input);
-        $newsaldo->fill(['idc'=>$userId,'idm'=>$userId]);
-        if($saldos->count()){
-            $newsaldo->tipe='revisi';
+
+        //jika set untuk semua PKM
+        if(isset($input['isall'])){
+            $unitkerja=[37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,
+                61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,
+                86,87,88,89,90,103,104,117,121,122,135,138,148,151,984];
         }else{
-            $newsaldo->tipe='inisial';
+            $unitkerja=[$request->input('idunitkerja')];
         }
-        $newsaldo->save();
-        return redirect()->route('saldo',$input)->with('success','Berhasil menyimpan');
+        
+        try {
+            DB::beginTransaction();
+            foreach ($unitkerja as $uk) {
+                $input['idunitkerja']=$uk;
+                $saldos_cnt=Saldo::where('idgrup',$request->input('idgrup'))
+                    ->where('idunitkerja',$uk)
+                    ->count();
+                $newsaldo=new Saldo();
+                $newsaldo->fill($input);
+                $newsaldo->fill(['idc'=>$userId,'idm'=>$userId]);
+                if($saldos_cnt){
+                    $newsaldo->tipe='revisi';
+                }else{
+                    $newsaldo->tipe='inisial';
+                }
+                $newsaldo->save();
+            }
+            DB::commit();
+            return redirect()->route('saldo',$input)->with('success','Berhasil menyimpan');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return back()->with('error','Gagal menyimpan');
+        }
     }
 
     public function deleteKegiatan(Request $request){

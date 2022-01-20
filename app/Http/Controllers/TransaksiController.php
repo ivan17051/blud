@@ -226,6 +226,9 @@ class TransaksiController extends Controller
         $userId = Auth::id();
         try {
             $model=Transaksi::find($request->input('id'));
+            $model->fill([
+                'pesanpenolakan'=>$request->input('pesanpenolakan'),
+            ]);
             $model->idm=$userId;
             $model->status=-1;
             $model->save();

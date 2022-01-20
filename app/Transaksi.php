@@ -35,7 +35,8 @@ class Transaksi extends Model
         "status",
 	    "isactive",
         "idc",
-        "idm"
+        "idm",
+        "pesanpenolakan",
     ];
 
     public function unitkerja(){

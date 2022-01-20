@@ -49,6 +49,17 @@
     content: "Aktif";
     color: var(--primary);
 }
+
+.custom-control-status-2::after {
+    content: "Off";
+    color: var(--primary);
+    font-weight: bold;
+}
+
+.custom-control-input:checked ~ .custom-control-status-2::after {
+    content: "Aktif";
+    color: var(--danger);
+}
 /* END: Custom Control Status */
 
 .c-filter-1{
