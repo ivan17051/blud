@@ -113,7 +113,7 @@ active
 <div class="modal modal-danger fade" id="cetaksptb" tabindex="-1" role="dialog" aria-labelledby="Cetak SPTB" aria-hidden="true">
     <div class="modal-dialog " role="document">
         <div class="modal-content">
-            <form action="" method="POST">
+            <form action="" method="GET" target="_blank">
             <div class="modal-header">
                 <h5 class="modal-title" id="cetakLabel">Cetak SPTB</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -144,7 +144,7 @@ active
 <div class="modal modal-danger fade" id="cetakspp" tabindex="-1" role="dialog" aria-labelledby="Cetak SPP" aria-hidden="true">
     <div class="modal-dialog " role="document">
         <div class="modal-content">
-            <form action="" method="POST">
+            <form action="" method="GET" target="_blank">
             <div class="modal-header">
                 <h5 class="modal-title" id="cetakLabel">Cetak SPP</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -175,7 +175,7 @@ active
 <div class="modal modal-danger fade" id="cetakspm" tabindex="-1" role="dialog" aria-labelledby="Cetak SPM" aria-hidden="true">
     <div class="modal-dialog " role="document">
         <div class="modal-content">
-            <form action="" method="POST">
+            <form action="" method="GET" target="_blank">
             <div class="modal-header">
                 <h5 class="modal-title" id="cetakLabel">Cetak SPM</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -206,7 +206,7 @@ active
 <div class="modal modal-danger fade" id="cetakspd" tabindex="-1" role="dialog" aria-labelledby="Cetak SPD" aria-hidden="true">
     <div class="modal-dialog " role="document">
         <div class="modal-content">
-            <form action="" method="POST">
+            <form action="" method="GET" target="_blank">
             <div class="modal-header">
                 <h5 class="modal-title" id="cetakLabel">Cetak SPD</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">

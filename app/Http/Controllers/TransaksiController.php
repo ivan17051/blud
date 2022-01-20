@@ -48,7 +48,7 @@ class TransaksiController extends Controller
                     "<span class=\"badge bg-primary text-white\">LS</span>";
             })
             ->editColumn('jenis', function ($t) { 
-                return $t->jenis===1?"<p class=\"text-info\"><b>debit</b></p>":"<p class=\"text-warning\"><b>kredit</b></p>";
+                return $t->jenis===1?"<p class=\"text-success\"><b><i class=\"fas fa-arrow-up fa-sm\"></i>&nbspdebit</b></p>":"<p class=\"text-danger\"><b><i class=\"fas fa-arrow-down fa-sm\"></i>&nbspkredit</b></p>";
             })
             ->addColumn('status_raw', function ($t) {
                 return $t->status;
@@ -339,15 +339,15 @@ class TransaksiController extends Controller
         }
     }
         
-    public function sptb($id){
+    public function sptb(Request $request, $id){
         $transaksi = Transaksi::with(['unitkerja','subkegiatan','rekening'])->find($id);
         return view('reportSptb', ['transaksi' => $transaksi]);
     }
-    public function spp($id){
+    public function spp(Request $request, $id){
         $transaksi = Transaksi::with(['unitkerja','subkegiatan','rekening'])->find($id);
         return view('reportSpp', ['transaksi' => $transaksi]);
     }
-    public function spm($id){
+    public function spm(Request $request, $id){
         $transaksi = Transaksi::with(['unitkerja','subkegiatan','rekening'])->find($id);
         return view('reportSpm', ['transaksi' => $transaksi]);
     }
