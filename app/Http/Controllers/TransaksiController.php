@@ -132,7 +132,7 @@ class TransaksiController extends Controller
                 ->addColumn('spm',function($t){
                     if($t->status<1){
                         //tombol membuat spm
-                        return '<button class="btn btn-sm btn-warning " onclick="acc(this)">Buat</button>';
+                        return '<button class="btn btn-sm btn-warning " onclick="buatSpm(this)">Buat</button>';
                     }
                     else{
                         return '<button class="btn btn-sm btn-primary " onclick="cetak(\'spm\',\''.$t->id.'\')">Cetak</button>';

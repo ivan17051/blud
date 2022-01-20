@@ -266,6 +266,7 @@ active
     @method('put')
     <input type="hidden" name="id">
     <input type="hidden" name="oldstatus">
+    <input type="hidden" name="tipepembukuan">
 </form>
 <form hidden action="{{route('transaksi.batal')}}" method="POST" id="batal">
     @csrf
@@ -474,6 +475,47 @@ function acc(self){
         showCancelButton: true,
         confirmButtonText: 'Ya',
         cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $('#acc').submit();
+        }
+    })
+}
+
+function buatSpm(self){
+    var tr = $(self).closest('tr');
+    var data=oTable.fnGetData(tr); 
+    var $acc= $('#acc');
+    $acc.find('input[name=id]').val(data['id']);
+    $acc.find('input[name=oldstatus]').val(data['status_raw']);
+    var strhtml='<select class="swal2-select" id="tipepembukuan">'+
+            '<option value="">Jenis Pembukuan</option>'+
+            '<option value="pindahbuku" >Pindah Buku</option>'+
+            '<option value="tunai" >Tunai</option>'+
+        '</select>'+
+        '<input id="swal-input2" readonly class="swal2-input" value="BLUD" >';
+    Swal.fire({
+        customClass: {
+            confirmButton: 'btn btn-primary mr-2',
+            cancelButton: 'btn btn-dark'
+        },
+        buttonsStyling: false,
+        icon: 'warning',
+        iconColor: '#f4b619',
+        title: 'Yakin ingin membuat?',
+        html: strhtml,
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Batal',
+        preConfirm: () => {
+            var val = document.getElementById('tipepembukuan').value;
+            if(val==='') {
+                alert("pilih tipe pembukuan");
+                return false;
+            }
+            $acc.find('input[name=tipepembukuan]').val(val);
+        },
     }).then((result) => {
         if (result.isConfirmed) {
             $('#acc').submit();
