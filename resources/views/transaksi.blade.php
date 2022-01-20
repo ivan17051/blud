@@ -84,7 +84,7 @@ active
                     <div class="col-md-6">
                         <div class="form-group">
                             <label><b>Rekening</b></label>
-                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idrekening" required >
+                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idrekening"  >
                                 <option value="">--Pilih--</option>
                                 @foreach($rekening as $r)
                                 <option value="{{$r->id}}">{{$r->kode.', '.$r->nama}}</option>
@@ -93,7 +93,7 @@ active
                         </div>
                         <div class="form-group">
                             <label><b>Jumlah</b></label>
-                            <input type="text" id="jumlah" name="jumlah" class="form-control" placeholder="Jumlah" pattern="^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$" required>
+                            <input type="text" id="jumlah" name="jumlah" class="form-control" placeholder="Jumlah" pattern="^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$" >
                         </div>
                     </div>
                 </div>                
@@ -267,6 +267,11 @@ active
     <input type="hidden" name="id">
     <input type="hidden" name="oldstatus">
 </form>
+<form hidden action="{{route('transaksi.batal')}}" method="POST" id="batal">
+    @csrf
+    @method('put')
+    <input type="hidden" name="id">
+</form>
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -300,14 +305,16 @@ active
                             <th class="mw-6rem"></th>
                             <th>Tanggal</th>
                             <th>Subkegiatan</th>
+                            <th>Nomor</th>
                             <!-- <th>Rekening</th> -->
                             <th>Keperluan</th>
                             <!-- <th>Jenis</th> -->
                             <th>Jumlah</th>
-                            @if($user->role==='KEU')
-                            <th>SPD</th>
-                            <th>SOPD</th>
-                            <th>SPD</th>
+                            @if(in_array($user->role,['KEU','PKM']))
+                            <th>SPTB</th>
+                            <th>SPP</th>
+                            <th>SPM</th>
+                            <th>SP2D</th>
                             @endif
                             <th>Aksi</th>
                         </tr>
@@ -318,14 +325,16 @@ active
                             <th class="mw-6rem"></th>
                             <th>Tanggal</th>
                             <th>Subkegiatan</th>
+                            <th>Nomor</th>
                             <!-- <th>Rekening</th> -->
                             <th>Keperluan</th>
                             <!-- <th>Jenis</th> -->
                             <th>Jumlah</th>
-                            @if($user->role==='KEU')
-                            <th>SPD</th>
-                            <th>SOPD</th>
-                            <th>SPD</th>
+                            @if(in_array($user->role,['KEU','PKM']))
+                            <th>SPTB</th>
+                            <th>SPP</th>
+                            <th>SPM</th>
+                            <th>SP2D</th>
                             @endif
                             <th>Aksi</th>
                         </tr>
@@ -472,6 +481,30 @@ function acc(self){
     })
 }
 
+function batal(self){
+    var tr = $(self).closest('tr');
+    var data=oTable.fnGetData(tr); 
+    var $batal= $('#batal');
+    $batal.find('input[name=id]').val(data['id']);
+    Swal.fire({
+        customClass: {
+            confirmButton: 'btn btn-primary mr-2',
+            cancelButton: 'btn btn-dark'
+        },
+        buttonsStyling: false,
+        icon: 'warning',
+        iconColor: '#f4b619',
+        title: 'Yakin ingin membatalkan?',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $('#batal').submit();
+        }
+    })
+}
+
 var oData={};
 async function cetak(type, id){
     var data = oData[id];
@@ -498,7 +531,13 @@ async function cetak(type, id){
 }
 
 function format(data){
-    var str='<tr><td></td><td colspan="'+ @if($user->role==='KEU') '10' @else '7' @endif +'" style="bacground-color:#f9f9f9;">'+
+    //jika ada permintaan revisi, tampilkan pesan
+    var pesanerror='';
+    if(data.pesanpenolakan && data['status_raw']===4){
+        pesanerror='<div class="alert alert-danger alert-solid" role="alert">'+data.pesanpenolakan+'</div>';
+    }
+
+    var str='<tr><td></td><td colspan="'+ @if(in_array($user->role,['KEU','PKM'])) '12' @else '9' @endif +'" style="bacground-color:#f9f9f9;">'+pesanerror+
         `<div class="row">
         <div class="col-md-4" id="riwayat">
             <h6><b>Riwayat</b></h6>
@@ -516,36 +555,16 @@ function format(data){
     
     let max=data.riwayat.length;
     let riwayatstr='<li>Request&nbsp'+data.tipe+
-        '<button class="btn btn-sm btn-primary float-right" onclick="cetak(\'sptb\','+ data['id'] +')">Print</button>'+
         '<p>'+data.tanggalref+'</p>'+
         (max===0?'':'<hr>')+
         '</li>';
     data.riwayat.forEach(function(e,i){
-        let msg='';
-        let tipe='';
-        switch (i) {
-            case 0:
-                msg='PPD disetujui';
-                tipe='spp';
-                break;
-            case 1:
-                msg='SOPD disetujui';
-                tipe='spm';
-                break;
-            case 2:
-                msg='SPD disetujui';
-                tipe='spd';
-                break;
-        }
+        let msg=e[2];
         riwayatstr+='<li>'+msg+
-            '<button class="btn btn-sm btn-primary float-right" onclick="cetak(\''+tipe+'\','+ data['id'] +')">Print</button>'+
             '<p>'+e[0]+'</p>'+
             (max-1===i?'':'<hr>')+
             '</li>';
     });
-    if(data.pesanpenolakan){
-        riwayatstr+='<li><span class="text-danger">Ditolak: </span> '+data.pesanpenolakan+'</li>';
-    }
     $view.find('#riwayat ul').append(riwayatstr);
     return $view;
     return $view.prop("outerHTML");
@@ -579,12 +598,14 @@ $(document).ready(function(){
             { data:'tipe', orderable: false, width: '5.1rem'},
             { data:'tanggalref'},
             { data:'subkegiatan.nama',orderable: false},
+            { data:'nomor'},
             { data:'keterangan', orderable: false, width: '23rem'},
             { data:'jumlah'},
-            @if($user->role==='KEU')
-            { data:'ppd', orderable: false, searchable: false,  width: '3.5rem'},
-            { data:'sopd', orderable: false, searchable: false,  width: '3.5rem'},
-            { data:'spd', orderable: false, searchable: false,  width: '3.5rem'},
+            @if(in_array($user->role,['KEU','PKM']))
+            { data:'sptb', orderable: false, searchable: false },
+            { data:'spp', orderable: false, searchable: false },
+            { data:'spm', orderable: false, searchable: false },
+            { data:'sp2d', orderable: false, searchable: false },
             @endif
             { data:'action', orderable: false, searchable: false, className: "text-right", width: '4rem'},
         ],

@@ -54,6 +54,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/transaksi', 'TransaksiController@deleteTransaksi')->name('transaksi.delete');
     Route::put('/transaksi/acc', 'TransaksiController@accTransaksi')->name('transaksi.acc');
     Route::delete('/transaksi/tolak', 'TransaksiController@tolakTransaksi')->name('transaksi.tolak');
+    Route::put('/transaksi/batal', 'TransaksiController@batalkanPengajuanSP2D')->name('transaksi.batal');
 });
 Route::get('/cobaspp', function () {
     return view('report.spp');

@@ -33,7 +33,9 @@ class TransaksiController extends Controller
     public function data(Request $request){
         $user = Auth::user();
         if(in_array($user->role,['admin','PIH','KEU'])){
-            $data = Transaksi::where('isactive',1)->with(['unitkerja','subkegiatan']);
+            $data = Transaksi::where('isactive',1)
+                ->where('status','>',1)->with(['unitkerja','subkegiatan']);
+                // status lebih dari 1 artinya sudah masuk pengajuan sp2d
         }else{
             $data = Transaksi::where('isactive',1)->with(['unitkerja','subkegiatan'])
                     ->where('idunitkerja',$user->idunitkerja);
@@ -74,71 +76,94 @@ class TransaksiController extends Controller
                         return '';
                 }
             })
-            ->rawColumns(['tipe','jenis','status','action','ppd','sopd','spd']);
+            ->rawColumns(['tipe','jenis','status','action','sptb','spp','spm','sp2d']);
         if(in_array($user->role,['KEU'])){
             $datatable
-                ->addColumn('action', function ($t) use($user){ 
-                    $html='';
-                    if ($t->status===0) {
-                        $html.='<button onclick="tolak(this)" class="btn btn-sm btn-outline-danger border-0" title="tolak"><i class="fas fa-eraser fa-sm"></i></button>&nbsp';
-                    }
-                    $html.='<button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" title="info">&nbsp<i class="fas fa-ellipsis-v fa-sm"></i>&nbsp</button>';
-                    return $html;
+                ->addColumn('action', function ($t) { 
+                    return '<button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" title="info">&nbsp<i class="fas fa-ellipsis-v fa-sm"></i>&nbsp</button>';
                 })
-                ->addColumn('ppd',function($t){
-                    $cnt=count($t->riwayat);
-                    if($t->status===-1){
-                        //status ppd ditolak
-                        return '<button disabled class="btn btn-sm btn-outline-danger border-0" title="ditolak"><i class="fas fa-times fa-sm"></i></button>';
+                ->addColumn('sptb',function($t){
+                    return '<button class="btn btn-sm btn-primary " onclick="cetak(\'sptb\',\''.$t->id.'\')">Cetak</button>';
+                })
+                ->addColumn('spp',function($t){
+                    return '<button class="btn btn-sm btn-primary " onclick="cetak(\'spp\',\''.$t->id.'\')">Cetak</button>';
+        
+                })
+                ->addColumn('spm',function($t){
+                    return '<button class="btn btn-sm btn-primary " onclick="cetak(\'spm\',\''.$t->id.'\')">Cetak</button>';
+                })
+                ->addColumn('sp2d',function($t){
+                    if($t->status===3){
+                        //sp2d telah di-acc
+                        return '<button class="btn btn-sm btn-primary " onclick="cetak(\'sp2d\',\''.$t->id.'\')">Cetak</button>';
                     }
-                    else if($cnt===0){
-                        //aksi menyetujui ppd
-                        return '<button onclick="acc(this)" class="d-inline-block btn btn-sm btn-outline-info border-0" title="acc">Acc&nbsp<i class="fas fa-paper-plane fa-sm"></i></button>';
+                    else if($t->status===2){
+                        //Tombol acc untuk sp2d
+                        return '<a href="javascript:void(0);" class="btn btn-sm btn-danger " onclick="tolak(this)"><i class="fas fa-times fa-sm"></i>Revisi</a>'.
+                            '<a href="javascript:void(0);" class="btn btn-sm btn-warning " onclick="acc(this)"><i class="fas fa-check fa-sm"></i>Terima</a>';
+                    }
+                    else if($t->status===4){  
+                        //4 artinya revisi
+                        return '<button disabled class="btn btn-sm btn-outline-default border-0" title="revisi">revisi</button>';
                     }
                     else{
-                        //status ppd di-ACC
-                        return '<button disabled class="btn btn-sm btn-outline-success border-0" title="acc"><i class="fas fa-check fa-sm"></i></button>';
-                    }
-                })
-                ->addColumn('sopd',function($t){
-                    $cnt=count($t->riwayat);
-                    if($cnt===1){
-                        //aksi menyetujui sopd
-                        return '<button onclick="acc(this)" class="d-inline-block btn btn-sm btn-outline-info border-0" title="acc">Acc&nbsp<i class="fas fa-paper-plane fa-sm"></i></button>';
-                    }
-                    else if($cnt<1){
-                        //status sopd digembok
                         return '<button disabled class="btn btn-sm btn-outline-default border-0" title="terkunci"><i class="fas fa-lock fa-sm"></i></button>';
-                    }
-                    else{
-                        //status sopd di-ACC
-                        return '<button disabled class="btn btn-sm btn-outline-success border-0" title="acc"><i class="fas fa-check fa-sm"></i></button>';
-                    }
-                })
-                ->addColumn('spd',function($t){
-                    $cnt=count($t->riwayat);
-                    if($cnt===2){
-                        //aksi menyetujui spd
-                        return '<button onclick="acc(this)" class="d-inline-block btn btn-sm btn-outline-info border-0" title="acc">Acc&nbsp<i class="fas fa-paper-plane fa-sm"></i></button>';
-                    }
-                    else if($cnt<2){
-                        //status spd digembok
-                        return '<button disabled class="btn btn-sm btn-outline-default border-0" title="terkunci"><i class="fas fa-lock fa-sm"></i></button>';
-                    }
-                    else{
-                        //status spd di-ACC
-                        return '<button disabled class="btn btn-sm btn-outline-success border-0" title="acc"><i class="fas fa-check fa-sm"></i></button>';
                     }
                 });
-        }else{
+        }
+        else if(in_array($user->role,['PKM'])){
             $datatable
                 ->addColumn('action', function ($t) use($user){ 
                     $html='';
-                    if ($t->status===0 AND $user->role==='PKM') {
+                    if ($t->status<3) {
                         $html.='<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" title="delete"><i class="fas fa-trash fa-sm"></i></button>&nbsp';
                     }
                     $html.='<button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" title="info">&nbsp<i class="fas fa-ellipsis-v fa-sm"></i>&nbsp</button>';
                     return $html;
+                })
+                ->addColumn('sptb',function($t){
+                    return '<button class="btn btn-sm btn-primary " onclick="cetak(\'sptb\',\''.$t->id.'\')">Cetak</button>';
+        
+                })
+                ->addColumn('spp',function($t){
+                    return '<button class="btn btn-sm btn-primary " onclick="cetak(\'spp\',\''.$t->id.'\')">Cetak</button>';
+        
+                })
+                ->addColumn('spm',function($t){
+                    if($t->status<1){
+                        //tombol membuat spm
+                        return '<button class="btn btn-sm btn-warning " onclick="acc(this)">Buat</button>';
+                    }
+                    else{
+                        return '<button class="btn btn-sm btn-primary " onclick="cetak(\'spm\',\''.$t->id.'\')">Cetak</button>';
+                    }
+                })
+                ->addColumn('sp2d',function($t){
+                    if($t->status===3){
+                        //sp2d telah di-acc
+                        return '<button class="btn btn-sm btn-primary " onclick="cetak(\'sp2d\',\''.$t->id.'\')">Cetak</button>';
+                    }
+                    else if($t->status===2){
+                        //menunggu di-acc
+                        return '<a href="javascript:void(0);" class="btn btn-sm btn-warning " onclick="batal(this)"><i class="fas fa-ban fa-sm"></i>Batal</a>';
+                    }
+                    else if($t->status===1 or $t->status===4){  //4 artinya revisi
+                        //boleh mengajukan
+                        $html='';
+                        if($t->status===4){  
+                            $html.='<button disabled class="btn btn-sm btn-outline-default border-0" title="revisi">revisi</button>';
+                        }
+                        return $html.'<a href="javascript:void(0);" class="btn btn-sm btn-warning " onclick="acc(this)"><i class="fas fa-paper-plane fa-sm"></i>Ajukan</a>';
+                    }
+                    else{
+                        return '<button disabled class="btn btn-sm btn-outline-default border-0" title="terkunci"><i class="fas fa-lock fa-sm"></i></button>';
+                    }
+                });
+        }
+        else{
+            $datatable
+                ->addColumn('action', function ($t) { 
+                    return '<button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" title="info">&nbsp<i class="fas fa-ellipsis-v fa-sm"></i>&nbsp</button>';
                 });
         }
         return $datatable->make(true);  
@@ -150,30 +175,34 @@ class TransaksiController extends Controller
         $input = $request->all();
         $validator = Validator::make($input, [
             'id' => 'nullable|exists:transaksi,id',
-            'tipe' => 'required|string|in:UP,LS,TU',
+            'tipe' => 'required_without:id|string|in:UP,LS,TU',
             // 'jenis' => 'required|in:0,1',
-            'tanggalref' => 'required|string',
-            'idgrup' => 'integer',
-            'rekening' => 'required|array',
-            'jumlah' => 'required|array',
-            'idkepada' => 'required|integer',
-            'flagkepada' => 'required|integer',
+            'tanggalref' => 'required_without:id|string',
+            'idgrup' => 'required_without:id|integer',
+            'rekening' => 'nullable|array',
+            'jumlah' => 'nullable|array',
+            'idrekanan' => 'required_without:id|integer',
+            'dibayarkan' => 'required_without:id|integer',
             // 'jumlah' => array('required','regex:/^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$/'), // allow float
-            'keterangan' => 'required|string|max:255',
+            'keterangan' => 'required_without:id|string|max:255',
         ]);
         if ($validator->fails()) return back()->with('error','Gagal menyimpan');
         
         $input = $validator->valid();
         $input['idunitkerja']=$user->idunitkerja;
+        $input['idkepada']=$input['idrekanan'];
+        $input['flagkepada']=$input['dibayarkan'];
 
         //membuat array rekening untuk db dng urutan [id, kode, nama rekening, jumlah]
         $newRekeningArray=[];
         $newJumlah=0;
-        foreach ($input['rekening'] as $i=>$idrekening) {
-            $rekening=Rekening::where('id',$idrekening)->select('id','kode','nama')->first()->toArray();
-            $newJumlah+=floatval($input['jumlah'][$i]);
-            array_push($rekening,floatval($input['jumlah'][$i]));
-            array_push($newRekeningArray,$rekening);
+        if(isset($input['rekening']) AND isset($input['jumlah'])){
+            foreach ($input['rekening'] as $i=>$idrekening) {
+                $rekening=Rekening::where('id',$idrekening)->select('id','kode','nama')->first()->toArray();
+                $newJumlah+=floatval($input['jumlah'][$i]);
+                array_push($rekening,floatval($input['jumlah'][$i]));
+                array_push($newRekeningArray,$rekening);
+            }
         }
         $input['rekening']=$newRekeningArray;
         $input['jumlah']=$newJumlah;
@@ -181,10 +210,11 @@ class TransaksiController extends Controller
         //jika edit transaksi old [NOT USED YET]
         if(isset($input['id'])){
             $t=Transaksi::find($input['id']);
+            if($t->status===3){
+                return back()->with('error','SP2D sudah disetujui.');
+            }
             $t->fill($input);
             $t->fill([
-                'riwayat'=>array(),
-                'status'=>1,
                 'idm'=>$user->id,
             ]);
         }
@@ -204,8 +234,9 @@ class TransaksiController extends Controller
             }
 
             //cari transaksi teraktual di tahun ini untuk ambil nomor
-            $year=Carbon::parse($input['tanggalref'])->year;
+            $year=Carbon::createFromFormat('d/m/Y', $input['tanggalref'])->year;
             $transaksi_aktual=Transaksi::select('id','nomor')
+                ->where('isactive',1)
                 ->whereYear('tanggalref',$year)
                 ->orderBy('id', 'DESC')
                 ->where('idunitkerja',$input['idunitkerja'])->first();
@@ -220,7 +251,6 @@ class TransaksiController extends Controller
             $t=new Transaksi();
             $t->fill($input);
             $t->fill([
-                'saldo'=>999999,
                 'riwayat'=>array(),
                 'status'=>0,
                 'tanggal'=>Carbon::now()->format('Y-m-d'),
@@ -240,9 +270,14 @@ class TransaksiController extends Controller
     }
 
     public function deleteTransaksi(Request $request){
-        $userId = Auth::id();
+        $user = Auth::user();
+        $userId = $user->id;
         try {
             $model=Transaksi::find($request->input('id'));
+            if($user->idunitkerja !== $model->idunitkerja
+                OR $model->status===3){
+                throw new \Exception("restricted");
+            }
             $model->idm=$userId;
             $model->isactive=0;
             $model->save();
@@ -252,6 +287,9 @@ class TransaksiController extends Controller
         }
     }
 
+    /**
+     * dimaksudkan untuk permintaan revisi transaksi
+     */
     public function tolakTransaksi(Request $request){
         $userId = Auth::id();
         try {
@@ -260,7 +298,7 @@ class TransaksiController extends Controller
                 'pesanpenolakan'=>$request->input('pesanpenolakan'),
             ]);
             $model->idm=$userId;
-            $model->status=-1;
+            $model->status=4;
             $model->save();
             return back()->with('success','Berhasil menolak');
         } catch (\Throwable $th) {
@@ -268,8 +306,30 @@ class TransaksiController extends Controller
         }
     }
 
+    /**
+     * dimaksudkan untuk permintaan revisi transaksi
+     */
+    public function batalkanPengajuanSP2D(Request $request){
+        $user = Auth::user();
+        $userId = $user->id;
+        try {
+            $model=Transaksi::find($request->input('id'));
+            if($user->idunitkerja !== $model->idunitkerja
+                OR $model->status!==2){
+                throw new \Exception("");
+            }
+            $model->idm=$userId;
+            $model->status=1;
+            $model->save();
+            return back()->with('success','Berhasil membatalkan');
+        } catch (\Throwable $th) {
+            return back()->with('error','Gagal membatalkan');
+        }
+    }
+
     public function accTransaksi(Request $request){
-        $userId = Auth::id();
+        $user=Auth::user();
+        $userId = $user->id;
         try {
             DB::beginTransaction();
             $tgl=Carbon::now()->format('Y-m-d');
@@ -284,22 +344,40 @@ class TransaksiController extends Controller
             $model->idm=$userId;
             switch ($model->status) {
                 case 0:
-                    //acc PPD
+                    //buat spm
                     $model->status=1;
-                    array_push($riwayat,[$tgl,$userId]);
+
+                    if(count($model->rekening)===0){  
+                        throw new \Exception('Belum ada rekening.');
+                    }
+
+                    array_push($riwayat,[$tgl,$userId],"Membuat SPM");
                     $model->riwayat=$riwayat;
                     break;
                 case 1:
-                    //acc SOPD
+                    //pengajuan sp2d
                     $model->status=2;
-                    array_push($riwayat,[$tgl,$userId]);
+                    array_push($riwayat,[$tgl,$userId],"Pengajuan SP2D");
                     $model->riwayat=$riwayat;
                     break;
                 case 2:
-                    //acc SPD
+                    //acc sp2d
                     $model->status=3;
-                    array_push($riwayat,[$tgl,$userId]);
+                    array_push($riwayat,[$tgl,$userId],"SP2D disetujui");
                     $model->riwayat=$riwayat;
+                    break;
+                case 4:
+                    if($user->role==='PKM'){
+                        //setelah merevisi, mengajukan sp2d kembali
+                        $model->status=2;
+                        array_push($riwayat,[$tgl,$userId],"Pengajuan SP2D (revisi)");
+                        $model->riwayat=$riwayat;
+                    }elseif($user->role==='KEU'){
+                        //acc sp2d tapi dari hasil revisi
+                        $model->status=3;
+                        array_push($riwayat,[$tgl,$userId],"Permintaan Revisi");
+                        $model->riwayat=$riwayat;
+                    }
                     break;
             }
 
@@ -307,8 +385,8 @@ class TransaksiController extends Controller
                 throw new \Exception('Tidak ada perubahan');
             }
 
-            //Persetujjuan pertama kali akan melakukan pengurangan saldo
-            if($model->status === 1){
+            //setelah ada persetujuan sp2d dari keuangan
+            if($model->status === 3){
                 $tgl=Carbon::createFromDate($model->tanggalref);
                 $tgl->day = 1;
                 $saldos=Saldo::where('idgrup',$model->idgrup)
