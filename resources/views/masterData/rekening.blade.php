@@ -109,7 +109,7 @@ active
                         <tr>
                             <th hidden>ID</th>
                             <th>Kode Rekening</th>
-                            <th>Nama Rekening</th>
+                            <th width="70%">Nama Rekening</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>

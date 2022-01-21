@@ -26,7 +26,7 @@ class TransaksiController extends Controller
         $subkegiatan=SubKegiatan::where('isactive', 1)->select('idgrup','idkegiatan','kode','nama')->get();
         $rekening=Rekening::where('isactive', 1)->select('id','kode','nama')->get();
         $rekanan=Rekanan::where('isactive', 1)->select('id','nama')->get();
-        $pejabat=Pejabat::where('isactive', 1)->select('id','idunitkerja','nama','nip')->where('idunitkerja',$user->idunitkerja)->get();
+        $pejabat=Pejabat::where('isactive', 1)->select('id','idunitkerja','nama','nip','jabatan','rekening')->where('idunitkerja',$user->idunitkerja)->get();
         return view('transaksi',['subkegiatan'=>$subkegiatan, 'rekening'=>$rekening, 'rekanan'=>$rekanan, 'user'=>$user, 'pejabat'=>$pejabat]);
     }
 
@@ -454,16 +454,23 @@ class TransaksiController extends Controller
     }
         
     public function sptb(Request $request, $id){
-        $transaksi = Transaksi::with(['unitkerja','subkegiatan','rekening'])->find($id);
-        return view('reportSptb', ['transaksi' => $transaksi]);
+        $otorisator = Pejabat::select('id', 'nama', 'nip', 'jabatan')->findOrFail($request->idotorisator);
+        $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
+        return view('report.sptb', ['transaksi' => $transaksi, 'otorisator' => $otorisator]);
     }
     public function spp(Request $request, $id){
-        $otorisator = Pejabat::findOrFail($request->idpejabat);
-        $transaksi = Transaksi::with(['unitkerja','subkegiatan','rekening'])->find($id);
-        return view('report.spp', ['transaksi' => $transaksi, 'otorisator' => $otorisator]);
+        $otorisator = Pejabat::select('id', 'nama', 'nip', 'jabatan')->findOrFail($request->idotorisator);
+        $bendahara = Pejabat::findOrFail($request->idbendahara);
+        $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
+        $saldo = Saldo::where('idgrup',$transaksi->idgrup)
+            ->where('idunitkerja',$transaksi->idunitkerja)
+            ->orderBy('tanggal', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->first();
+        return view('report.spp', ['transaksi' => $transaksi, 'otorisator' => $otorisator, 'bendahara' => $bendahara, 'saldo' => $saldo]);
     }
     public function spm(Request $request, $id){
-        $transaksi = Transaksi::with(['unitkerja','subkegiatan','rekening'])->find($id);
-        return view('reportSpm', ['transaksi' => $transaksi]);
+        $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
+        return view('report.spm', ['transaksi' => $transaksi]);
     }
 }
