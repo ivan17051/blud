@@ -107,7 +107,7 @@ active
                                 <select class="selectpicker" data-style-base="form-control" data-style="" name="tipe" required>
                                     <option value="">--Pilih--</option>
                                     @foreach($rekening as $unit)
-                                    <option value="{{$unit->id}}_{{$unit->nama}}">{{$unit->nama}}</option>
+                                    <option value="{{$unit->id}}_{{$unit->kode}} -{{$unit->nama}}">{{$unit->kode}} - {{$unit->nama}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -608,6 +608,16 @@ async function cetak(type, id){
 
 function ubahRek(idtransaksi){
     $('#daftarrekening').find('input[name=id]').val(idtransaksi);
+    var str=''
+    for(var rek of oData[idtransaksi]['rekening']){
+        console.log(rek);
+        str+=`<tr>
+            <td>${rek[1]} - ${rek[2]}<input type="hidden" name="rekening[]" value="${rek[0]}" required></td>
+            <td>${rek[3]}<input type="hidden" name="jumlah[]" value="${rek[3]}" required></td>
+            <td><button type="button" onclick="$(this).parent().parent().remove()" class="btn btn-sm btn-outline-danger border-0" title="delete"><i class="fas fa-trash fa-sm"></i></button></td>
+        </tr>`;
+    }
+    $('#rekeningtable tbody').html(str);
     $('#ubahRek').modal('show');
 }
 
