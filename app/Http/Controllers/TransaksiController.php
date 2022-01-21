@@ -236,6 +236,14 @@ class TransaksiController extends Controller
                     ->orderBy('tanggal', 'DESC')
                     ->orderBy('id', 'DESC')
                     ->first();
+
+                if(isset($saldo)===FALSE){  //belum ada saldo sama sekali
+                    return back()->with('error','Sub-Kegiatan belum memiliki saldo');
+                }
+                elseif($saldo->saldo-floatval($input['jumlah']) < 0){   //cek kecukupan saldo
+                    return back()->with('error','Saldo tidak mencukupi');
+                }
+
                 $saldotemporary=$saldo->saldo-floatval($input['jumlah']);
                 $t->saldo=$saldotemporary;
             }
@@ -265,6 +273,12 @@ class TransaksiController extends Controller
             elseif($saldo->saldo-floatval($input['jumlah']) < 0){   //cek kecukupan saldo
                 return back()->with('error','Saldo tidak mencukupi');
             }
+
+            $input['jumlah']=$newJumlah;
+            $input['rekening']=$newRekeningArray;
+
+            //update info saldo pada row transaksi
+            $saldotemporary=$saldo->saldo-floatval($input['jumlah']);
 
             //cari transaksi teraktual di tahun ini untuk ambil nomor
             $year=Carbon::createFromFormat('d/m/Y', $input['tanggalref'])->year;
