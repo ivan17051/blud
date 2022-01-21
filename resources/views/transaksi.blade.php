@@ -92,39 +92,62 @@ $role = Auth::user()->id;
     </div>
 </div>
 
-<!-- Modal Tambah Rekening -->
-<div class="modal modal-danger fade" id="tambahRek" tabindex="-1" role="dialog" aria-labelledby="Tambah Rekening" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+<!-- Modal Ubah Rekening -->
+<div class="modal modal-danger fade" id="ubahRek" tabindex="-1" role="dialog" aria-labelledby="Tambah Rekening" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="tambahLabel">Tambah Rekening</h5>
+                <h5 class="modal-title" id="ubahLabel">Ubah Rekening</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{route('transaksi.update')}}" method="POST">
-            @csrf
-            @method('PUT')
             <div class="modal-body">
-                <div class="form-group">
-                    <label><b>SubRekening</b></label>
-                    <select class="selectpicker" data-style-base="form-control" data-style="" name="tipe" required >
-                        <option value="">--Pilih--</option>
-                        @foreach($rekening as $unit)
-                        <option value="{{$unit->id}}">{{$unit->nama}}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group">
-                        <label><b>Jumlah</b></label>
-                        <input type="text" id="jumlah" name="jumlah" class="form-control" placeholder="Jumlah" pattern="^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$" >
-                </div>
+                <form action="" method="GET" id="addrekening">
+                    <div class="row">    
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label><b>SubRekening</b></label>
+                                <select class="selectpicker" data-style-base="form-control" data-style="" name="tipe" required>
+                                    <option value="">--Pilih--</option>
+                                    @foreach($rekening as $unit)
+                                    <option value="{{$unit->id}}_{{$unit->nama}}">{{$unit->nama}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label><b>Jumlah</b></label>
+                                <input type="text" id="jumlah" name="jumlah" class="form-control" placeholder="Jumlah" pattern="^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$" required>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <button type="submit" class="btn btn-primary float-right">Tambah</button>
+                        </div>
+                    </div>
+                </form>
+                <form action="{{route('transaksi.update')}}" method="POST" id="daftarrekening">
+                    <input type="hidden" name="id">
+                    @csrf
+                    @method('PUT')
+                    <table class="table" id="rekeningtable">
+                        <thead>
+                            <tr>
+                                <th>Rekening</th>
+                                <th>Jumlah</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                <button type="submit" class="btn btn-primary">Simpan</button>
+                <button type="button" onclick="$('#daftarrekening').submit()" class="btn btn-primary">Simpan</button>
             </div>
-            </form>
         </div>
     </div>
 </div>
@@ -593,26 +616,50 @@ async function cetak(type, id){
     }
 }
 
+function ubahRek(idtransaksi){
+    $('#daftarrekening').find('input[name=id]').val(idtransaksi);
+    var str=''
+    for(var rek of oData[idtransaksi]['rekening']){
+        console.log(rek);
+        str+=`<tr>
+            <td>${rek[1]} - ${rek[2]}<input type="hidden" name="rekening[]" value="${rek[0]}" required></td>
+            <td>${rek[3]}<input type="hidden" name="jumlah[]" value="${rek[3]}" required></td>
+            <td><button type="button" onclick="$(this).parent().parent().remove()" class="btn btn-sm btn-outline-danger border-0" title="delete"><i class="fas fa-trash fa-sm"></i></button></td>
+        </tr>`;
+    }
+    $('#rekeningtable tbody').html(str);
+    $('#ubahRek').modal('show');
+}
+
 function format(data){
     //jika ada permintaan revisi, tampilkan pesan
     var pesanerror='';
     if(data.pesanpenolakan && data['status_raw']==="4"){
         pesanerror='<div class="alert alert-danger alert-solid" role="alert">'+data.pesanpenolakan+'</div>';
     }
+    var rekeningstr = data.rekening.reduce(function(e,i){
+        return e+='<tr><td> '+i[1]+' - '+i[2]+'</td><td> Rp. '+i[3]+' </td></tr>';
+    },'');
+
+    if(rekeningstr===''){
+        rekeningstr='<tr><td class="text-center" colspan=2>Kosong</td><tr>'
+    }
+
+    //pastikan tombol ubah tidak ada untuk transaksi yg sedang diajukan sp2d nya atau sudah disetujui
+    var tombolubah='<button class="btn btn-sm btn-primary float-right" onclick="ubahRek('+data.id+')" title="Ubah Rekening">Ubah</button>';
+    if(data['status_raw']==='2' || data['status_raw']==='3'){
+        tombolubah='';
+    }
 
     var str='<tr><td></td><td colspan="'+ @if(in_array($user->role,['KEU','PKM'])) '12' @else '9' @endif +'" style="bacground-color:#f9f9f9;">'+pesanerror+
         `<table class="table">
             <thead>
-                <tr><b><td width="70%">Rekening</td><td>Jumlah</td></b></tr>
+                <tr><b><td width="70%"><b>Rekening</b></td><td><b>Jumlah</b></td></b></tr>
             </thead>
-            <tbody>`+
-            @foreach($rekening as $unit)
-                `<tr><td> {{$unit->kode}} - {{$unit->nama}}</td><td> Rp. 120.000,00 </td></tr>`+
-            @endforeach
+            <tbody>`+rekeningstr+
             `<tbody>  
-            </table>
-            <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#tambahRek" data-placement="top" title="Tambah Rekening">Tambah</button>
-    </td></tr>`;
+            </table>`+tombolubah+'</td></tr>';
+            
     var $view=$(str);
 
     //assign data ke object oData
@@ -689,6 +736,18 @@ $(document).ready(function(){
             ]
         },
     ]);
+
+    $('#addrekening').submit(function(e){
+        e.preventDefault();
+        var inputan= my.getFormData($(e.target));
+        var rekening=inputan['tipe'].split('_');
+        var str=`<tr>
+                <td>${rekening[1]}<input type="hidden" name="rekening[]" value="${rekening[0]}" required></td>
+                <td>${inputan['jumlah']}<input type="hidden" name="jumlah[]" value="${inputan['jumlah']}" required></td>
+                <td><button type="button" onclick="$(this).parent().parent().remove()" class="btn btn-sm btn-outline-danger border-0" title="delete"><i class="fas fa-trash fa-sm"></i></button></td>
+            </tr>`;
+        $('#rekeningtable tbody').append(str);
+    })
 });
 </script>
 @endsection
