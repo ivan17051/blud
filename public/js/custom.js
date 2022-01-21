@@ -75,5 +75,35 @@ const my={
                 processData: false, // NEEDED, DON'T OMIT THIS
             });
         },
+    },
+    'getFormData':function($form){
+        var unindexed_array = $form.serializeArray();
+        var indexed_array = {};
+
+        $.map(unindexed_array, function(n, i){
+            var key =n['name'];
+            var is_arr=false;
+            if(/(\[\d+\])$/.test(key)){
+                key = key.replace( /(\[\d+\])$/, "");
+                is_arr=true;
+            }else if(/(\[\])$/.test(key)){
+                key = key.replace( /(\[\])$/, "");
+                is_arr=true;
+            }
+
+            if(is_arr && !(key in indexed_array)) indexed_array[key] = [];            
+            if(typeof n['value'] === 'string') n['value']=n['value'].trim()
+
+            if(is_arr){
+                indexed_array[key].push( n['value']);
+            }else{
+                if(n['value'].length || !(key in indexed_array)){
+                    indexed_array[key] = n['value'];
+                }
+            }
+            
+        });
+
+        return indexed_array;
     }
 }
