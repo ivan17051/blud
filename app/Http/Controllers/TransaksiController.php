@@ -45,12 +45,17 @@ class TransaksiController extends Controller
         $datatable->editColumn('tanggalref', function ($t) { return Carbon::parse($t->tanggal)->translatedFormat('d M Y');})
             ->addIndexColumn()
             ->editColumn('tipe', function ($t) { 
-                return 'tu';
-                // $t->tipe==='TU'?
-                //     "<span class=\"badge bg-success text-white\">TU</span>":
-                //     $t->tipe==='LS'?
-                //     "<span class=\"badge bg-primary text-white\">LS</span>":
-                //     "<span class=\"badge bg-info text-white\">UP</span>";
+                switch ($t->tipe) {
+                    case 'TU':
+                        return "<span class=\"badge bg-success text-white\">TU</span>";
+                        break;
+                    case 'LS':
+                        return "<span class=\"badge bg-primary text-white\">LS</span>";
+                        break;
+                    default:
+                        return "<span class=\"badge bg-info text-white\">UP</span>";
+                        break;
+                }
             })
             ->editColumn('jenis', function ($t) { 
                 return $t->jenis===1?"<p class=\"text-success\"><b><i class=\"fas fa-arrow-up fa-sm\"></i>&nbspdebit</b></p>":"<p class=\"text-danger\"><b><i class=\"fas fa-arrow-down fa-sm\"></i>&nbspkredit</b></p>";
