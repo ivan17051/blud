@@ -183,6 +183,7 @@ class TransaksiController extends Controller
             'jumlah' => 'nullable|array',
             'idrekanan' => 'required_without:id|integer',
             'dibayarkan' => 'required_without:id|integer',
+            // 'tipepembukuan' => 'nullable|string|in:pindahbuku,tunai',
             // 'jumlah' => array('required','regex:/^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$/'), // allow float
             'keterangan' => 'required_without:id|string|max:255',
         ]);
@@ -353,6 +354,7 @@ class TransaksiController extends Controller
 
                     array_push($riwayat,[$tgl,$userId],"Membuat SPM");
                     $model->riwayat=$riwayat;
+                    $model->tipepembukuan=$request->input('tipepembukuan');
                     break;
                 case 1:
                     //pengajuan sp2d

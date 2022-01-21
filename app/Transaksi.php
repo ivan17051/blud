@@ -31,6 +31,7 @@ class Transaksi extends Model
         "jenis",
         "jumlah",
         "saldo",
+        "tipepembukuan",
         "keterangan",
         "tanggal",
         "tanggalref",
