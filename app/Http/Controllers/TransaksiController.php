@@ -45,11 +45,12 @@ class TransaksiController extends Controller
         $datatable->editColumn('tanggalref', function ($t) { return Carbon::parse($t->tanggal)->translatedFormat('d M Y');})
             ->addIndexColumn()
             ->editColumn('tipe', function ($t) { 
-                return $t->tipe==='TU'?
-                    "<span class=\"badge bg-success text-white\">TU</span>":
-                    $t->tipe==='LS'?
-                    "<span class=\"badge bg-primary text-white\">LS</span>":
-                    "<span class=\"badge bg-info text-white\">UP</span>";
+                return 'tu';
+                // $t->tipe==='TU'?
+                //     "<span class=\"badge bg-success text-white\">TU</span>":
+                //     $t->tipe==='LS'?
+                //     "<span class=\"badge bg-primary text-white\">LS</span>":
+                //     "<span class=\"badge bg-info text-white\">UP</span>";
             })
             ->editColumn('jenis', function ($t) { 
                 return $t->jenis===1?"<p class=\"text-success\"><b><i class=\"fas fa-arrow-up fa-sm\"></i>&nbspdebit</b></p>":"<p class=\"text-danger\"><b><i class=\"fas fa-arrow-down fa-sm\"></i>&nbspkredit</b></p>";
@@ -495,8 +496,15 @@ class TransaksiController extends Controller
             ->first();
         return view('report.spp', ['transaksi' => $transaksi, 'otorisator' => $otorisator, 'bendahara' => $bendahara, 'saldo' => $saldo]);
     }
-    public function spm(Request $request, $id){
+    public function sppup(Request $request, $id){
+        $otorisator = Pejabat::select('id', 'nama', 'nip', 'jabatan')->findOrFail($request->idotorisator);
+        $bendahara = Pejabat::findOrFail($request->idbendahara);
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
-        return view('report.spm', ['transaksi' => $transaksi]);
+        return view('report.sppup', ['transaksi' => $transaksi, 'otorisator' => $otorisator, 'bendahara' => $bendahara]);
+    }
+    public function spm(Request $request, $id){
+        $bendahara = Pejabat::findOrFail($request->idbendahara);
+        $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
+        return view('report.spm', ['transaksi' => $transaksi, 'bendahara' => $bendahara]);
     }
 }

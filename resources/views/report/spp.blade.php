@@ -41,9 +41,9 @@
                             <tr style="margin-bottom:30px;">
                                 @php
                                 $bulan = ['','I','II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
-                                $mytime = Carbon\Carbon::make(2022);
+                                $mytime = Carbon\Carbon::make($transaksi->tanggal);
                                 @endphp
-                                <td class="fontCenter paddingfont" style="font-size:15px">NOMOR :{{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/UP/F/I/2022</td>
+                                <td class="fontCenter paddingfont" style="font-size:15px">NOMOR :{{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/UP/F/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -68,9 +68,7 @@
                                                 <td class="paddingfont">1. Nama SKPD</td>
                                                 <td class="paddingfont">:</td>
                                                 <td class="paddingfont"> 
-                                                    @if(isset($transaksi->unitkerja->kode))1 02 00 0100/{{$transaksi->unitkerja->kode}} - {{$transaksi->unitkerja->nama}} 
-                                                    @else ha
-                                                    @endif
+                                                    1 02 00 0100/{{$transaksi->unitkerja->kode}} - {{$transaksi->unitkerja->nama}} 
                                                 </td>
                                             </tr>
                                             <tr>
@@ -145,7 +143,7 @@
                                 <td class="paddingfont">&nbsp;</td>
                                 <td class="paddingfont" width="30%">Tanggal: 03 Januari 2022</td>
                                 <td class="paddingfont" width="30%">Nomor: 00009</td>
-                                <td class="paddingfont" width="35%">Rp. 550.000.000,00</td>
+                                <td class="paddingfont" width="35%">Rp. {{number_format($saldo->saldo,2,',','.')}}</td>
                             </tr>
                             <tr>
                                 <td class="paddingfont fontBold">II</td>
@@ -181,7 +179,7 @@
                                             <tr>
                                                 <td class="fontCenter fontBold">&nbsp;</td>
                                                 <td>&nbsp;</td>
-                                                <td class="fontCenter">Surabaya, 12 Januari 2022</td>
+                                                <td class="fontCenter">Surabaya, {{$mytime->translatedFormat('d F Y')}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="fontCenter fontBold">&nbsp;</td>

@@ -4,6 +4,10 @@
 active
 @endsection
 
+@php
+$role = Auth::user()->id;
+@endphp
+
 @section('content')
 <!-- Modal Tambah Transaksi -->
 <div class="modal modal-danger fade" id="tambah" tabindex="-1" role="dialog" aria-labelledby="Tambah Transaksi" aria-hidden="true">
@@ -182,14 +186,17 @@ active
                     <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idbendahara" required >
                         <option value="">--Pilih--</option>
                         @foreach($pejabat as $p)
+                        @if($p->jabatan == 'Bendahara Pengeluaran')
                         <option value="{{$p->id}}">{{$p->nama.', '.$p->nip}}</option>
+                        @endif
                         @endforeach
                     </select>
                 </div>  
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                <button type="submit" class="btn btn-primary">Print</button>
+                <button type="submit" class="btn btn-primary">SPP</button>
+                <button type="submit" id="cetaksppup" class="btn btn-info" formaction="">Rincian</button>
             </div>
             </form>
         </div>
@@ -209,11 +216,13 @@ active
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label><b>Pejabat</b></label>
-                    <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idpejabat" required >
+                    <label><b>Bendahara</b></label>
+                    <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idbendahara" required >
                         <option value="">--Pilih--</option>
                         @foreach($pejabat as $p)
+                        @if($p->jabatan=='Bendahara Pengeluaran')
                         <option value="{{$p->id}}">{{$p->nama.', '.$p->nip}}</option>
+                        @endif
                         @endforeach
                     </select>
                 </div>  
@@ -570,6 +579,7 @@ async function cetak(type, id){
             break;
         case 'spp':
             $('#cetakspp form').attr('action',"{{url('spp')}}/"+id);
+            $('#cetaksppup').attr('formaction',"{{url('sppup')}}/"+id);
             $('#cetakspp').modal('show');
             break;
         case 'spm':

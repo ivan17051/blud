@@ -50,12 +50,12 @@
                                     <table width="100%" cellspacing="0" cellpadding="0" border="1">
                                         <tbody>
                                             <tr>
-                                              <td class="paddingfont fontBold" style="font-size:13px;" width="50%">Tahun Anggaran : 2022</td>
                                                 @php
                                                 $bulan = ['','I','II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
-                                                $mytime = Carbon\Carbon::make(2022);
+                                                $mytime = Carbon\Carbon::make($transaksi->tanggal);
                                                 @endphp
-                                              <td class="paddingfont fontBold" style="font-size:13px" width="50%">No. SPM :00007/1 02 0100/UP/F/I/2022</td>
+                                              <td class="paddingfont fontBold" style="font-size:13px;" width="50%">Tahun Anggaran : {{$mytime->format('Y')}}</td>
+                                              <td class="paddingfont fontBold" style="font-size:13px" width="50%">No. SPM :{{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/UP/F/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
                                             </tr>
                                             <tr>
                                               <td colspan=2>
@@ -75,17 +75,17 @@
                                                     <tr>
                                                         <td class="paddingfont">SKPD</td>
                                                         <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> 1 02 0100 - Dinas Kesehatan </td>
+                                                        <td class="paddingfont"> 1 02 0100/{{$transaksi->unitkerja->kode}} - {{$transaksi->unitkerja->nama}} </td>
                                                     </tr>
                                                     <tr>
                                                         <td class="paddingfont">Bendahara/Pihak Lain</td>
                                                         <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> Eny Asmorowati</td>
+                                                        <td class="paddingfont"> {{$bendahara->nama}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="paddingfont">No. Rekening Bank</td>
                                                         <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> 0011-135455</td>
+                                                        <td class="paddingfont"> {{$bendahara->rekening}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="paddingfont">Nama Bank</td>
@@ -133,18 +133,18 @@
                                 <td class="paddingfont fontBold" style="font-size:14px;" colspan=3>Pembebasan pada Kegiatan :</td>
                             </tr>
                             <tr>
-                                <td class="paddingfont fontBold" style="font-size:14px;" width="33%">Kode Kegiatan</td>
-                                <td class="paddingfont fontBold" style="font-size:14px;" width="32%">Uraian</td>
+                                <td class="paddingfont fontBold" style="font-size:14px;" width="25%">Kode Kegiatan</td>
+                                <td class="paddingfont fontBold" style="font-size:14px;" width="40%">Uraian</td>
                                 <td class="paddingfont fontBold" style="font-size:14px;" width="35%">Nilai</td>
                             </tr>
                             <tr>
-                                <td class="paddingfont">Tanggal: 03 Januari 2022</td>
-                                <td class="paddingfont">Nomor: 00009</td>
-                                <td class="paddingfont">Rp. 550.000.000,00</td>
+                                <td class="paddingfont">1.02.00.0.10.00/-{{$transaksi->subkegiatan->kode}}</td>
+                                <td class="paddingfont">{{$transaksi->subkegiatan->nama}}</td>
+                                <td class="paddingfont">Rp. {{number_format($transaksi->jumlah,2,',','.')}}</td>
                             </tr>
                             <tr>
                                 <td class="paddingfont fontCenter" colspan=2>Jumlah</td>
-                                <td class="paddingfont">Rp. 550.000.000,00</td>
+                                <td class="paddingfont">Rp. {{number_format($transaksi->jumlah,2,',','.')}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -199,7 +199,7 @@
                         </tr>
                         <tr>
                           <td class="paddingfont">Jumlah yang diminta</td>
-                          <td class="paddingfont">Rp. 550.000.000,00</td>
+                          <td class="paddingfont">Rp. {{number_format($transaksi->jumlah,2,',','.')}}</td>
                         </tr>
                         <tr>
                             <td class="paddingfont">Jumlah potongan</td>
@@ -207,7 +207,7 @@
                         </tr>
                         <tr>
                             <td class="paddingfont">Jumlah yang dibayarkan</td>
-                            <td class="paddingfont">Rp. 550.000.000,00</td>
+                            <td class="paddingfont">Rp. {{number_format($transaksi->jumlah,2,',','.')}}</td>
                         </tr>
                         <tr>
                             <td class="paddingfont" colspan=2>Uang sejumlah : <i>({{ucwords(Terbilang::make(550000000))}})</i></td>
@@ -229,10 +229,10 @@
                                           <td class="paddingfont fontBold">Nomor dan Tanggal SPP :</td>
                                       </tr>
                                       <tr>
-                                          <td class="paddingfont">00004/1 02 0100/UP/I/2022</td>
+                                          <td class="paddingfont">{{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/UP/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
                                       </tr>
                                       <tr>
-                                          <td class="paddingfont">19-01-2022</td>
+                                          <td class="paddingfont">{{$mytime->translatedFormat('d-m-Y')}}</td>
                                       </tr>
                                   </tbody>
                               </table>
@@ -244,7 +244,7 @@
                                           <td class="fontCenter fontBold">&nbsp;</td>
                                       </tr>
                                       <tr>
-                                          <td class="fontCenter">Surabaya, 12 Januari 2022</td>
+                                          <td class="fontCenter">Surabaya, {{$mytime->translatedFormat('d F Y')}}</td>
                                       </tr>
                                       <tr>
                                           <td class="fontCenter fontBold">Bendahara Pengeluaran</td>
@@ -268,10 +268,10 @@
                                           <td>&nbsp;</td>
                                       </tr>
                                       <tr class="fontCenter">
-                                          <td class="fontBold fontUnderline">Eny Asmorowati</td>
+                                          <td class="fontBold fontUnderline">{{$bendahara->nama}}</td>
                                       </tr>
                                       <tr class="fontCenter">
-                                          <td>NIP. 19711115 199402 2 001</td>
+                                          <td>NIP. {{$bendahara->nip}}</td>
                                       </tr>
                                   </tbody>
                               </table>
