@@ -43,7 +43,7 @@
                                 $bulan = ['','I','II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
                                 $mytime = Carbon\Carbon::make(2022);
                                 @endphp
-                                <td class="fontCenter paddingfont" style="font-size:15px">NOMOR :00007/1 02 0100/UP/F/I/2022</td>
+                                <td class="fontCenter paddingfont" style="font-size:15px">NOMOR :{{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/UP/F/I/2022</td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -67,17 +67,21 @@
                                             <tr>
                                                 <td class="paddingfont">1. Nama SKPD</td>
                                                 <td class="paddingfont">:</td>
-                                                <td class="paddingfont"> 1 02 0100 - Dinas Kesehatan </td>
+                                                <td class="paddingfont"> 
+                                                    @if(isset($transaksi->unitkerja->kode))1 02 00 0100/{{$transaksi->unitkerja->kode}} - {{$transaksi->unitkerja->nama}} 
+                                                    @else ha
+                                                    @endif
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td class="paddingfont">2. Nama Kuasa Pengguna Anggaran</td>
                                                 <td class="paddingfont">:</td>
-                                                <td class="paddingfont"> Nanik Sukristina, SKM., M.Kes.</td>
+                                                <td class="paddingfont"> {{$otorisator->nama}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="paddingfont">3. Nama Bendahara Pengeluaran / Pihak Lain</td>
                                                 <td class="paddingfont">:</td>
-                                                <td class="paddingfont"> {{$otorisator->nama}}</td>
+                                                <td class="paddingfont"> {{$bendahara->nama}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="paddingfont">4. NPWP Bendahara Pengeluaran / Pihak Lain</td>
@@ -92,12 +96,12 @@
                                             <tr>
                                                 <td class="paddingfont">6. Nomor Rekening Bank</td>
                                                 <td class="paddingfont">:</td>
-                                                <td class="paddingfont"> 0011-135455</td>
+                                                <td class="paddingfont"> {{$bendahara->rekening}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="paddingfont">7. Untuk Keperluan</td>
                                                 <td class="paddingfont">:</td>
-                                                <td class="paddingfont"> Pengisian Uang Persediaan di Bendahara Pengeluaran Dinas Kesehatan Tahun Anggaran 2022 sesuai SK Walikota Nomor 188.45/8/436.1.2/2022 Tanggal: 03 Januari 2022 Tentang Besaran Uang Persediaan Tahun Anggaran 2022</td>
+                                                <td class="paddingfont"> {{$transaksi->keterangan}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="paddingfont">8. Dasar Pengeluaran</td>
@@ -107,7 +111,7 @@
                                             <tr>
                                                 <td>&nbsp;</td>
                                                 <td>&nbsp;</td>
-                                                <td class="paddingfont">Sebesar: Rp. {{number_format($transaksi->jumlah,2,',','.')}} <br>({{ucwords(Terbilang::make($transaksi->jumlah))}} Rupiah)</td>
+                                                <td class="paddingfont">Sebesar: Rp. {{number_format($saldo->saldo,2,',','.')}} <br>({{ucwords(Terbilang::make($saldo->saldo))}} Rupiah)</td>
                                             </tr>
                                             <tr>
                                                 <td class="paddingfont">&nbsp;</td>
@@ -217,12 +221,12 @@
                                             <tr class="fontCenter">
                                                 <td class="fontBold fontUnderline">&nbsp;</td>
                                                 <td>&nbsp;</td>
-                                                <td class="fontBold fontUnderline">{{$otorisator->nama}}</td>
+                                                <td class="fontBold fontUnderline">{{$bendahara->nama}}</td>
                                             </tr>
                                             <tr class="fontCenter">
                                                 <td>&nbsp;</td>
                                                 <td>&nbsp;</td>
-                                                <td>NIP. {{$otorisator->nip}}</td>
+                                                <td>NIP. {{$bendahara->nip}}</td>
                                             </tr>
                                             <tr>
                                                 <td>&nbsp;</td>
