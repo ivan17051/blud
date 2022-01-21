@@ -201,6 +201,7 @@ class TransaksiController extends Controller
             foreach ($input['rekening'] as $i=>$idrekening) {
                 $rekening=Rekening::where('id',$idrekening)->select('id','kode','nama')->first()->toArray();
                 $newJumlah+=floatval($input['jumlah'][$i]);
+                $rekening=array_values($rekening);
                 array_push($rekening,floatval($input['jumlah'][$i]));
                 array_push($newRekeningArray,$rekening);
             }
