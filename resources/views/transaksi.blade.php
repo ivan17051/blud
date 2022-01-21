@@ -108,7 +108,7 @@ $role = Auth::user()->id;
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label><b>SubRekening</b></label>
-                                <select class="selectpicker" data-style-base="form-control" data-style="" name="tipe" required>
+                                <select class="selectpicker" data-style-base="form-control" data-live-search="true" data-style="" name="tipe" required>
                                     <option value="">--Pilih--</option>
                                     @foreach($rekening as $unit)
                                     <option value="{{$unit->id}}_{{$unit->nama}}">{{$unit->nama}}</option>

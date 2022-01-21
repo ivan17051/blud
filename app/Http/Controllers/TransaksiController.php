@@ -107,12 +107,13 @@ class TransaksiController extends Controller
                     }
                     else if($t->status===2){
                         //Tombol acc untuk sp2d
-                        return '<a href="javascript:void(0);" class="btn btn-sm btn-danger " onclick="tolak(this)"><i class="fas fa-times fa-sm"></i>Revisi</a>'.
-                            '<a href="javascript:void(0);" class="btn btn-sm btn-warning " onclick="acc(this)"><i class="fas fa-check fa-sm"></i>Terima</a>';
+                        return '<a href="javascript:void(0);" class="btn btn-sm btn-danger " onclick="tolak(this)"><i class="fas fa-times fa-sm"></i> Reject</a>'.
+                            '<a href="javascript:void(0);" class="btn btn-sm btn-warning " onclick="acc(this)"><i class="fas fa-check fa-sm"></i>Terima</a>'.
+                            '<button class="btn btn-sm btn-info " onclick="cetak(\'sp2d\',\''.$t->id.'\')">Preview</button>';
                     }
                     else if($t->status===4){  
                         //4 artinya revisi
-                        return '<button disabled class="btn btn-sm btn-outline-default border-0" title="revisi">revisi</button>';
+                        return '<button disabled class="btn btn-sm btn-outline-default border-0" title="revisi">rejected</button>';
                     }
                     else{
                         return '<button disabled class="btn btn-sm btn-outline-default border-0" title="terkunci"><i class="fas fa-lock fa-sm"></i></button>';
@@ -159,9 +160,9 @@ class TransaksiController extends Controller
                         //boleh mengajukan
                         $html='';
                         if($t->status===4){  
-                            $html.='<button disabled class="btn btn-sm btn-outline-default border-0" title="revisi">revisi</button>';
+                            $html.='<button disabled class="btn btn-sm btn-outline-default border-0" title="revisi">rejected</button>';
                         }
-                        return $html.'<a href="javascript:void(0);" class="btn btn-sm btn-warning " onclick="acc(this)"><i class="fas fa-paper-plane fa-sm"></i>Ajukan</a>';
+                        return $html.'<a href="javascript:void(0);" class="btn btn-sm btn-warning " onclick="acc(this)"><i class="fas fa-paper-plane fa-sm"></i>Forward</a>';
                     }
                     else{
                         return '<button disabled class="btn btn-sm btn-outline-default border-0" title="terkunci"><i class="fas fa-lock fa-sm"></i></button>';
