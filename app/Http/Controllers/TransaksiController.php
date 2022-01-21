@@ -247,6 +247,9 @@ class TransaksiController extends Controller
                 ->orderBy('id', 'DESC')
                 ->first();
 
+            $input['jumlah']=$newJumlah;
+            $input['rekening']=$newRekeningArray;
+
             //update info saldo pada row transaksi
             $saldotemporary=$saldo->saldo-floatval($input['jumlah']);
 
