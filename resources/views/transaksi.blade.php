@@ -575,7 +575,7 @@ async function cetak(type, id){
 function format(data){
     //jika ada permintaan revisi, tampilkan pesan
     var pesanerror='';
-    if(data.pesanpenolakan && data['status_raw']===4){
+    if(data.pesanpenolakan && data['status_raw']==="4"){
         pesanerror='<div class="alert alert-danger alert-solid" role="alert">'+data.pesanpenolakan+'</div>';
     }
 
