@@ -354,10 +354,12 @@ $role = Auth::user()->id;
                             <th>Keperluan</th>
                             <!-- <th>Jenis</th> -->
                             <th>Jumlah</th>
-                            @if(in_array($user->role,['KEU','PKM']))
+                            @if(in_array($user->role,['PKM']))
                             <th>SPTB</th>
                             <th>SPP</th>
                             <th>SPM</th>
+                            <th>SP2D</th>
+                            @elseif(in_array($user->role,['KEU']))
                             <th>SP2D</th>
                             @endif
                             <th>Aksi</th>
@@ -374,10 +376,12 @@ $role = Auth::user()->id;
                             <th>Keperluan</th>
                             <!-- <th>Jenis</th> -->
                             <th>Jumlah</th>
-                            @if(in_array($user->role,['KEU','PKM']))
+                            @if(in_array($user->role,['PKM']))
                             <th>SPTB</th>
                             <th>SPP</th>
                             <th>SPM</th>
+                            <th>SP2D</th>
+                            @elseif(in_array($user->role,['KEU']))
                             <th>SP2D</th>
                             @endif
                             <th>Aksi</th>
@@ -651,7 +655,7 @@ function format(data){
         tombolubah='';
     }
 
-    var str='<tr><td></td><td colspan="'+ @if(in_array($user->role,['KEU','PKM'])) '12' @else '9' @endif +'" style="bacground-color:#f9f9f9;">'+pesanerror+
+    var str='<tr><td></td><td colspan="'+ @if(in_array($user->role,['PKM'])) '12' @elseif(in_array($user->role,['KEU'])) '9' @else '8' @endif +'" style="bacground-color:#f9f9f9;">'+pesanerror+
         `<table class="table">
             <thead>
                 <tr><b><td width="70%"><b>Rekening</b></td><td><b>Jumlah</b></td></b></tr>
@@ -715,10 +719,12 @@ $(document).ready(function(){
             { data:'nomor'},
             { data:'keterangan', orderable: false, width: '23rem'},
             { data:'jumlah'},
-            @if(in_array($user->role,['KEU','PKM']))
+            @if(in_array($user->role,['PKM']))
             { data:'sptb', orderable: false, searchable: false },
             { data:'spp', orderable: false, searchable: false },
             { data:'spm', orderable: false, searchable: false },
+            { data:'sp2d', orderable: false, searchable: false },
+            @elseif(in_array($user->role,['KEU']))
             { data:'sp2d', orderable: false, searchable: false },
             @endif
             { data:'action', orderable: false, searchable: false, className: "text-right", width: '4rem'},

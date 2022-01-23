@@ -90,26 +90,26 @@ class TransaksiController extends Controller
                 ->addColumn('action', function ($t) { 
                     return '<button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" title="info">&nbsp<i class="fas fa-ellipsis-v fa-sm"></i>&nbsp</button>';
                 })
-                ->addColumn('sptb',function($t){
-                    return '<button class="btn btn-sm btn-primary " onclick="cetak(\'sptb\',\''.$t->id.'\')">Cetak</button>';
-                })
-                ->addColumn('spp',function($t){
-                    return '<button class="btn btn-sm btn-primary " onclick="cetak(\'spp\',\''.$t->id.'\')">Cetak</button>';
-        
-                })
-                ->addColumn('spm',function($t){
-                    return '<button class="btn btn-sm btn-primary " onclick="cetak(\'spm\',\''.$t->id.'\')">Cetak</button>';
-                })
+                // ->addColumn('sptb',function($t){
+                //     return '<button class="btn btn-sm btn-primary " onclick="cetak(\'sptb\',\''.$t->id.'\')">Cetak</button>';
+                // })
+                // ->addColumn('spp',function($t){
+                //     return '<button class="btn btn-sm btn-primary " onclick="cetak(\'spp\',\''.$t->id.'\')">Cetak</button>';
+                // })
+                // ->addColumn('spm',function($t){
+                //     return '<button class="btn btn-sm btn-primary " onclick="cetak(\'spm\',\''.$t->id.'\')">Cetak</button>';
+                // })
                 ->addColumn('sp2d',function($t){
                     if($t->status===3){
                         //sp2d telah di-acc
-                        return '<button class="btn btn-sm btn-primary " onclick="cetak(\'sp2d\',\''.$t->id.'\')">Cetak</button>';
+                        return '<button disabled class="btn btn-sm btn-success d-block mb-2 text-nowrap"><i class="fas fa-lock fa-sm"></i> Accepted</button>'.
+                                '<button class="btn btn-sm btn-primary " onclick="cetak(\'sp2d\',\''.$t->id.'\')">Cetak</button>';
                     }
                     else if($t->status===2){
                         //Tombol acc untuk sp2d
                         return '<a href="javascript:void(0);" class="btn btn-sm btn-danger " onclick="tolak(this)"><i class="fas fa-times fa-sm"></i> Reject</a>'.
-                            '<a href="javascript:void(0);" class="btn btn-sm btn-warning " onclick="acc(this)"><i class="fas fa-check fa-sm"></i>Terima</a>'.
-                            '<button class="btn btn-sm btn-info " onclick="cetak(\'sp2d\',\''.$t->id.'\')">Preview</button>';
+                            '<a href="javascript:void(0);" class="btn btn-sm btn-warning " onclick="acc(this)"><i class="fas fa-check fa-sm"></i> Terima</a>'.
+                            '<button class="btn btn-sm btn-info " onclick="cetak(\'sp2d\',\''.$t->id.'\')"> Preview</button>';
                     }
                     else if($t->status===4){  
                         //4 artinya revisi
@@ -150,11 +150,12 @@ class TransaksiController extends Controller
                 ->addColumn('sp2d',function($t){
                     if($t->status===3){
                         //sp2d telah di-acc
-                        return '<button class="btn btn-sm btn-primary " onclick="cetak(\'sp2d\',\''.$t->id.'\')">Cetak</button>';
+                        return '<button disabled class="btn btn-sm btn-success d-block mb-2 text-nowrap"><i class="fas fa-lock fa-sm"></i> Accepted</button>'.
+                            '<button class="btn btn-sm btn-primary " onclick="cetak(\'sp2d\',\''.$t->id.'\')">Cetak</button>';
                     }
                     else if($t->status===2){
                         //menunggu di-acc
-                        return '<a href="javascript:void(0);" class="btn btn-sm btn-warning " onclick="batal(this)"><i class="fas fa-ban fa-sm"></i>Batal</a>';
+                        return '<a href="javascript:void(0);" class="btn btn-sm btn-warning " onclick="batal(this)"><i class="fas fa-ban fa-sm"></i> Batal</a>';
                     }
                     else if($t->status===1 or $t->status===4){  //4 artinya revisi
                         //boleh mengajukan
@@ -162,7 +163,7 @@ class TransaksiController extends Controller
                         if($t->status===4){  
                             $html.='<button disabled class="btn btn-sm btn-outline-default border-0" title="revisi">rejected</button>';
                         }
-                        return $html.'<a href="javascript:void(0);" class="btn btn-sm btn-warning " onclick="acc(this)"><i class="fas fa-paper-plane fa-sm"></i>Forward</a>';
+                        return $html.'<a href="javascript:void(0);" class="btn btn-sm btn-warning " onclick="acc(this)"><i class="fas fa-paper-plane fa-sm"></i> Forward</a>';
                     }
                     else{
                         return '<button disabled class="btn btn-sm btn-outline-default border-0" title="terkunci"><i class="fas fa-lock fa-sm"></i></button>';
