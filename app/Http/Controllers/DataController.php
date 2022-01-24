@@ -12,6 +12,7 @@ use App\Rekanan;
 use App\Rekening;
 use App\User;
 use App\Saldo;
+use App\Pajak;
 use Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -83,6 +84,12 @@ class DataController extends Controller
                 ->withInput($request->input());
         }
         return view('masterData.saldo', ['subkegiatan'=>$subkegiatan, 'saldos'=>$saldos])->with('success','Berhasil menyimpan');
+    }
+
+    public function pajak(){
+        $pajak = Pajak::where('isactive', 1)->get();
+        $parent = Pajak::where('isactive', 1)->where('parent',null)->get();
+        return view('masterData.pajak', ['pajak' => $pajak, 'parent'=>$parent]);
     }
 
     public function storeUpdateKegiatan(Request $request){
@@ -352,6 +359,43 @@ class DataController extends Controller
         }
     }
 
+    public function storeUpdatePajak(Request $request){
+        $userId = Auth::id();
+        $input = array_map('trim', $request->all());
+        
+        $validator = Validator::make($input, [
+            'id' => 'nullable|exists:mrekening,id',
+            'kode' => 'required|string',
+            'nama' => 'required|string',
+            'parent' => 'nullable|exists:mpajak,id',
+        ]);        
+        if ($validator->fails()) return back()->with('error','Gagal menyimpan');
+
+        $input = $validator->valid();
+        if($input['parent']===''){
+            unset($input['parent']);
+        }
+        
+        if(isset($input['id'])){
+            $model = Pajak::firstOrNew([
+                'id' => $input['id']
+            ]);
+            $model->fill([
+                'idm'=>$userId
+            ]);
+        }else{
+            $model = new Pajak();
+            $model->fill([
+                'idc'=>$userId,
+                'idm'=>$userId
+            ]);
+        }
+        $model->fill($input);
+        
+        $model->save();
+        return back()->with('success','Berhasil menyimpan');
+    }
+
     public function deleteKegiatan(Request $request){
         $userId = Auth::id();
         try {
@@ -421,6 +465,19 @@ class DataController extends Controller
         $userId = Auth::id();
         try {
             $model=User::find($request->input('id'));
+            $model->isactive=0;
+            $model->save();
+            return back()->with('success','Berhasil menghapus');
+        } catch (\Throwable $th) {
+            return back()->with('error','Gagal menghapus');
+        }
+    }
+
+    public function deletePajak(Request $request){
+        $userId = Auth::id();
+        try {
+            $model=Pajak::find($request->input('id'));
+            $model->idm=$userId;
             $model->isactive=0;
             $model->save();
             return back()->with('success','Berhasil menghapus');

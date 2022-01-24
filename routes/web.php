@@ -38,6 +38,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/saldo', 'DataController@saldo')->name('saldo');
         Route::put('/saldo', 'DataController@storeSaldo')->name('saldo.update');
         
+        Route::get('/pajak', 'DataController@pajak');
+        Route::put('/pajak', 'DataController@storeUpdatePajak')->name('pajak.update');
+        Route::delete('/pajak', 'DataController@deletePajak')->name('pajak.delete');
     });
 
     Route::middleware(['role:PIH,admin,PKM'])->group(function(){
