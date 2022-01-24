@@ -78,53 +78,37 @@
                               </td>
                             </tr>
                             <tr>
-                                <td>
+                                <td width="50%">
                                     <table width="100%" cellspacing="0" cellpadding="0" border="0">
                                         <tbody>
-                                            <tr>
-                                              <td class="paddingfont fontBold" style="font-size:13px" width="100%">No. SPM :{{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/UP/F/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
-                                            </tr>
                                             <tr>
                                               <td>
                                                 <table width="100%" border="0">
                                                   <tbody>
                                                     <tr>
-                                                        <td class="paddingfont" width="30%"></td>
-                                                        <td class="paddingfont" width="3%"></td>
-                                                        <td class="paddingfont" width="67%"></td>
+                                                        <td class="paddingfont" width="30%">Nomor SPM</td>
+                                                        <td class="paddingfont" width="3%">:</td>
+                                                        <td class="paddingfont" width="67%"> {{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/{{$transaksi->tipe}}/F/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}} </td>
                                                     </tr>
                                                     <tr>
-                                                        <td class="paddingfont" colspan=3>Supaya menerbitkan SP2D Kepada :</td>
+                                                        <td class="paddingfont"></td>
+                                                        <td class="paddingfont"></td>
+                                                        <td class="paddingfont"></td>
                                                     </tr>
                                                     <tr>
-                                                        <td class="paddingfont">SKPD</td>
+                                                        <td class="paddingfont">Tanggal SPM</td>
                                                         <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> 1 02 0100/{{$transaksi->unitkerja->kode}} - {{$transaksi->unitkerja->nama}} </td>
+                                                        <td class="paddingfont"> {{$transaksi->tanggal}}</td>
                                                     </tr>
                                                     <tr>
-                                                        <td class="paddingfont">Bendahara/Pihak Lain</td>
-                                                        <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> {{$bendahara->nama}}</td>
+                                                        <td class="paddingfont"></td>
+                                                        <td class="paddingfont"></td>
+                                                        <td class="paddingfont"></td>
                                                     </tr>
                                                     <tr>
-                                                        <td class="paddingfont">No. Rekening Bank</td>
+                                                        <td class="paddingfont">Nama SKPD</td>
                                                         <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> {{$bendahara->rekening}}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="paddingfont">Nama Bank</td>
-                                                        <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> BANK JATIM </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="paddingfont">NPWP</td>
-                                                        <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> 00.137.508.8-609.000 </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="paddingfont">Dasar Pembayaran</td>
-                                                        <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> SPD Nomor: 00009 Tanggal: 03 Januari 2022 </td>
+                                                        <td class="paddingfont"> BLUD {{$unitkerja->nama}}</td>
                                                     </tr>
                                                   </tbody>
                                                 </table>
@@ -138,53 +122,33 @@
                                     <table width="100%" cellspacing="0" cellpadding="0" border="0">
                                         <tbody>
                                             <tr>
-                                                @php
-                                                $bulan = ['','I','II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
-                                                $mytime = Carbon\Carbon::make($transaksi->tanggal);
-                                                @endphp
-                                              <td class="paddingfont fontBold" style="font-size:13px;" width="50%">Tahun Anggaran : {{$mytime->format('Y')}}</td>
-                                            </tr>
-                                            <tr>
                                               <td>
                                                 <table width="100%" border="0">
                                                   <tbody>
                                                     <tr>
-                                                        <td class="paddingfont" width="30%"></td>
-                                                        <td class="paddingfont" width="3%"></td>
-                                                        <td class="paddingfont" width="67%"></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="paddingfont" colspan=3>Supaya menerbitkan SP2D Kepada :</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="paddingfont">SKPD</td>
-                                                        <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> 1 02 0100/{{$transaksi->unitkerja->kode}} - {{$transaksi->unitkerja->nama}} </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="paddingfont">Bendahara/Pihak Lain</td>
-                                                        <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> {{$bendahara->nama}}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="paddingfont">No. Rekening Bank</td>
-                                                        <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> {{$bendahara->rekening}}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="paddingfont">Nama Bank</td>
-                                                        <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> BANK JATIM </td>
+                                                        <td class="paddingfont" width="35%">Dari</td>
+                                                        <td class="paddingfont" width="3%">:</td>
+                                                        <td class="paddingfont" width="62%"> BLUD {{$unitkerja->nama}} </td>
                                                     </tr>
                                                     <tr>
                                                         <td class="paddingfont">NPWP</td>
                                                         <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> 00.137.508.8-609.000 </td>
+                                                        <td class="paddingfont"> 00.137.508.8-609.000</td>
                                                     </tr>
                                                     <tr>
-                                                        <td class="paddingfont">Dasar Pembayaran</td>
+                                                        <td class="paddingfont">No. Cek Bank</td>
                                                         <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> SPD Nomor: 00009 Tanggal: 03 Januari 2022 </td>
+                                                        <td class="paddingfont"> {{$bendahara->rekening}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="paddingfont">Tanggal</td>
+                                                        <td class="paddingfont">:</td>
+                                                        <td class="paddingfont"> BANK JATIM </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="paddingfont">Tahun Anggaran</td>
+                                                        <td class="paddingfont">:</td>
+                                                        <td class="paddingfont"> 2022 </td>
                                                     </tr>
                                                   </tbody>
                                                 </table>
@@ -200,46 +164,106 @@
                     <table width="735px" height="168" cellspacing="0" cellpadding="0" border="1">
                         <tbody>
                           <tr>
-                              <td colspan=4>
-                                <table>
-                                  <tbody>
-                                    <tr>
-                                      <td class="paddingfont" colspan=3>Untuk Keperluan :</td>
-                                    </tr>
-                                    <tr>
-                                      <td class="paddingfont" style="font-size:13px;" colspan=3> Pengisian Uang Persediaan di Bendahara Pengeluaran Dinas Kesehatan Tahun Anggaran 2022 sesuai SK Walikota Nomor 188.45/8/436.1.2/2022 Tanggal: 03 Januari 2022 Tentang Besaran Uang Persediaan Tahun Anggaran 2022</td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </td>
-                            </tr>
-                            <tr>
-                                <td class="paddingfont fontBold" style="font-size:14px;" colspan=3>Pembebasan pada Kegiatan :</td>
-                            </tr>
-                            <tr>
-                                <td class="paddingfont fontBold" style="font-size:14px;" width="25%">Kode Kegiatan</td>
-                                <td class="paddingfont fontBold" style="font-size:14px;" width="40%">Uraian</td>
-                                <td class="paddingfont fontBold" style="font-size:14px;" width="35%">Nilai</td>
-                            </tr>
-                            <tr>
-                                <td class="paddingfont">1.02.00.0.10.00/-{{$transaksi->subkegiatan->kode}}</td>
-                                <td class="paddingfont">{{$transaksi->subkegiatan->nama}}</td>
-                                <td class="paddingfont">Rp. {{number_format($transaksi->jumlah,0,',','.')}}</td>
-                            </tr>
-                            <tr>
-                                <td class="paddingfont fontCenter" colspan=2>Jumlah</td>
-                                <td class="paddingfont">Rp. {{number_format($transaksi->jumlah,0,',','.')}}</td>
-                            </tr>
+                            <td colspan=4>
+                              <table style="margin:0; width:100%;">
+                                <tbody>
+                                  <tr>
+                                      <td class="paddingfont" width="40%">Bank Pengirim</td>
+                                      <td class="paddingfont" width="5%">:</td>
+                                      <td class="paddingfont fontBold" width="55%">BPD JATIM</td>
+                                  </tr>
+                                  <tr>
+                                      <td class="paddingfont">Hendaklah mencairkan/memindahbukukan dari Bank Rekening Nomor</td>
+                                      <td class="paddingfont">:</td>
+                                      <td class="paddingfont fontBold">{{$bendahara->rekening}}</td>
+                                  </tr>
+                                  <tr>
+                                      <td class="paddingfont">Uang Sebesar</td>
+                                      <td class="paddingfont">:</td>
+                                      <td class="paddingfont fontBold">{{number_format($transaksi->jumlah,0,',','.')}}</td>
+                                  </tr>
+                                  <tr>
+                                      <td class="paddingfont">Terbilang</td>
+                                      <td class="paddingfont">:</td>
+                                      <td class="paddingfont fontBold">{{ucwords(Terbilang::make($transaksi->jumlah))}} Rupiah</td>
+                                  </tr>
+                                  <tr>
+                                      <td class="paddingfont">Cara Bayar</td>
+                                      <td class="paddingfont">:</td>
+                                      <td class="paddingfont fontBold">
+                                        @if($transaksi->tipepembukuan=='pindahbuku') Pindah Buku
+                                        @else {{ucwords($transaksi->tipepembukuan)}}
+                                        @endif
+                                      </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colspan=4>
+                              <table style="margin:0; width:100%;">
+                                <tbody>
+                                  <tr>
+                                      <td class="paddingfont" width="40%">Kepada</td>
+                                      <td class="paddingfont" width="5%">:</td>
+                                      <td class="paddingfont fontBold" width="55%">{{$bendahara->nama}} - Bendahara Pengeluaran {{$transaksi->unitkerja->nama}}</td>
+                                  </tr>
+                                  <tr>
+                                      <td class="paddingfont">No. Rekening</td>
+                                      <td class="paddingfont">:</td>
+                                      <td class="paddingfont fontBold">{{$bendahara->rekening}}</td>
+                                  </tr>
+                                  <tr>
+                                      <td class="paddingfont">NPWP</td>
+                                      <td class="paddingfont">:</td>
+                                      <td class="paddingfont fontBold">00.137.508.8-609.000</td>
+                                  </tr>
+                                  <tr>
+                                      <td class="paddingfont">Bank Penerima</td>
+                                      <td class="paddingfont">:</td>
+                                      <td class="paddingfont fontBold"> - </td>
+                                  </tr>
+                                  <tr>
+                                      <td class="paddingfont">Keperluan Untuk</td>
+                                      <td class="paddingfont">:</td>
+                                      <td class="paddingfont fontBold">{{$transaksi->keterangan}}</td>
+                                  </tr>
+                                  <tr>
+                                      <td class="paddingfont">Pagu Anggaran</td>
+                                      <td class="paddingfont">:</td>
+                                      <td class="paddingfont fontBold">Rp. {{number_format($saldo->saldo,0,',','.')}}</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
                         </tbody>
                     </table>
                     <table width="735px" cellspacing="0" cellpadding="0" border="1">
                         <tbody>
                             <tr>
+                                <td class="paddingfont fontBold" style="font-size:14px;" width="5%">No.</td>
+                                <td class="paddingfont fontBold" style="font-size:14px;" width="35%">Kode Kegiatan</td>
+                                <td class="paddingfont fontBold" style="font-size:14px;" width="30%">Uraian</td>
+                                <td class="paddingfont fontBold" style="font-size:14px;" width="30%">Nilai</td>
+                            </tr>
+                            <tr>
+                                <td class="paddingfont"></td>
+                                <td class="paddingfont">1.02.00.0.10.00/-{{$transaksi->subkegiatan->kode}}</td>
+                                <td class="paddingfont">{{$transaksi->subkegiatan->nama}}</td>
+                                <td class="paddingfont"> {{number_format($transaksi->jumlah,0,',','.')}}</td>
+                            </tr>
+                            <tr>
+                                <td class="paddingfont fontCenter" colspan=3>Jumlah</td>
+                                <td class="paddingfont"> {{number_format($transaksi->jumlah,0,',','.')}}</td>
+                            </tr>
+                            <tr>
                                 <td class="paddingfont fontBold" style="font-size:14px;" colspan=4>Potongan-potongan :</td>
                             </tr>
                             <tr>
                               <td class="paddingfont fontBold" style="font-size:14px;" width="5%">No.</td>
-                                <td class="paddingfont fontBold" style="font-size:14px;" width="35%">Uraian<br>(No. Rekening)</td>
+                                <td class="paddingfont fontBold" style="font-size:14px;" width="35%">Uraian (No. Rekening)</td>
                                 <td class="paddingfont fontBold" style="font-size:14px;" width="30%">Jumlah</td>
                                 <td class="paddingfont fontBold" style="font-size:14px;" width="30%">Keterangan</td>
                             </tr>
@@ -251,7 +275,7 @@
                             </tr>
                             <tr>
                                 <td class="paddingfont fontCenter" colspan=2>Jumlah</td>
-                                <td class="paddingfont">0,00</td>
+                                <td class="paddingfont">0</td>
                                 <td class="paddingfont"></td>
                             </tr>
                             <tr>
@@ -259,7 +283,7 @@
                             </tr>
                             <tr>
                               <td class="paddingfont fontBold" style="font-size:14px;" width="5%">No.</td>
-                                <td class="paddingfont fontBold" style="font-size:14px;" width="35%">Uraian<br>(No. Rekening)</td>
+                                <td class="paddingfont fontBold" style="font-size:14px;" width="35%">Uraian (No. Rekening)</td>
                                 <td class="paddingfont fontBold" style="font-size:14px;" width="30%">Jumlah</td>
                                 <td class="paddingfont fontBold" style="font-size:14px;" width="30%">Kode Billing</td>
                             </tr>
@@ -271,7 +295,7 @@
                             </tr>
                             <tr>
                                 <td class="paddingfont fontCenter" colspan=2>Jumlah</td>
-                                <td class="paddingfont">0,00</td>
+                                <td class="paddingfont">0</td>
                                 <td class="paddingfont"></td>
                             </tr>
                         </tbody>
@@ -279,86 +303,99 @@
                     <table width="735px" height="168" cellspacing="0" cellpadding="0" border="1">
                       <tbody>
                         <tr>
-                            <td class="paddingfont" style="font-size:14px;" colspan=4><b>SPM yang dibayarkan :</b></td>
+                            <td class="paddingfont fontBold" style="font-size:14px;" colspan=4><b>SP2D yang dibayarkan :</b></td>
                         </tr>
                         <tr>
                           <td class="paddingfont">Jumlah yang diminta</td>
-                          <td class="paddingfont">Rp. {{number_format($transaksi->jumlah,0,',','.')}}</td>
+                          <td class="paddingfont"> {{number_format($transaksi->jumlah,0,',','.')}}</td>
                         </tr>
                         <tr>
                             <td class="paddingfont">Jumlah potongan</td>
-                            <td class="paddingfont">0,00</td>
+                            <td class="paddingfont"> 0</td>
                         </tr>
                         <tr>
                             <td class="paddingfont">Jumlah yang dibayarkan</td>
-                            <td class="paddingfont">Rp. {{number_format($transaksi->jumlah,0,',','.')}}</td>
+                            <td class="paddingfont"> {{number_format($transaksi->jumlah,0,',','.')}}</td>
                         </tr>
                         <tr>
-                            <td class="paddingfont" colspan=2>Uang sejumlah : <i>({{ucwords(Terbilang::make(550000000))}})</i></td>
+                            <td class="paddingfont" colspan=2>Uang sejumlah : <i>({{ucwords(Terbilang::make($transaksi->jumlah))}})</i></td>
                         </tr>
                         <tr>
-                          <td width="60%">
-                              <table width="100%" cellspacing="0" cellpadding="0" border="0">
-                                  <tbody>
-                                      <tr>
-                                          <td class="paddingfont fontBold">Jumlah SPP yang diminta : Rp. 500.000.000</td>
-                                      </tr>
-                                      <tr>
-                                          <td class="paddingfont"><i>({{ucwords(Terbilang::make(500000000))}} Rupiah)</i></td>
-                                      </tr>
-                                      <tr>
-                                        <td></td>
-                                      </tr>
-                                      <tr>
-                                          <td class="paddingfont fontBold">Nomor dan Tanggal SPP :</td>
-                                      </tr>
-                                      <tr>
-                                          <td class="paddingfont">{{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/UP/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
-                                      </tr>
-                                      <tr>
-                                          <td class="paddingfont">{{$mytime->translatedFormat('d-m-Y')}}</td>
-                                      </tr>
-                                  </tbody>
-                              </table>
-                          </td>
-                          <td>
-                              <table class="fontCenter" width="100%" cellspacing="0" cellpadding="0" border="0">
-                                  <tbody>
-                                      <tr>
-                                          <td class="fontCenter fontBold">&nbsp;</td>
-                                      </tr>
-                                      <tr>
-                                          <td class="fontCenter">Surabaya, {{$mytime->translatedFormat('d F Y')}}</td>
-                                      </tr>
-                                      <tr>
-                                          <td class="fontCenter fontBold">Pengguna Anggaran</td>
-                                      </tr>
-                                      <tr>
-                                          <td>&nbsp;</td>
-                                      </tr>
-                                      <tr>
-                                          <td>&nbsp;</td>
-                                      </tr>
-                                      <tr>
-                                          <td>&nbsp;</td>
-                                      </tr>
-                                      <tr>
-                                          <td>&nbsp;</td>
-                                      </tr>
-                                      <tr>
-                                          <td>&nbsp;</td>
-                                      </tr>
-                                      <tr>
-                                          <td>&nbsp;</td>
-                                      </tr>
-                                      <tr class="fontCenter">
-                                          <td class="fontBold fontUnderline">{{$otorisator->nama}}</td>
-                                      </tr>
-                                      <tr class="fontCenter">
-                                          <td>NIP. {{$otorisator->nip}}</td>
-                                      </tr>
-                                  </tbody>
-                              </table>
+                          <td colspan=2>
+                            <table class="fontCenter" width="100%" cellspacing="0" cellpadding="0" border="0">
+                                <tbody>
+                                    <tr style="text-align:left;">
+                                        <td class="paddingfont" colspan=4>&nbsp;</td>
+                                    </tr>
+                                    <tr style="text-align:left;">
+                                        <td class="paddingfont" colspan=4><b>Lembar 1 :</b> Bank Yang Ditunjuk</td>
+                                    </tr>
+                                    <tr style="text-align:left;">
+                                        <td class="paddingfont" colspan=4><b>Lembar 2 :</b> Kuasa Pengguna Anggaran</td>
+                                    </tr>
+                                    <tr style="text-align:left;">
+                                        <td class="paddingfont" colspan=4><b>Lembar 3 :</b> Arsip</td>
+                                    </tr>
+                                    <tr style="text-align:left;">
+                                        <td class="paddingfont" colspan=4><b>Lembar 4 :</b> Pihak Penerima</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fontCenter fontBold" width="30%">&nbsp;</td>
+                                        <td width="30%">&nbsp;</td>
+                                        <td class="fontCenter">Surabaya, {{$mytime->translatedFormat('d F Y')}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fontCenter fontBold">&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td class="fontCenter fontBold">Bendahara Pengeluaran</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr class="fontCenter">
+                                        <td class="fontBold fontUnderline">&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td class="fontBold fontUnderline">{{$bendahara->nama}}</td>
+                                    </tr>
+                                    <tr class="fontCenter">
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>NIP. {{$bendahara->nip}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                           </td>
                         </tr>
                       </tbody>

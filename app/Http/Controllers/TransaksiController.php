@@ -543,6 +543,11 @@ class TransaksiController extends Controller
         $bendahara = Pejabat::where('idunitkerja', Auth::user()->idunitkerja)->where('jabatan', 'Bendahara Pengeluaran')->first();
         $otorisator = Pejabat::where('idunitkerja', Auth::user()->idunitkerja)->where('jabatan', 'KPA')->first();
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
-        return view('report.sp2d', ['transaksi' => $transaksi, 'bendahara' => $bendahara, 'otorisator' => $otorisator, 'unitkerja' => $unitkerja]);
+        $saldo = Saldo::where('idgrup',$transaksi->idgrup)
+            ->where('idunitkerja',$transaksi->idunitkerja)
+            ->orderBy('tanggal', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->first();
+        return view('report.sp2d', ['transaksi' => $transaksi, 'bendahara' => $bendahara, 'otorisator' => $otorisator, 'unitkerja' => $unitkerja, 'saldo' => $saldo]);
     }
 }
