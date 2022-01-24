@@ -538,4 +538,11 @@ class TransaksiController extends Controller
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
         return view('report.spm', ['transaksi' => $transaksi, 'bendahara' => $bendahara, 'otorisator' => $otorisator]);
     }
+    public function sp2d($id){
+        $unitkerja = UnitKerja::where('id', Auth::user()->idunitkerja)->first();
+        $bendahara = Pejabat::where('idunitkerja', Auth::user()->idunitkerja)->where('jabatan', 'Bendahara Pengeluaran')->first();
+        $otorisator = Pejabat::where('idunitkerja', Auth::user()->idunitkerja)->where('jabatan', 'KPA')->first();
+        $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
+        return view('report.sp2d', ['transaksi' => $transaksi, 'bendahara' => $bendahara, 'otorisator' => $otorisator, 'unitkerja' => $unitkerja]);
+    }
 }

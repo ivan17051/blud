@@ -260,26 +260,15 @@ $role = Auth::user()->id;
 </div>
 
 <!-- Modal Cetak sp2d Transaksi -->
-<div class="modal modal-danger fade" id="cetakspd" tabindex="-1" role="dialog" aria-labelledby="Cetak SPD" aria-hidden="true">
+<div class="modal modal-danger fade" id="cetaksp2d" tabindex="-1" role="dialog" aria-labelledby="Cetak SPD" aria-hidden="true">
     <div class="modal-dialog " role="document">
         <div class="modal-content">
             <form action="" method="GET" target="_blank">
             <div class="modal-header">
-                <h5 class="modal-title" id="cetakLabel">Cetak SPD</h5>
+                <h5 class="modal-title" id="cetakLabel">Cetak SP2D</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label><b>Pejabat</b></label>
-                    <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idpejabat" required >
-                        <option value="">--Pilih--</option>
-                        @foreach($pejabat as $p)
-                        <option value="{{$p->id}}">{{$p->nama.', '.$p->nip}}</option>
-                        @endforeach
-                    </select>
-                </div>  
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
@@ -616,6 +605,9 @@ async function cetak(type, id){
         case 'spd':
             $('#cetakspd form').attr('action',"{{url('spd')}}/"+id);
             $('#cetakspd').modal('show');
+            break;
+        case 'sp2d':
+            $('#cetaksp2d form').attr('action',"{{url('sp2d')}}/"+id).submit();
             break;
     }
 }
