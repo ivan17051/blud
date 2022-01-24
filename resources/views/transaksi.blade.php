@@ -672,7 +672,7 @@ function format(data){
             <tbody>`+rekeningstr+
             `<tbody>  
             </table>`+tombolubah+'</div>'+
-        `<div class="tab-pane fade" id="pajak_${data.id}" role="tabpanel" aria-labelledby="pajak_${data.id}">masih maintanance</div>`
+        `<div class="tab-pane fade" id="pajak_${data.id}" role="tabpanel" aria-labelledby="pajak_${data.id}">masih maintenance</div>`
     '</div>'+
     '</td></tr>';
             
