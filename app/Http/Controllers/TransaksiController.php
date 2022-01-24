@@ -430,32 +430,32 @@ class TransaksiController extends Controller
                         throw new \Exception('Belum ada rekening.');
                     }
 
-                    array_push($riwayat,[$tgl,$userId],"Membuat SPM");
+                    array_push($riwayat,[$tgl,$userId,"Membuat SPM"]);
                     $model->riwayat=$riwayat;
                     $model->tipepembukuan=$request->input('tipepembukuan');
                     break;
                 case 1:
                     //pengajuan sp2d
                     $model->status=2;
-                    array_push($riwayat,[$tgl,$userId],"Pengajuan SP2D");
+                    array_push($riwayat,[$tgl,$userId,"Pengajuan SP2D"]);
                     $model->riwayat=$riwayat;
                     break;
                 case 2:
                     //acc sp2d
                     $model->status=3;
-                    array_push($riwayat,[$tgl,$userId],"SP2D disetujui");
+                    array_push($riwayat,[$tgl,$userId,"SP2D disetujui"]);
                     $model->riwayat=$riwayat;
                     break;
                 case 4:
                     if($user->role==='PKM'){
                         //setelah merevisi, mengajukan sp2d kembali
                         $model->status=2;
-                        array_push($riwayat,[$tgl,$userId],"Pengajuan SP2D (revisi)");
+                        array_push($riwayat,[$tgl,$userId,"Pengajuan SP2D (revisi)"]);
                         $model->riwayat=$riwayat;
                     }elseif($user->role==='KEU'){
                         //acc sp2d tapi dari hasil revisi
                         $model->status=3;
-                        array_push($riwayat,[$tgl,$userId],"Permintaan Revisi");
+                        array_push($riwayat,[$tgl,$userId,"Permintaan Revisi"]);
                         $model->riwayat=$riwayat;
                     }
                     break;
