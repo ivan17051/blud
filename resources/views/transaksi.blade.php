@@ -663,8 +663,7 @@ function batal(self){
 }
 
 var oData={};
-async function cetak(type, id){
-    var data = oData[id];
+async function cetak(type, id, tipepembukuan=null){
     var pejabatPKM = await my.request.get('{{route('pejabat.byunitkerja',['idunitkerja'=>''])}}/'+id);
     console.log(pejabatPKM);
     switch (type) {
@@ -686,7 +685,38 @@ async function cetak(type, id){
             $('#cetakspd').modal('show');
             break;
         case 'sp2d':
-            $('#cetaksp2d form').attr('action',"{{url('sp2d')}}/"+id).submit();
+            if(tipepembukuan==='tunai'){
+                var strhtml='';
+                Swal.fire({
+                    customClass: {
+                        confirmButton: 'btn btn-primary mr-2',
+                        cancelButton: 'btn btn-dark'
+                    },
+                    buttonsStyling: false,
+                    icon: 'warning',
+                    iconColor: '#f4b619',
+                    title: 'Yakin ingin membuat?',
+                    html: strhtml,
+                    focusConfirm: false,
+                    showCancelButton: true,
+                    confirmButtonText: 'Cetak',
+                    cancelButtonText: 'Batal',
+                    preConfirm: () => {
+                        // var val = document.getElementById('tipepembukuan').value;
+                        // if(val==='') {
+                        //     alert("pilih tipe pembukuan");
+                        //     return false;
+                        // }
+                        // $acc.find('input[name=tipepembukuan]').val(val);
+                    },
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // $('#cetaksp2d form').attr('action',"{{url('sp2d')}}/"+id).submit();
+                    }
+                })
+            }else{
+                $('#cetaksp2d form').attr('action',"{{url('sp2d')}}/"+id).submit();
+            }
             break;
     }
 }

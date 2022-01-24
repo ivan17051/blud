@@ -107,13 +107,13 @@ class TransaksiController extends Controller
                     if($t->status===3){
                         //sp2d telah di-acc
                         return '<button disabled class="btn btn-sm btn-success d-block mb-2 text-nowrap"><i class="fas fa-lock fa-sm"></i> Accepted</button>'.
-                                '<button class="btn btn-sm btn-primary " onclick="cetak(\'sp2d\',\''.$t->id.'\')">Cetak</button>';
+                                '<button class="btn btn-sm btn-primary " onclick="cetak(\'sp2d\',\''.$t->id.'\',\''.$t->tipepembukuan.'\')">Cetak</button>';
                     }
                     else if($t->status===2){
                         //Tombol acc untuk sp2d
                         return '<a href="javascript:void(0);" class="btn btn-sm btn-danger " onclick="tolak(this)"><i class="fas fa-times fa-sm"></i> Reject</a>'.
                             '<a href="javascript:void(0);" class="btn btn-sm btn-warning " onclick="acc(this)"><i class="fas fa-check fa-sm"></i> Terima</a>'.
-                            '<button class="btn btn-sm btn-info " onclick="cetak(\'sp2d\',\''.$t->id.'\')"> Preview</button>';
+                            '<button class="btn btn-sm btn-info " onclick="cetak(\'sp2d\',\''.$t->id.'\',\''.$t->tipepembukuan.'\')"> Preview</button>';
                     }
                     else if($t->status===4){  
                         //4 artinya revisi
@@ -155,7 +155,7 @@ class TransaksiController extends Controller
                     if($t->status===3){
                         //sp2d telah di-acc
                         return '<button disabled class="btn btn-sm btn-success d-block mb-2 text-nowrap"><i class="fas fa-lock fa-sm"></i> Accepted</button>'.
-                            '<button class="btn btn-sm btn-primary " onclick="cetak(\'sp2d\',\''.$t->id.'\')">Cetak</button>';
+                            '<button class="btn btn-sm btn-primary " onclick="cetak(\'sp2d\',\''.$t->id.'\',\''.$t->tipepembukuan.'\')">Cetak</button>';
                     }
                     else if($t->status===2){
                         //menunggu di-acc
