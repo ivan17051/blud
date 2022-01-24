@@ -650,19 +650,31 @@ function format(data){
     }
 
     //pastikan tombol ubah tidak ada untuk transaksi yg sedang diajukan sp2d nya atau sudah disetujui
-    var tombolubah='<button class="btn btn-sm btn-primary float-right" onclick="ubahRek('+data.id+')" title="Ubah Rekening">Ubah</button>';
+    var tombolubah='<button class="btn btn-sm btn-primary float-right" onclick="ubahRek('+data.id+')" title="Tambah Rekening"><i class="fas fa-plus fa-sm"></i> Tambah</button>';
     if(data['status_raw']==='2' || data['status_raw']==='3'){
         tombolubah='';
     }
 
     var str='<tr><td></td><td colspan="'+ @if(in_array($user->role,['PKM'])) '12' @elseif(in_array($user->role,['KEU'])) '9' @else '8' @endif +'" style="bacground-color:#f9f9f9;">'+pesanerror+
-        `<table class="table">
+    `<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link active" id="tab1" data-toggle="tab" href="#rekening_${data.id}" role="tab" aria-controls="rekening_${data.id}" aria-selected="true">Rekening</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="tab2" data-toggle="tab" href="#pajak_${data.id}" role="tab" aria-controls="pajak_${data.id}" aria-selected="false">Pajak</a>
+        </li>
+    </ul>`+
+    '<div class="tab-content" id="myTabContent">'+
+        `<div class="tab-pane fade show active" id="rekening_${data.id}" role="tabpanel" aria-labelledby="rekening_${data.id}"><table class="table">
             <thead>
                 <tr><b><td width="70%"><b>Rekening</b></td><td><b>Jumlah</b></td></b></tr>
             </thead>
             <tbody>`+rekeningstr+
             `<tbody>  
-            </table>`+tombolubah+'</td></tr>';
+            </table>`+tombolubah+'</div>'+
+        `<div class="tab-pane fade" id="pajak_${data.id}" role="tabpanel" aria-labelledby="pajak_${data.id}">masih maintanance</div>`
+    '</div>'+
+    '</td></tr>';
             
     var $view=$(str);
 
