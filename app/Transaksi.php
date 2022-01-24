@@ -18,6 +18,7 @@ class Transaksi extends Model
     protected $casts = [
         'riwayat' => 'array',
         'rekening' => 'array',
+        'pajak' => 'array',
    ];
 
     protected $fillable = [
@@ -36,6 +37,7 @@ class Transaksi extends Model
         "tanggal",
         "tanggalref",
         "riwayat",
+        "pajak",
         "status",
 	    "isactive",
         "idc",

@@ -13,6 +13,7 @@ use App\Rekening;
 use App\User;
 use App\Saldo;
 use App\Transaksi;
+use App\Pajak;
 use Datatables;
 use Carbon\Carbon;
 use PDF;
@@ -28,7 +29,9 @@ class TransaksiController extends Controller
         $rekening=Rekening::where('isactive', 1)->select('id','kode','nama')->get();
         $rekanan=Rekanan::where('isactive', 1)->select('id','nama')->get();
         $pejabat=Pejabat::where('isactive', 1)->select('id','idunitkerja','nama','nip','jabatan','rekening')->where('idunitkerja',$user->idunitkerja)->get();
-        return view('transaksi',['subkegiatan'=>$subkegiatan, 'rekening'=>$rekening, 'rekanan'=>$rekanan, 'user'=>$user, 'pejabat'=>$pejabat]);
+        $pajakParent=Pajak::where('isactive', 1)->select('parent')->distinct()->where('parent','<>',null)->pluck('parent')->toArray();
+        $pajak=Pajak::where('isactive', 1)->whereNotIn('id',$pajakParent)->select('id','kode','nama','parent')->get();
+        return view('transaksi',['subkegiatan'=>$subkegiatan, 'rekening'=>$rekening, 'rekanan'=>$rekanan, 'user'=>$user, 'pejabat'=>$pejabat, 'pajak'=>$pajak]);
     }
 
     public function data(Request $request){
@@ -192,6 +195,10 @@ class TransaksiController extends Controller
             'idgrup' => 'required_without:id|integer',
             'rekening' => 'nullable|array',
             'jumlah' => 'nullable|array',
+            'pajak' => 'nullable|array',
+            'nominalpajak' => 'nullable|array',
+            'kodebilling' => 'nullable|array',
+            'tanggalkadaluarsa' => 'nullable|array',
             'idrekanan' => 'required_without:id|integer',
             'dibayarkan' => 'required_without:id|integer',
             // 'tipepembukuan' => 'nullable|string|in:pindahbuku,tunai',
@@ -224,7 +231,22 @@ class TransaksiController extends Controller
             $input['jumlah']=$newJumlah;
         }
 
-        //jika edit transaksi old [NOT USED YET]
+        //membuat array pajak untuk db dng urutan [id, kode, nama pajak, nominal, kodebilling, tanggal kadaluarsa]
+        $newPajakArray=[];
+        if(isset($input['pajak']) ){
+            foreach ($input['pajak'] as $i=>$id) {
+                $pajak=Pajak::where('id',$id)->select('id','kode','nama')->first()->toArray();
+                $pajak=array_values($pajak);
+                $pajak=array_merge($pajak, [
+                    floatval($input['nominalpajak'][$i]),
+                    $input['kodebilling'][$i],
+                    $input['tanggalkadaluarsa'][$i],
+                ]);
+                array_push($newPajakArray,$pajak);
+            }
+        }
+
+        //jika edit transaksi old
         if(isset($input['id'])){
             $t=Transaksi::find($input['id']);
             if($t->status===3){
@@ -251,12 +273,17 @@ class TransaksiController extends Controller
                 $t->saldo=$saldotemporary;
             }
 
+            //update info pajak pada row transaksi
+            if(isset($input['pajak'])){
+                $input['pajak']=$newPajakArray;
+            }
+
             $t->fill($input);
             $t->fill([
                 'idm'=>$user->id,
             ]);
         }
-        else{
+        else{ //jika create transaksi baru
             //get saldo teraktual
             $saldo=Saldo::where('idgrup',$input['idgrup'])
                 ->where('idunitkerja',$input['idunitkerja'])
@@ -266,6 +293,7 @@ class TransaksiController extends Controller
 
             $input['jumlah']=$newJumlah;
             $input['rekening']=$newRekeningArray;
+            $input['pajak']=$newPajakArray;
 
             //update info saldo pada row transaksi
             $saldotemporary=$saldo->saldo-floatval($input['jumlah']);
