@@ -702,6 +702,7 @@ function ubahRek(idtransaksi){
         </tr>`;
     }
     $('#rekeningtable tbody').html(str);
+    $('#ubahRek').modal({backdrop: 'static', keyboard: false});
     $('#ubahRek').modal('show');
 }
 
@@ -718,6 +719,7 @@ function ubahPajak(idtransaksi){
         </tr>`;
     }
     $('#pajaktable tbody').html(str);
+    $('#ubahPajak').modal({backdrop: 'static', keyboard: false});
     $('#ubahPajak').modal('show');
 }
 
@@ -817,9 +819,11 @@ $(document).ready(function(){
     @php
     $date=Carbon\Carbon::now();
     $maxDate=$date->format('Y-m-d');
+    $curDate=$date->format('Y-m-d');
     $date->day=1;
     $minDate=$date->format('Y-m-d');
     @endphp
+    const curDate='{{$curDate}}';
     const maxDate='{{$maxDate}}';
     const minDate='{{$minDate}}';
     $('#datetimepicker').datetimepicker({
@@ -833,8 +837,8 @@ $(document).ready(function(){
     $('#tanggalkadaluarsa').datetimepicker({
         locale: 'id',
         format: 'L',
-        defaultDate: maxDate,
-        maxDate: maxDate,
+        defaultDate: curDate,
+        minDate: curDate,
     });
 
     oTable = $("#transaksitable").dataTable({
@@ -883,6 +887,9 @@ $(document).ready(function(){
                 <td><button type="button" onclick="$(this).parent().parent().remove()" class="btn btn-sm btn-outline-danger border-0" title="delete"><i class="fas fa-trash fa-sm"></i></button></td>
             </tr>`;
         $('#rekeningtable tbody').append(str);
+        //reset input
+        $('#addrekening input').val('');
+        $('#addrekening select').val('').change();
     });
 
     $('#addpajak').submit(function(e){
@@ -898,6 +905,9 @@ $(document).ready(function(){
                 <td><button type="button" onclick="$(this).parent().parent().remove()" class="btn btn-sm btn-outline-danger border-0" title="delete"><i class="fas fa-trash fa-sm"></i></button></td>
             </tr>`;
         $('#pajaktable tbody').append(str);
+        //reset input
+        $('#addpajak input').val('');
+        $('#addpajak select').val('').change();
     });
 });
 </script>
