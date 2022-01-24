@@ -152,6 +152,85 @@ $role = Auth::user()->id;
     </div>
 </div>
 
+<!-- Modal Ubah Pajak -->
+<div class="modal modal-danger fade" id="ubahPajak" tabindex="-1" role="dialog" aria-labelledby="Tambah Pajak" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ubahLabel">Tambah Pajak</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="GET" id="addpajak">
+                    <div class="row">    
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label><b>Pajak</b></label>
+                                <select class="selectpicker" data-style-base="form-control" data-live-search="true" data-style="" name="tipe" required>
+                                    <option value="">--Pilih--</option>
+                                    @foreach($pajak as $unit)
+                                    <option value="{{$unit->id}}_{{$unit->nama}}">{{$unit->kode.' - '.$unit->nama}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label><b>Nominal</b></label>
+                                <input type="text" name="nominal" class="form-control" placeholder="Nominal" pattern="^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label><b>Kode Billing</b></label>
+                                <input type="text" name="kodebilling" class="form-control" placeholder="Kode Billing" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label><b>Tanggal Kadaluarsa</b></label>
+                                <div class="input-group date" id="tanggalkadaluarsa" data-target-input="nearest">
+                                    <input readonly type="text" class="form-control datetimepicker-input" data-target="#tanggalkadaluarsa" name="tanggalkadaluarsa" required/>
+                                    <div class="input-group-append" data-target="#tanggalkadaluarsa" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <button type="submit" class="btn btn-primary float-right">Tambah</button>
+                        </div>
+                    </div>
+                </form>
+                <form action="{{route('transaksi.update')}}" method="POST" id="daftarpajak">
+                    <input type="hidden" name="id">
+                    @csrf
+                    @method('PUT')
+                    <table class="table" id="pajaktable">
+                        <thead>
+                            <tr>
+                                <th>Pajak</th>
+                                <th>Kode Billing</th>
+                                <th>Kadaluarsa</th>
+                                <th>Nominal</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="button" onclick="$('#daftarpajak').submit()" class="btn btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Modal Cetak sptb Transaksi -->
 <div class="modal modal-danger fade" id="cetaksptb" tabindex="-1" role="dialog" aria-labelledby="Cetak SPTB" aria-hidden="true">
     <div class="modal-dialog " role="document">
@@ -616,7 +695,6 @@ function ubahRek(idtransaksi){
     $('#daftarrekening').find('input[name=id]').val(idtransaksi);
     var str=''
     for(var rek of oData[idtransaksi]['rekening']){
-        console.log(rek);
         str+=`<tr>
             <td>${rek[1]} - ${rek[2]}<input type="hidden" name="rekening[]" value="${rek[0]}" required></td>
             <td>${rek[3]}<input type="hidden" name="jumlah[]" value="${rek[3]}" required></td>
@@ -627,7 +705,24 @@ function ubahRek(idtransaksi){
     $('#ubahRek').modal('show');
 }
 
+function ubahPajak(idtransaksi){
+    $('#daftarpajak').find('input[name=id]').val(idtransaksi);
+    var str=''
+    for(var pajak of oData[idtransaksi]['pajak']){
+        var str=`<tr>
+            <td>${pajak[2]}<input type="hidden" name="pajak[]" value="${pajak[0]}" required></td>
+            <td>${pajak[4]}<input type="hidden" name="kodebilling[]" value="${pajak[4]}" required></td>
+            <td>${pajak[5]}<input type="hidden" name="tanggalkadaluarsa[]" value="${pajak[5]}" required></td>
+            <td>${pajak[3]}<input type="hidden" name="nominalpajak[]" value="${pajak[3]}" required></td>
+            <td><button type="button" onclick="$(this).parent().parent().remove()" class="btn btn-sm btn-outline-danger border-0" title="delete"><i class="fas fa-trash fa-sm"></i></button></td>
+        </tr>`;
+    }
+    $('#pajaktable tbody').html(str);
+    $('#ubahPajak').modal('show');
+}
+
 function format(data){
+    console.log(data);
     //jika ada permintaan revisi, tampilkan pesan
     var pesanerror='';
     if(data.pesanpenolakan && data['status_raw']==="4"){
@@ -641,10 +736,24 @@ function format(data){
         rekeningstr='<tr><td class="text-center" colspan=2>Kosong</td><tr>'
     }
 
+    var pajakstr = data.pajak.reduce(function(e,i){
+        return e+='<tr><td>'+i[1]+'</td><td>'+i[2]+'</td><td>'+i[4]+'</td><td>'+moment(i[5]).format('L')+'</td><td>Rp. '+i[3]+'</td></tr>';
+    },'');
+
+    if(pajakstr===''){
+        pajakstr='<tr><td class="text-center" colspan=5>Kosong</td><tr>'
+    }
+
     //pastikan tombol ubah tidak ada untuk transaksi yg sedang diajukan sp2d nya atau sudah disetujui
     var tombolubah='<button class="btn btn-sm btn-primary float-right" onclick="ubahRek('+data.id+')" title="Tambah Rekening"><i class="fas fa-plus fa-sm"></i> Tambah</button>';
     if(data['status_raw']==='2' || data['status_raw']==='3'){
         tombolubah='';
+    }
+
+    //pastikan tombol ubah tidak ada untuk transaksi yg sedang diajukan sp2d nya atau sudah disetujui
+    var tombolubahPajak='<button class="btn btn-sm btn-primary float-right" onclick="ubahPajak('+data.id+')" title="Tambah Rekening"><i class="fas fa-plus fa-sm"></i> Tambah</button>';
+    if(data['status_raw']==='2' || data['status_raw']==='3'){
+        tombolubahPajak='';
     }
 
     var str='<tr><td></td><td colspan="'+ @if(in_array($user->role,['PKM'])) '12' @elseif(in_array($user->role,['KEU'])) '9' @else '8' @endif +'" style="bacground-color:#f9f9f9;">'+pesanerror+
@@ -670,9 +779,10 @@ function format(data){
                     <tr><th><b>Kode</b></th><th><b>Nama</b></th><th><b>Kode Billing</b></th><th><b>Kadaluarsa</b></th><th><b>Nominal</b></th></tr>
                 </thead>
                 <tbody>
-                <tr><td class="text-center" colspan="5">masih maintenance</td></tr>
+                ${pajakstr}
                 </tbody>
             </table>
+            ${tombolubahPajak}
         </div>`+
     '</div>'+
     '</td></tr>';
@@ -718,6 +828,13 @@ $(document).ready(function(){
         defaultDate: maxDate,
         maxDate: maxDate,
         minDate: minDate,
+    });
+
+    $('#tanggalkadaluarsa').datetimepicker({
+        locale: 'id',
+        format: 'L',
+        defaultDate: maxDate,
+        maxDate: maxDate,
     });
 
     oTable = $("#transaksitable").dataTable({
@@ -766,7 +883,22 @@ $(document).ready(function(){
                 <td><button type="button" onclick="$(this).parent().parent().remove()" class="btn btn-sm btn-outline-danger border-0" title="delete"><i class="fas fa-trash fa-sm"></i></button></td>
             </tr>`;
         $('#rekeningtable tbody').append(str);
-    })
+    });
+
+    $('#addpajak').submit(function(e){
+        e.preventDefault();
+        var inputan= my.getFormData($(e.target));
+        var pajak=inputan['tipe'].split('_');
+        var tanggalkadaluarsa_date = moment(inputan['tanggalkadaluarsa'],"DD/MM/YYYY").format('y-MM-DD');
+        var str=`<tr>
+                <td>${pajak[1]}<input type="hidden" name="pajak[]" value="${pajak[0]}" required></td>
+                <td>${inputan['kodebilling']}<input type="hidden" name="kodebilling[]" value="${inputan['kodebilling']}" required></td>
+                <td>${inputan['tanggalkadaluarsa']}<input type="hidden" name="tanggalkadaluarsa[]" value="${tanggalkadaluarsa_date}" required></td>
+                <td>${inputan['nominal']}<input type="hidden" name="nominalpajak[]" value="${inputan['nominal']}" required></td>
+                <td><button type="button" onclick="$(this).parent().parent().remove()" class="btn btn-sm btn-outline-danger border-0" title="delete"><i class="fas fa-trash fa-sm"></i></button></td>
+            </tr>`;
+        $('#pajaktable tbody').append(str);
+    });
 });
 </script>
 @endsection
