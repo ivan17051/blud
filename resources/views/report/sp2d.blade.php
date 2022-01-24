@@ -23,6 +23,10 @@
 </head>
 
 <body>
+    @php
+    $bulan = ['','I','II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+    $mytime = Carbon\Carbon::make($transaksi->tanggal);
+    @endphp
     <table class="screen panjang">
         <tbody>
             <tr>
@@ -30,32 +34,55 @@
                     <table class="lebarKertasTegak" cellspacing="0" cellpadding="0" border="1">
                         <tbody>
                             <tr>
-                                <td class="fontCenter"><img src="{{asset('/public/img/logo.gif')}}" width="39" height="50"></td>
-                                <td class="fontCenter"><img src="{{asset('/public/img/logo.gif')}}" width="39" height="50"></td>
-                            </tr>
-                            <tr>
-                                <td class="headerFont fontCenter paddingfont" style="font-size:16px">PEMERINTAH KOTA SURABAYA</td>
-                                <td class="headerFont fontCenter paddingfont" style="font-size:16px">PEMERINTAH KOTA SURABAYA</td>
-                            </tr>
-                            <tr>
-                                <td class="headerFont fontCenter paddingfont" style="font-size:18px">BLUD {{$unitkerja->nama}}</td>
-                                <td class="headerFont fontCenter paddingfont" style="font-size:18px">BLUD {{$unitkerja->nama}}</td>
-                            </tr>
-                            
-                            <tr>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
+                              <td>
+                                <table class="" width="100%" border="0">
+                                  <tbody>
+                                    <tr>
+                                      <td class="fontCenter" width="100%"><img src="{{asset('/public/img/logo.gif')}}" width="39" height="50"></td>
+                                    </tr>
+                                    <tr>
+                                      <td class="headerFont fontCenter paddingfont" style="font-size:16px">PEMERINTAH KOTA SURABAYA</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="fontCenter paddingfont" style="font-size:16px">BLUD {{strtoupper($unitkerja->nama)}}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>&nbsp;</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </td>
+                              <td>
+                                <table width="100%" border="0">
+                                  <tbody>
+                                    <tr>
+                                      <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="fontCenter paddingfont" style="font-size:15px; vertical-align:bottom;">SURAT PERINTAH PENCAIRAN DANA</td>                                    
+                                    </tr>
+                                    <tr>
+                                      <td class="fontCenter paddingfont" style="font-size:15px">BADAN LAYANAN UMUM DAERAH</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="fontCenter paddingfont" style="font-size:15px">(SP2D BLUD)</td>
+                                    </tr>
+                                    <tr>
+                                      <td class="fontCenter paddingfont" style="font-size:15px">Nomor : NP00001/{{$transaksi->tipe}}/F/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>&nbsp;</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </td>
                             </tr>
                             <tr>
                                 <td>
                                     <table width="100%" cellspacing="0" cellpadding="0" border="0">
                                         <tbody>
                                             <tr>
-                                                @php
-                                                $bulan = ['','I','II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
-                                                $mytime = Carbon\Carbon::make($transaksi->tanggal);
-                                                @endphp
-                                              <td class="paddingfont fontBold" style="font-size:13px" width="50%">No. SPM :{{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/UP/F/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
+                                              <td class="paddingfont fontBold" style="font-size:13px" width="100%">No. SPM :{{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/UP/F/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
                                             </tr>
                                             <tr>
                                               <td>
