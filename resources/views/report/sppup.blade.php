@@ -83,7 +83,7 @@
                                 <td class="paddingfont">{{$key+1}}</td>
                                 <td class="paddingfont">{{$unit[1]}}</td>
                                 <td class="paddingfont">{{$unit[2]}}</td>
-                                <td class="paddingfont">Rp. {{number_format($unit[3],2,',','.')}}</td>
+                                <td class="paddingfont">Rp. {{number_format($unit[3],0,',','.')}}</td>
                             </tr>
                             @php
                             $jumlah += $unit[3];
@@ -93,7 +93,7 @@
                     </table>
                     <table width="100%" cellspacing="0" cellpadding="0" border="0">
                         <tr style="float:right;">
-                            <td class="fontBold" width="35%" style="font-size:14px;">Total Rp. {{number_format($jumlah,2,',','.')}}</td>
+                            <td class="fontBold" width="35%" style="font-size:14px;">Total Rp. {{number_format($jumlah,0,',','.')}}</td>
                         </tr>
                         <tr>
                             <td>Terbilang : {{ucwords(Terbilang::make($jumlah))}} Rupiah</td>

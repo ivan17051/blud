@@ -23,7 +23,8 @@ class TransaksiController extends Controller
 {
     public function index(){
         $user = Auth::user();
-        $subkegiatan=SubKegiatan::where('isactive', 1)->select('idgrup','idkegiatan','kode','nama')->get();
+        $subkegiatan=SubKegiatan::where('isactive', 1)->join('msaldo', 'msubkegiatan.idgrup', '=', 'msaldo.idgrup')->select('msaldo.idgrup', 'msaldo.idunitkerja', 'msubkegiatan.idgrup','msubkegiatan.idkegiatan','msubkegiatan.kode','msubkegiatan.nama')->where('idunitkerja', Auth::user()->idunitkerja)->get();
+        
         $rekening=Rekening::where('isactive', 1)->select('id','kode','nama')->get();
         $rekanan=Rekanan::where('isactive', 1)->select('id','nama')->get();
         $pejabat=Pejabat::where('isactive', 1)->select('id','idunitkerja','nama','nip','jabatan','rekening')->where('idunitkerja',$user->idunitkerja)->get();
@@ -505,13 +506,16 @@ class TransaksiController extends Controller
     }
         
     public function sptb(Request $request, $id){
-        $otorisator = Pejabat::select('id', 'nama', 'nip', 'jabatan')->findOrFail($request->idotorisator);
+        // $otorisator = Pejabat::select('id', 'nama', 'nip', 'jabatan')->findOrFail($request->idotorisator);
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
+        $otorisator = Pejabat::where('idunitkerja', Auth::user()->idunitkerja)->where('jabatan', 'KPA')->first();
         return view('report.sptb', ['transaksi' => $transaksi, 'otorisator' => $otorisator]);
     }
     public function spp(Request $request, $id){
-        $otorisator = Pejabat::select('id', 'nama', 'nip', 'jabatan')->findOrFail($request->idotorisator);
-        $bendahara = Pejabat::findOrFail($request->idbendahara);
+        // $otorisator = Pejabat::select('id', 'nama', 'nip', 'jabatan')->findOrFail($request->idotorisator);
+        // $bendahara = Pejabat::findOrFail($request->idbendahara);
+        $bendahara = Pejabat::where('idunitkerja', Auth::user()->idunitkerja)->where('jabatan', 'Bendahara Pengeluaran')->first();
+        $otorisator = Pejabat::where('idunitkerja', Auth::user()->idunitkerja)->where('jabatan', 'KPA')->first();
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
         $saldo = Saldo::where('idgrup',$transaksi->idgrup)
             ->where('idunitkerja',$transaksi->idunitkerja)
@@ -521,14 +525,17 @@ class TransaksiController extends Controller
         return view('report.spp', ['transaksi' => $transaksi, 'otorisator' => $otorisator, 'bendahara' => $bendahara, 'saldo' => $saldo]);
     }
     public function sppup(Request $request, $id){
-        $otorisator = Pejabat::select('id', 'nama', 'nip', 'jabatan')->findOrFail($request->idotorisator);
-        $bendahara = Pejabat::findOrFail($request->idbendahara);
+        // $otorisator = Pejabat::select('id', 'nama', 'nip', 'jabatan')->findOrFail($request->idotorisator);
+        // $bendahara = Pejabat::findOrFail($request->idbendahara);
+        $bendahara = Pejabat::where('idunitkerja', Auth::user()->idunitkerja)->where('jabatan', 'Bendahara Pengeluaran')->first();
+        $otorisator = Pejabat::where('idunitkerja', Auth::user()->idunitkerja)->where('jabatan', 'KPA')->first();
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
         return view('report.sppup', ['transaksi' => $transaksi, 'otorisator' => $otorisator, 'bendahara' => $bendahara]);
     }
     public function spm(Request $request, $id){
-        $bendahara = Pejabat::findOrFail($request->idbendahara);
+        $bendahara = Pejabat::where('idunitkerja', Auth::user()->idunitkerja)->where('jabatan', 'Bendahara Pengeluaran')->first();
+        $otorisator = Pejabat::where('idunitkerja', Auth::user()->idunitkerja)->where('jabatan', 'KPA')->first();
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
-        return view('report.spm', ['transaksi' => $transaksi, 'bendahara' => $bendahara]);
+        return view('report.spm', ['transaksi' => $transaksi, 'bendahara' => $bendahara, 'otorisator' => $otorisator]);
     }
 }

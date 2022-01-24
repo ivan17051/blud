@@ -194,7 +194,7 @@ $role = Auth::user()->id;
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <!-- <div class="modal-body">
                 <div class="form-group">
                     <label><b>Otorisator</b></label>
                     <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idotorisator" required >
@@ -215,7 +215,7 @@ $role = Auth::user()->id;
                         @endforeach
                     </select>
                 </div>  
-            </div>
+            </div> -->
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
                 <button type="submit" class="btn btn-primary">SPP</button>
@@ -601,8 +601,8 @@ async function cetak(type, id){
     console.log(pejabatPKM);
     switch (type) {
         case 'sptb':
-            $('#cetaksptb form').attr('action',"{{url('sptb')}}/"+id);
-            $('#cetaksptb').modal('show');
+            $('#cetaksptb form').attr('action',"{{url('sptb')}}/"+id).submit();
+            // $('#cetaksptb').modal('show');
             break;
         case 'spp':
             $('#cetakspp form').attr('action',"{{url('spp')}}/"+id);
@@ -610,8 +610,8 @@ async function cetak(type, id){
             $('#cetakspp').modal('show');
             break;
         case 'spm':
-            $('#cetakspm form').attr('action',"{{url('spm')}}/"+id);
-            $('#cetakspm').modal('show');
+            $('#cetakspm form').attr('action',"{{url('spm')}}/"+id).submit();
+            // $('#cetakspm').modal('show');
             break;
         case 'spd':
             $('#cetakspd form').attr('action',"{{url('spd')}}/"+id);
