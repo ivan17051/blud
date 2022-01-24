@@ -41,6 +41,7 @@ $user = Auth::user()->role;
                 <a class="collapse-item @yield('kegiatanStatus')" href="{{url('kegiatan')}}">Kegiatan</a>
                 <a class="collapse-item @yield('subkegiatanStatus')" href="{{url('subkegiatan')}}">Subkegiatan</a>
                 <a class="collapse-item @yield('rekeningStatus')" href="{{url('rekening')}}">Rekening</a>
+                <a class="collapse-item @yield('pajakStatus')" href="{{url('pajak')}}">Pajak</a>
                 @endif
                 @if(in_array($user, array('admin', 'PKM')))
                 <a class="collapse-item @yield('rekananStatus')" href="{{url('rekanan')}}">Rekanan</a>
