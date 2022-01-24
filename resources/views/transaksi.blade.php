@@ -667,12 +667,21 @@ function format(data){
     '<div class="tab-content" id="myTabContent">'+
         `<div class="tab-pane fade show active" id="rekening_${data.id}" role="tabpanel" aria-labelledby="rekening_${data.id}"><table class="table">
             <thead>
-                <tr><b><td width="70%"><b>Rekening</b></td><td><b>Jumlah</b></td></b></tr>
+                <tr><th width="70%"><b>Rekening</b></th><th><b>Jumlah</b></th></tr>
             </thead>
             <tbody>`+rekeningstr+
             `<tbody>  
             </table>`+tombolubah+'</div>'+
-        `<div class="tab-pane fade" id="pajak_${data.id}" role="tabpanel" aria-labelledby="pajak_${data.id}">masih maintenance</div>`
+        `<div class="tab-pane fade" id="pajak_${data.id}" role="tabpanel" aria-labelledby="pajak_${data.id}">
+            <table class="table">
+                <thead>
+                    <tr><th><b>Kode</b></th><th><b>Nama</b></th><th><b>Kode Billing</b></th><th><b>Kadaluarsa</b></th><th><b>Nominal</b></th></tr>
+                </thead>
+                <tbody>
+                <tr><td class="text-center" colspan="5">masih maintenance</td></tr>
+                </tbody>
+            </table>
+        </div>`+
     '</div>'+
     '</td></tr>';
             
