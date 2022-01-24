@@ -109,7 +109,7 @@
                                             <tr>
                                                 <td>&nbsp;</td>
                                                 <td>&nbsp;</td>
-                                                <td class="paddingfont">Sebesar: Rp. {{number_format($saldo->saldo,2,',','.')}} <br>({{ucwords(Terbilang::make($saldo->saldo))}} Rupiah)</td>
+                                                <td class="paddingfont">Sebesar: Rp. {{number_format($saldo->saldo,0,',','.')}} <br>({{ucwords(Terbilang::make($saldo->saldo))}} Rupiah)</td>
                                             </tr>
                                             <tr>
                                                 <td class="paddingfont">&nbsp;</td>
@@ -143,7 +143,7 @@
                                 <td class="paddingfont">&nbsp;</td>
                                 <td class="paddingfont" width="30%">Tanggal: 03 Januari 2022</td>
                                 <td class="paddingfont" width="30%">Nomor: 00009</td>
-                                <td class="paddingfont" width="35%">Rp. {{number_format($saldo->saldo,2,',','.')}}</td>
+                                <td class="paddingfont" width="35%">Rp. {{number_format($saldo->saldo,0,',','.')}}</td>
                             </tr>
                             <tr>
                                 <td class="paddingfont fontBold">II</td>

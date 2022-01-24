@@ -140,11 +140,11 @@
                             <tr>
                                 <td class="paddingfont">1.02.00.0.10.00/-{{$transaksi->subkegiatan->kode}}</td>
                                 <td class="paddingfont">{{$transaksi->subkegiatan->nama}}</td>
-                                <td class="paddingfont">Rp. {{number_format($transaksi->jumlah,2,',','.')}}</td>
+                                <td class="paddingfont">Rp. {{number_format($transaksi->jumlah,0,',','.')}}</td>
                             </tr>
                             <tr>
                                 <td class="paddingfont fontCenter" colspan=2>Jumlah</td>
-                                <td class="paddingfont">Rp. {{number_format($transaksi->jumlah,2,',','.')}}</td>
+                                <td class="paddingfont">Rp. {{number_format($transaksi->jumlah,0,',','.')}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -199,7 +199,7 @@
                         </tr>
                         <tr>
                           <td class="paddingfont">Jumlah yang diminta</td>
-                          <td class="paddingfont">Rp. {{number_format($transaksi->jumlah,2,',','.')}}</td>
+                          <td class="paddingfont">Rp. {{number_format($transaksi->jumlah,0,',','.')}}</td>
                         </tr>
                         <tr>
                             <td class="paddingfont">Jumlah potongan</td>
@@ -207,7 +207,7 @@
                         </tr>
                         <tr>
                             <td class="paddingfont">Jumlah yang dibayarkan</td>
-                            <td class="paddingfont">Rp. {{number_format($transaksi->jumlah,2,',','.')}}</td>
+                            <td class="paddingfont">Rp. {{number_format($transaksi->jumlah,0,',','.')}}</td>
                         </tr>
                         <tr>
                             <td class="paddingfont" colspan=2>Uang sejumlah : <i>({{ucwords(Terbilang::make(550000000))}})</i></td>
@@ -247,7 +247,7 @@
                                           <td class="fontCenter">Surabaya, {{$mytime->translatedFormat('d F Y')}}</td>
                                       </tr>
                                       <tr>
-                                          <td class="fontCenter fontBold">Bendahara Pengeluaran</td>
+                                          <td class="fontCenter fontBold">Pengguna Anggaran</td>
                                       </tr>
                                       <tr>
                                           <td>&nbsp;</td>
@@ -268,10 +268,10 @@
                                           <td>&nbsp;</td>
                                       </tr>
                                       <tr class="fontCenter">
-                                          <td class="fontBold fontUnderline">{{$bendahara->nama}}</td>
+                                          <td class="fontBold fontUnderline">{{$otorisator->nama}}</td>
                                       </tr>
                                       <tr class="fontCenter">
-                                          <td>NIP. {{$bendahara->nip}}</td>
+                                          <td>NIP. {{$otorisator->nip}}</td>
                                       </tr>
                                   </tbody>
                               </table>
