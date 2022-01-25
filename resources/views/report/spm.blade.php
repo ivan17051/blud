@@ -100,7 +100,7 @@
                                                     <tr>
                                                         <td class="paddingfont">Dasar Pembayaran</td>
                                                         <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> SPD Nomor: 00009 Tanggal: 03 Januari 2022 </td>
+                                                        <td class="paddingfont"> SPD Nomor:  Tanggal:  </td>
                                                     </tr>
                                                   </tbody>
                                                 </table>
@@ -179,15 +179,23 @@
                                 <td class="paddingfont fontBold" style="font-size:14px;" width="30%">Jumlah</td>
                                 <td class="paddingfont fontBold" style="font-size:14px;" width="30%">Kode Billing</td>
                             </tr>
+                            @php
+                            $jumlah=0;
+                            @endphp
+                            @foreach($transaksi->pajak as $key => $unit)
                             <tr>
-                                <td class="paddingfont"></td>
-                                <td class="paddingfont"></td>
-                                <td class="paddingfont"></td>
-                                <td class="paddingfont"></td>
+                                <td class="paddingfont">{{$key+1}}</td>
+                                <td class="paddingfont">{{$unit[2]}}</td>
+                                <td class="paddingfont">{{number_format($unit[3],0,',','.')}}</td>
+                                <td class="paddingfont">{{$unit[4]}}</td>
                             </tr>
+                            @php
+                            $jumlah += $unit[3];
+                            @endphp
+                            @endforeach
                             <tr>
                                 <td class="paddingfont fontCenter" colspan=2>Jumlah</td>
-                                <td class="paddingfont">0,00</td>
+                                <td class="paddingfont">{{number_format($jumlah,0,',','.')}}</td>
                                 <td class="paddingfont"></td>
                             </tr>
                         </tbody>
@@ -247,7 +255,7 @@
                                           <td class="fontCenter">Surabaya, {{$mytime->translatedFormat('d F Y')}}</td>
                                       </tr>
                                       <tr>
-                                          <td class="fontCenter fontBold">Pengguna Anggaran</td>
+                                          <td class="fontCenter fontBold">Kuasa Pengguna Anggaran</td>
                                       </tr>
                                       <tr>
                                           <td>&nbsp;</td>
