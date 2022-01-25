@@ -138,12 +138,12 @@
                                                     <tr>
                                                         <td class="paddingfont">No. Cek Bank</td>
                                                         <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> {{$bendahara->rekening}}</td>
+                                                        <td class="paddingfont"> {{$request->inputCek}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="paddingfont">Tanggal</td>
                                                         <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> BANK JATIM </td>
+                                                        <td class="paddingfont"> @if($request->inputTglCek){{Carbon\Carbon::make($request->inputTglCek)->translatedFormat('d-m-Y')}} @endif</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="paddingfont">Tahun Anggaran</td>
@@ -287,15 +287,23 @@
                                 <td class="paddingfont fontBold" style="font-size:14px;" width="30%">Jumlah</td>
                                 <td class="paddingfont fontBold" style="font-size:14px;" width="30%">Kode Billing</td>
                             </tr>
+                            @php
+                            $jumlah=0;
+                            @endphp
+                            @foreach($transaksi->pajak as $key => $unit)
                             <tr>
-                                <td class="paddingfont"></td>
-                                <td class="paddingfont"></td>
-                                <td class="paddingfont"></td>
-                                <td class="paddingfont"></td>
+                                <td class="paddingfont">{{$key+1}}</td>
+                                <td class="paddingfont">{{$unit[2]}}</td>
+                                <td class="paddingfont">{{number_format($unit[3],0,',','.')}}</td>
+                                <td class="paddingfont">{{$unit[4]}}</td>
                             </tr>
+                            @php
+                            $jumlah += $unit[3];
+                            @endphp
+                            @endforeach
                             <tr>
                                 <td class="paddingfont fontCenter" colspan=2>Jumlah</td>
-                                <td class="paddingfont">0</td>
+                                <td class="paddingfont">{{number_format($jumlah,0,',','.')}}</td>
                                 <td class="paddingfont"></td>
                             </tr>
                         </tbody>
