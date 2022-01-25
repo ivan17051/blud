@@ -27,6 +27,8 @@
     <link href="{{asset('public/vendor/bootstrap-select/css/bootstrap-select.min.css')}}" rel="stylesheet">
     <!-- Date time picker style -->
     <link rel="stylesheet" href="{{asset('public/vendor/bootstrap-datetimepicker/tempusdominus-bootstrap-4.min.css')}}" />
+    <!-- bootstrap-tagsinput -->
+    <link rel="stylesheet" href="{{asset('public/vendor/bootstrap-tagsinput/bootstrap-tagsinput.css')}}">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{asset('public/css/custom.css')}}">
 
@@ -207,6 +209,9 @@
 
     <!-- Sweetalert -->
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!--	Plugin for Tags, full documentation here: https://github.com/bootstrap-tagsinput/bootstrap-tagsinputs  -->
+    <script src="{{asset('public/vendor/bootstrap-tagsinput/bootstrap-tagsinput.js')}}"></script>
 
     <!-- Page level custom scripts -->
     <script src="{{asset('public/js/demo/datatables-demo.js')}}"></script>

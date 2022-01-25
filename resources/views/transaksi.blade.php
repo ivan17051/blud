@@ -409,12 +409,35 @@ $role = Auth::user()->id;
             </div>
         </div>
         <div class="card-body">
+            <div class="mb-4">
+                <div class="mb-2" style="max-width: 10rem;">
+                    <select class="selectpicker" data-none-selected-text="Filter" data-live-search="true" multiple data-show-tick style="max-width: 10rem;" id="filterSelect">
+                        <optgroup label="Status" data-max-options="1">
+                            <option value="accepted">Accepted</option>
+                            <option value="tertolak">SPM Tertolak</option>
+                        </optgroup>
+                        <optgroup label="Tipe Transaksi" data-max-options="1">
+                            <option value="UP">UP</option>
+                            <option value="LS">LS</option>
+                            <option value="TU">TU</option>
+                        </optgroup>
+                        <optgroup label="PKM" data-max-options="1">
+                            <option value="SIMOMULYO">PKM SIMOMULYO</option>
+                            <option value="DUPAK">PKM DUPAK</option>
+                            <option value="BANYURIP">PKM BANYURIP</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="h-100 d-inline-block">
+                    <input id="tagsinput" hidden type="text" value="" class="tagsinput" data-role="tagsinput" data-size="md" data-color="info" data-role="filter">
+                </div>
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered" id="transaksitable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>No.</th>
-                            <th class="mw-6rem"></th>
+                            <th>Tipe</th>
                             <th>Tanggal</th>
                             <th>Subkegiatan</th>
                             <th>Nomor</th>
@@ -436,7 +459,7 @@ $role = Auth::user()->id;
                     <tfoot>
                         <tr>
                             <th>No.</th>
-                            <th class="mw-6rem"></th>
+                            <th>Tipe</th>
                             <th>Tanggal</th>
                             <th>Subkegiatan</th>
                             <th>Nomor</th>
@@ -883,7 +906,7 @@ $(document).ready(function(){
         ajax: {type: "POST", url: '{{route("transaksi.data")}}', data:{'_token':@json(csrf_token())}},
         columns: [
             { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' },
-            { data:'tipe', orderable: false, width: '5.1rem'},
+            { data:'tipe', orderable: false, width: 1},
             { data:'tanggalref'},
             { data:'subkegiatan.nama',orderable: false},
             { data:'nomor'},
@@ -900,17 +923,17 @@ $(document).ready(function(){
             { data:'action', orderable: false, searchable: false, className: "text-right", width: '4rem'},
         ],
     }).yadcf([
-        {
-            column_number: 1,
-            filter_default_label: 'Tipe',
-            filter_type: "select",
-            style_class:'c-filter-1',
-            reset_button_style_class:'c-filter-btn-1 btn btn-sm btn-warning',
-            data:[
-                {value:'LS',label:'LS'},
-                {value:'TU',label:'TU'},
-            ]
-        },
+        // {
+        //     column_number: 1,
+        //     filter_default_label: 'Tipe',
+        //     filter_type: "select",
+        //     style_class:'c-filter-1',
+        //     reset_button_style_class:'c-filter-btn-1 btn btn-sm btn-warning',
+        //     data:[
+        //         {value:'LS',label:'LS'},
+        //         {value:'TU',label:'TU'},
+        //     ]
+        // },
     ]);
 
     $('#addrekening').submit(function(e){
@@ -945,6 +968,27 @@ $(document).ready(function(){
         $('#addpajak input').val('');
         $('#addpajak select').val('').change();
     });
+
+    // START: Section of Filter 
+    var tagContainer=$('#tagsinput');
+    var selectContainer=$('#filterSelect');
+    tagContainer.tagsinput('input').attr('hidden',true);
+    tagContainer.on('itemRemoved', function(e) {
+        selectContainer.val($(this).tagsinput('items'));
+        selectContainer.selectpicker('refresh');
+    });
+    selectContainer.on('changed.bs.select', function (e) {
+        selectContainer.selectpicker('refresh');
+    });
+    selectContainer.on('refreshed.bs.select', function (e) {
+        var values=$(e.target).val();
+        tagContainer.tagsinput('removeAll');
+        values.forEach(function(s){
+            tagContainer.tagsinput('add', s);
+        })
+    });
+    // END: Section of Filter 
+
 });
 </script>
 @endsection
