@@ -796,6 +796,9 @@ function format(data){
         <li class="nav-item" role="presentation">
             <a class="nav-link" id="tab2" data-toggle="tab" href="#pajak_${data.id}" role="tab" aria-controls="pajak_${data.id}" aria-selected="false">Pajak</a>
         </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" id="tab2" data-toggle="tab" href="#potongan_${data.id}" role="tab" aria-controls="potongan_${data.id}" aria-selected="false">Potongan</a>
+        </li>
     </ul>`+
     '<div class="tab-content" id="myTabContent">'+
         `<div class="tab-pane fade show active" id="rekening_${data.id}" role="tabpanel" aria-labelledby="rekening_${data.id}"><table class="table">
@@ -815,6 +818,9 @@ function format(data){
                 </tbody>
             </table>
             ${tombolubahPajak}
+        </div>`+
+        `<div class="tab-pane fade" id="potongan_${data.id}" role="tabpanel" aria-labelledby="potongan_${data.id}">
+            masih maintenance
         </div>`+
     '</div>'+
     '</td></tr>';
