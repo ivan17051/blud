@@ -31,6 +31,18 @@ active
                     <label><b>Alamat</b></label>
                     <input type="text" id="alamat" name="alamat" class="form-control" placeholder="Alamat" required>
                 </div>
+                <div class="form-group">
+                    <label><b>Nama Pimpinan</b></label>
+                    <input type="text" name="pimpinan" class="form-control" placeholder="Nama Pimpinan" required>
+                </div>
+                <div class="form-group">
+                    <label><b>Rekening</b></label>
+                    <input type="text" name="rekening" class="form-control" placeholder="Rekening" required>
+                </div>
+                <div class="form-group">
+                    <label><b>NPWP</b></label>
+                    <input type="text" name="npwp" class="form-control" placeholder="NPWP" required>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
@@ -63,6 +75,18 @@ active
                 <div class="form-group">
                     <label><b>Alamat</b></label>
                     <input type="text" name="alamat" class="form-control" placeholder="Alamat" required>
+                </div>
+                <div class="form-group">
+                    <label><b>Nama Pimpinan</b></label>
+                    <input type="text" name="pimpinan" class="form-control" placeholder="Nama Pimpinan" required>
+                </div>
+                <div class="form-group">
+                    <label><b>Rekening</b></label>
+                    <input type="text" name="rekening" class="form-control" placeholder="Rekening" required>
+                </div>
+                <div class="form-group">
+                    <label><b>NPWP</b></label>
+                    <input type="text" name="npwp" maxlength="15" class="form-control" placeholder="NPWP" required>
                 </div>
             </div>
             <div class="modal-footer">
@@ -110,6 +134,9 @@ active
                             <th hidden>ID</th>
                             <th>Nama</th>
                             <th>Alamat</th>
+                            <th>Pimpinan</th>
+                            <th>Rekening</th>
+                            <th>NPWP</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -118,6 +145,9 @@ active
                             <th hidden>ID</th>
                             <th>Nama</th>
                             <th>Alamat</th>
+                            <th>Pimpinan</th>
+                            <th>Rekening</th>
+                            <th>NPWP</th>
                             <th>Aksi</th>
                         </tr>
                     </tfoot>
@@ -127,6 +157,9 @@ active
                             <th hidden>{{$unit->id}}</th>
                             <td>{{$unit->nama}}</td>
                             <td>{{$unit->alamat}}</td>
+                            <td>{{$unit->pimpinan}}</td>
+                            <td>{{$unit->rekening}}</td>
+                            <td>{{$unit->npwp}}</td>
                             <td>
                                 <button onclick="edit(this)" class="btn btn-sm btn-outline-warning border-0" data-toggle="modal" data-target="#sunting" data-placement="top" title="sunting"><i class="fas fa-edit fa-sm"></i></button>
                                 <button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" title="delete"><i class="fas fa-trash fa-sm"></i></button>
@@ -157,6 +190,9 @@ function edit(self){
     $modal.find('input[name=id]').val(data['ID']);
     $modal.find('input[name=nama]').val(data['Nama']);
     $modal.find('input[name=alamat]').val(data['Alamat']);
+    $modal.find('input[name=pimpinan]').val(data['Pimpinan']);
+    $modal.find('input[name=rekening]').val(data['Rekening']);
+    $modal.find('input[name=npwp]').val(data['NPWP']);
 }
 
 function hapus(self){

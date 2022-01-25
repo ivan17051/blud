@@ -18,6 +18,9 @@ class Rekanan extends Model
     protected $fillable = [
         "nama",
         "alamat",
+        "pimpinan",
+        "rekening",
+        "npwp",
 	    "isactive",
         "idc",
         "idm"
