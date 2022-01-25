@@ -231,36 +231,7 @@ $role = Auth::user()->id;
     </div>
 </div>
 
-<!-- Modal Cetak sptb Transaksi -->
-<div class="modal modal-danger fade" id="cetaksptb" tabindex="-1" role="dialog" aria-labelledby="Cetak SPTB" aria-hidden="true">
-    <div class="modal-dialog " role="document">
-        <div class="modal-content">
-            <form action="" method="GET" target="_blank">
-            <div class="modal-header">
-                <h5 class="modal-title" id="cetakLabel">Cetak SPTB</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label><b>Otorisator</b></label>
-                    <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idotorisator" required >
-                        <option value="">--Pilih--</option>
-                        @foreach($pejabat as $p)
-                        <option value="{{$p->id}}">{{$p->nama.', '.$p->nip}}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                <button type="submit" class="btn btn-primary">Print</button>
-            </div>
-            </form>
-        </div>
-    </div>
-</div>
+
 
 <!-- Modal Cetak spp Transaksi -->
 <div class="modal modal-danger fade" id="cetakspp" tabindex="-1" role="dialog" aria-labelledby="Cetak SPP" aria-hidden="true">
@@ -316,7 +287,7 @@ $role = Auth::user()->id;
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <!-- <div class="modal-body">
                 <div class="form-group">
                     <label><b>Bendahara</b></label>
                     <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idbendahara" required >
@@ -328,10 +299,11 @@ $role = Auth::user()->id;
                         @endforeach
                     </select>
                 </div>  
-            </div>
+            </div> -->
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                <button type="submit" class="btn btn-primary">Print</button>
+                <button type="submit" class="btn btn-primary">SPM</button>
+                <button type="submit" id="cetaksptb" class="btn btn-info" formaction="">SPTB</button>
             </div>
             </form>
         </div>
@@ -383,6 +355,11 @@ $role = Auth::user()->id;
     @csrf
     @method('put')
     <input type="hidden" name="id">
+</form>
+<form hidden action="" method="GET" id="update" target="_blank">
+    <input type="hidden" name="id">
+    <input type="hidden" name="inputCek">
+    <input type="hidden" name="inputTglCek">
 </form>
 
 <!-- Begin Page Content -->
@@ -446,7 +423,6 @@ $role = Auth::user()->id;
                             <!-- <th>Jenis</th> -->
                             <th>Jumlah</th>
                             @if(in_array($user->role,['PKM']))
-                            <th>SPTB</th>
                             <th>SPP</th>
                             <th>SPM</th>
                             <th>SP2D</th>
@@ -468,7 +444,6 @@ $role = Auth::user()->id;
                             <!-- <th>Jenis</th> -->
                             <th>Jumlah</th>
                             @if(in_array($user->role,['PKM']))
-                            <th>SPTB</th>
                             <th>SPP</th>
                             <th>SPM</th>
                             <th>SP2D</th>
@@ -626,12 +601,15 @@ function buatSpm(self){
     var $acc= $('#acc');
     $acc.find('input[name=id]').val(data['id']);
     $acc.find('input[name=oldstatus]').val(data['status_raw']);
-    var strhtml='<select class="swal2-select" id="tipepembukuan">'+
-            '<option value="">Jenis Pembukuan</option>'+
+    var strhtml='<div class="form-group"><label>Jenis Pembukuan</label>'+
+            '<select class="form-control" id="tipepembukuan" required>'+
+            '<option value="" disabled selected>Jenis Pembukuan</option>'+
             '<option value="pindahbuku" >Pindah Buku</option>'+
             '<option value="tunai" >Tunai</option>'+
         '</select>'+
-        '<input id="swal-input2" readonly class="swal2-input" value="BLUD" >';
+        '</div>'+
+        '<label>Sumber Dana</label>'+
+        '<input id="swal-input2" readonly class="form-control" value="BLUD" >';
     Swal.fire({
         customClass: {
             confirmButton: 'btn btn-primary mr-2',
@@ -690,18 +668,15 @@ async function cetak(type, id, tipepembukuan=null){
     var pejabatPKM = await my.request.get('{{route('pejabat.byunitkerja',['idunitkerja'=>''])}}/'+id);
     console.log(pejabatPKM);
     switch (type) {
-        case 'sptb':
-            $('#cetaksptb form').attr('action',"{{url('sptb')}}/"+id).submit();
-            // $('#cetaksptb').modal('show');
-            break;
         case 'spp':
             $('#cetakspp form').attr('action',"{{url('spp')}}/"+id);
             $('#cetaksppup').attr('formaction',"{{url('sppup')}}/"+id);
             $('#cetakspp').modal('show');
             break;
         case 'spm':
-            $('#cetakspm form').attr('action',"{{url('spm')}}/"+id).submit();
-            // $('#cetakspm').modal('show');
+            $('#cetakspm form').attr('action',"{{url('spm')}}/"+id);
+            $('#cetaksptb').attr('formaction',"{{url('sptb')}}/"+id);
+            $('#cetakspm').modal('show');
             break;
         case 'spd':
             $('#cetakspd form').attr('action',"{{url('spd')}}/"+id);
@@ -709,7 +684,11 @@ async function cetak(type, id, tipepembukuan=null){
             break;
         case 'sp2d':
             if(tipepembukuan==='tunai'){
-                var strhtml='';
+                
+                var strhtml='<div class="form-group"><label>No. Cek Bank</label>'+
+                        '<input id="inputCek" name="inputCek" type="text" class="form-control" placeholder="Masukkan No. Cek Bank" ></div>'+
+                        '<div class="form-group"><label>Tanggal Cek</label>'+
+                        '<input id="inputTglCek" type="date" class="form-control" placeholder="Masukkan Tanggal" ></div>';
                 Swal.fire({
                     customClass: {
                         confirmButton: 'btn btn-primary mr-2',
@@ -725,16 +704,18 @@ async function cetak(type, id, tipepembukuan=null){
                     confirmButtonText: 'Cetak',
                     cancelButtonText: 'Batal',
                     preConfirm: () => {
-                        // var val = document.getElementById('tipepembukuan').value;
-                        // if(val==='') {
-                        //     alert("pilih tipe pembukuan");
-                        //     return false;
-                        // }
-                        // $acc.find('input[name=tipepembukuan]').val(val);
+                        var valCek = document.getElementById('inputCek').value;
+                        var valTgl = document.getElementById('inputTglCek').value;
+                        if(valCek==='') {
+                            alert("pilih tipe pembukuan");
+                            return false;
+                        }
+                        $('#update').find('input[name=inputCek]').val(valCek);
+                        $('#update').find('input[name=inputTglCek]').val(valTgl);
                     },
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // $('#cetaksp2d form').attr('action',"{{url('sp2d')}}/"+id).submit();
+                        $('#update').attr('action',"{{url('sp2d')}}/"+id).submit();
                     }
                 })
             }else{
@@ -913,7 +894,7 @@ $(document).ready(function(){
             { data:'keterangan', orderable: false, width: '23rem'},
             { data:'jumlah'},
             @if(in_array($user->role,['PKM']))
-            { data:'sptb', orderable: false, searchable: false },
+            
             { data:'spp', orderable: false, searchable: false },
             { data:'spm', orderable: false, searchable: false },
             { data:'sp2d', orderable: false, searchable: false },

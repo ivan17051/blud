@@ -33,7 +33,7 @@
                                 $bulan = ['','I','II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
                                 $mytime = Carbon\Carbon::make($transaksi->tanggal);
                                 @endphp
-                                <td class="headerFont fontCenter paddingfont" style="font-size:12px">NOMOR :{{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->id}}/{{$transaksi->tipe}}/F/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
+                                <td class="headerFont fontCenter paddingfont" style="font-size:12px">NOMOR :{{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/{{$transaksi->tipe}}/F/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -84,14 +84,20 @@
                                         <td class="paddingfont fontJustify">Yang bertanda tangan di bawah ini Kuasa Pengguna Anggaran {{$transaksi->unitkerja->nama}} menyatakan bahwa : </td>
                                     </tr>
                                     <tr>
-                                      <td>
-                                        1. Jumlah {{$transaksi->tipe}} tersebut di atas akan digunakan untuk keperluan guna membiayai kegiatan yang akan kami laksanakan sesuai DPA - SKPD.
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>
-                                        2. Jumlah {{$transaksi->tipe}} tersebut tidak akan digunakana untuk membiayai keperluan - keperluan yang menurut ketentuan yang berlaku harus dilakukan dengan Pembayaran Langsung (LS).
-                                      </td>
+                                        <table width="100%">
+                                        <tr>
+                                            <td width="3%">1.</td>
+                                            <td>
+                                                Jumlah {{$transaksi->tipe}} tersebut di atas akan digunakan untuk keperluan guna membiayai kegiatan yang akan kami laksanakan sesuai DPA - SKPD.
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>2.</td>
+                                            <td>
+                                                Jumlah {{$transaksi->tipe}} tersebut tidak akan digunakana untuk membiayai keperluan - keperluan yang menurut ketentuan yang berlaku harus dilakukan dengan Pembayaran Langsung (LS).
+                                            </td>
+                                        </tr>
+                                        </table>
                                     </tr>
                                     <tr>
                                         <td>&nbsp;</td>
