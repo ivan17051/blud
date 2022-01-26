@@ -878,23 +878,22 @@ function format(data){
         potonganstr='<tr><td class="text-center" colspan=5>Kosong</td><tr>'
     }
 
-    //pastikan tombol ubah tidak ada untuk transaksi yg sedang diajukan sp2d nya atau sudah disetujui
     var tombolubah='<button class="btn btn-sm btn-primary float-right" onclick="ubahRek('+data.id+')" title="Tambah Rekening"><i class="fas fa-plus fa-sm"></i> Tambah</button>';
+    var tombolubahPajak='<button class="btn btn-sm btn-primary float-right" onclick="ubahPajak('+data.id+')" title="Tambah Rekening"><i class="fas fa-plus fa-sm"></i> Tambah</button>';
+    var tombolubahPotongan='<button class="btn btn-sm btn-primary float-right" onclick="ubahPotongan('+data.id+')" title="Tambah Potongan"><i class="fas fa-plus fa-sm"></i> Tambah</button>';
+
+    //pastikan tombol ubah tidak ada untuk transaksi yg sedang diajukan sp2d nya atau sudah disetujui
     if(data['status_raw']==='2' || data['status_raw']==='3'){
         tombolubah='';
-    }
-
-    //pastikan tombol ubah tidak ada untuk transaksi yg sedang diajukan sp2d nya atau sudah disetujui
-    var tombolubahPajak='<button class="btn btn-sm btn-primary float-right" onclick="ubahPajak('+data.id+')" title="Tambah Rekening"><i class="fas fa-plus fa-sm"></i> Tambah</button>';
-    if(data['status_raw']==='2' || data['status_raw']==='3'){
         tombolubahPajak='';
-    }
-
-    //pastikan tombol ubah tidak ada untuk transaksi yg sedang diajukan sp2d nya atau sudah disetujui
-    var tombolubahPotongan='<button class="btn btn-sm btn-primary float-right" onclick="ubahPotongan('+data.id+')" title="Tambah Potongan"><i class="fas fa-plus fa-sm"></i> Tambah</button>';
-    if(data['status_raw']==='2' || data['status_raw']==='3'){
         tombolubahPotongan='';
     }
+
+    @if($user->role !== 'PKM')
+    tombolubah='';
+    tombolubahPajak='';
+    tombolubahPotongan='';
+    @endif
 
     var str='<tr><td></td><td colspan="'+ @if(in_array($user->role,['PKM'])) '12' @elseif(in_array($user->role,['KEU'])) '9' @else '8' @endif +'" style="bacground-color:#f9f9f9;">'+pesanerror+
     `<ul class="nav nav-tabs" role="tablist">
