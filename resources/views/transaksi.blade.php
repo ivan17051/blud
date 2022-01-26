@@ -390,8 +390,8 @@ $role = Auth::user()->id;
                 <div class="mb-2" style="max-width: 10rem;">
                     <select class="selectpicker" data-none-selected-text="Filter" data-live-search="true" multiple data-show-tick style="max-width: 10rem;" id="filterSelect">
                         <optgroup label="Status" data-max-options="1">
-                            <option value="accepted">Accepted</option>
-                            <option value="tertolak">SPM Tertolak</option>
+                            <option value="ACCEPTED">Accepted</option>
+                            <option value="SPM TERTOLAK">SPM Tertolak</option>
                         </optgroup>
                         <optgroup label="Tipe Transaksi" data-max-options="1">
                             <option value="UP">UP</option>
@@ -399,9 +399,69 @@ $role = Auth::user()->id;
                             <option value="TU">TU</option>
                         </optgroup>
                         <optgroup label="PKM" data-max-options="1">
+                            <option value="TANJUNGSARI">PKM TANJUNGSARI</option>
                             <option value="SIMOMULYO">PKM SIMOMULYO</option>
+                            <option value="MANUKANKULON">PKM MANUKAN KULON</option>
+                            <option value="BALONGSARI">PKM BALONGSARI</option>
+                            <option value="ASEMROWO">PKM ASEMROWO</option>
+                            <option value="SEMEMI">PKM SEMEMI</option>
+                            <option value="BENOWO">PKM BENOWO</option>
+                            <option value="JERUK">PKM JERUK</option>
+                            <option value="LIDAHKULON">PKM LIDAH KULON</option>
+                            <option value="LONTAR">PKM LONTAR</option>
+                            <option value="PENELEH">PKM PENELEH</option>
+                            <option value="KETABANG">PKM KETABANG</option>
+                            <option value="KEDUNGDORO">PKM KEDUNGDORO</option>
+                            <option value="DRSOETOMO">PKM DR. SOETOMO</option>
+                            <option value="TEMBOKDUKUH">PKM TEMBOK DUKUH</option>
+                            <option value="GUNDIH">PKM GUNDIH</option>
+                            <option value="TAMBAKREJO">PKM TAMBAKREJO</option>
+                            <option value="SIMOLAWANG">PKM SIMOLAWANG</option>
+                            <option value="PERAKTIMUR">PKM PERAK TIMUR</option>
+                            <option value="PEGIRIAN">PKM PEGIRIAN</option>
+                            <option value="SIDOTOPO">PKM SIDOTOPO</option>
+                            <option value="WONOKUSUMO">PKM WONOKUSUMO</option>
+                            <option value="KREMBANGANSELATAN">PKM KREMBANGAN SELATAN</option>
                             <option value="DUPAK">PKM DUPAK</option>
-                            <option value="BANYURIP">PKM BANYURIP</option>
+                            <option value="KENJERAN">PKM KENJERAN</option>
+                            <option value="TAKAL">PKM Tanah KALI KEDINDING</option>
+                            <option value="SIDOTOPOWETAN">PKM SIDOTOPO WETAN</option>
+                            <option value="RANGKAH">PKM RANGKAH</option>
+                            <option value="PACARKELING">PKM PACAR KELING</option>
+                            <option value="GADING">PKM GADING</option>
+                            <option value="PUCANGSEWU">PKM PUCANGSEWU</option>
+                            <option value="MOJO">PKM MOJO</option>
+                            <option value="KALIRUNGKUT">PKM KALIRUNGKUT</option>
+                            <option value="MEDOKANAYU">PKM MEDOKAN AYU</option>
+                            <option value="TENGGILIS">PKM TENGGILIS</option>
+                            <option value="GUNUNGANYAR">PKM GUNUNG ANYAR</option>
+                            <option value="MENUR">PKM MENUR</option>
+                            <option value="KLAMPISNGASEM">PKM KLAMPIS NGASEM</option>
+                            <option value="MULYOREJO">PKM MULYOREJO</option>
+                            <option value="SAWAHAN">PKM SAWAHAN</option>
+                            <option value="PUTATJAYA">PKM PUTAT JAYA</option>
+                            <option value="BANYUURIP">PKM BANYU URIP</option>
+                            <option value="PAKIS">PKM PAKIS</option>
+                            <option value="JAGIR">PKM JAGIR</option>
+                            <option value="WONOKROMO">PKM WONOKROMO</option>
+                            <option value="NGAGELREJO">PKM NGAGEL REJO</option>
+                            <option value="KEDURUS">PKM KEDURUS</option>
+                            <option value="DUKUHKUPANG">PKM DUKUH KUPANG</option>
+                            <option value="WIYUNG">PKM WIYUNG</option>
+                            <option value="GAYUNGAN">PKM GAYUNGAN</option>
+                            <option value="JEMURSARI">PKM JEMURSARI</option>
+                            <option value="SIDOSERMO">PKM SIDOSERMO</option>
+                            <option value="KEBONSARI">PKM KEBONSARI</option>
+                            <option value="BANGKINGAN">PKM BANGKINGAN</option>
+                            <option value="MADE">PKM MADE</option>
+                            <option value="MOROKREMBANGAN">PKM MORO KREMBANGAN </option>
+                            <option value="TAMBAKWEDI">PKM TAMBAK WEDI</option>
+                            <option value="BULAKBANTENG">PKM BULAK BANTENG</option>
+                            <option value="KEPUTIH">PKM KEPUTIH</option>
+                            <option value="KALIJUDAN">PKM KALIJUDAN</option>
+                            <option value="BALASKLUMPRIK">PKM BALAS KLUMPRIK</option>
+                            <option value="SIWALANKERTO">PKM SIWALANKERTO</option>
+                            <option value="SAWAHPULO">PKM SAWAH PULO</option>
                         </optgroup>
                     </select>
                 </div>
@@ -412,47 +472,7 @@ $role = Auth::user()->id;
             <div class="table-responsive">
                 <table class="table table-bordered" id="transaksitable" width="100%" cellspacing="0">
                     <thead>
-                        <tr>
-                            <th>No.</th>
-                            <th>Tipe</th>
-                            <th>Tanggal</th>
-                            <th>Subkegiatan</th>
-                            <th>Nomor</th>
-                            <!-- <th>Rekening</th> -->
-                            <th>Keperluan</th>
-                            <!-- <th>Jenis</th> -->
-                            <th>Jumlah</th>
-                            @if(in_array($user->role,['PKM']))
-                            <th>SPP</th>
-                            <th>SPM</th>
-                            <th>SP2D</th>
-                            @elseif(in_array($user->role,['KEU']))
-                            <th>SP2D</th>
-                            @endif
-                            <th>Aksi</th>
-                        </tr>
                     </thead>
-                    <tfoot>
-                        <tr>
-                            <th>No.</th>
-                            <th>Tipe</th>
-                            <th>Tanggal</th>
-                            <th>Subkegiatan</th>
-                            <th>Nomor</th>
-                            <!-- <th>Rekening</th> -->
-                            <th>Keperluan</th>
-                            <!-- <th>Jenis</th> -->
-                            <th>Jumlah</th>
-                            @if(in_array($user->role,['PKM']))
-                            <th>SPP</th>
-                            <th>SPM</th>
-                            <th>SP2D</th>
-                            @elseif(in_array($user->role,['KEU']))
-                            <th>SP2D</th>
-                            @endif
-                            <th>Aksi</th>
-                        </tr>
-                    </tfoot>
                     <tbody></tbody>
                 </table>
             </div>
@@ -519,16 +539,9 @@ function show(self){
     if ( row.child.isShown() ) {
         // This row is already open - close it
         row.child.hide();
-        // btn.removeClass('btn-danger');
-        // btn.addClass('btn-success');
-        // btn.html('<i class="material-icons">add</i>')
     }
     else {
         row.child( format(data)).show();
-        // tr.addClass('shown'); 
-        // btn.addClass('btn-danger');
-        // btn.removeClass('btn-success');
-        // btn.html('<i class="material-icons">remove</i>')
     }
 }
 
@@ -886,22 +899,24 @@ $(document).ready(function(){
         serverSide: true,
         ajax: {type: "POST", url: '{{route("transaksi.data")}}', data:{'_token':@json(csrf_token())}},
         columns: [
-            { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' },
-            { data:'tipe', orderable: false, width: 1},
-            { data:'tanggalref'},
-            { data:'subkegiatan.nama',orderable: false},
-            { data:'nomor'},
-            { data:'keterangan', orderable: false, width: '23rem'},
-            { data:'jumlah'},
+            { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' , title:'No.', name:'no'},
+            { data:'tipe', orderable: false, width: 1 , title:'Tipe', name:'tipe'},
+            { data:'tanggalref', title:'Tanggal', name:'Tanggal'},
+            { data:'subkegiatan.nama',orderable: false, title:'Subkegiatan', name:'subkegiatan'},
+            { data:'nomor', title:'Nomor', name:'nomor'},
+            { data:'keterangan', orderable: false, width: '23rem', title:'Keperluan', name:'keperluan'},
+            { data:'jumlah', title:'Jumlah', name:'Jumlah'},
             @if(in_array($user->role,['PKM']))
             
-            { data:'spp', orderable: false, searchable: false },
-            { data:'spm', orderable: false, searchable: false },
-            { data:'sp2d', orderable: false, searchable: false },
+            { data:'spp', orderable: false, searchable: false , title:'SPP', name:'spp'},
+            { data:'spm', orderable: false, searchable: false , title:'SPM', name:'spm'},
+            { data:'sp2d', orderable: false, searchable: false , title:'SP2D', name:'sp2d'},
             @elseif(in_array($user->role,['KEU']))
-            { data:'sp2d', orderable: false, searchable: false },
+            { data:'sp2d', orderable: false, searchable: false , title:'SP2D', name:'sp2d'},
             @endif
-            { data:'action', orderable: false, searchable: false, className: "text-right", width: '4rem'},
+            { data:'action', orderable: false, searchable: false, className: "text-right", width: '4rem', title:'Aksi', name:'aksi'},
+            { data:'unitkerja.nama', visible: false, name:'unitkerja.nama'},
+            { data:'status_raw', visible: false, name:'status'},
         ],
     }).yadcf([
         // {
@@ -964,9 +979,27 @@ $(document).ready(function(){
     selectContainer.on('refreshed.bs.select', function (e) {
         var values=$(e.target).val();
         tagContainer.tagsinput('removeAll');
-        values.forEach(function(s){
+        oTable.api().columns().search( '' ); //reset semua filter
+        values.forEach(function(s, i){
+            var label=$(selectContainer[0].selectedOptions[i]).closest('optgroup').prop('label');            
             tagContainer.tagsinput('add', s);
-        })
+            switch (label) {
+                case "Status":
+                    if(s==="ACCEPTED"){
+                        oTable.api().column('status:name').search( 3 , true, false)
+                    }else if(s==="SPM TERTOLAK"){
+                        oTable.api().column('status:name').search( 4 , true, false)
+                    }
+                    break;
+                case "Tipe Transaksi":
+                    oTable.api().column('tipe:name').search( s , true, false)
+                    break;
+                case "PKM":
+                    oTable.api().column('unitkerja.nama:name').search( s , true, false)
+                    break;
+            }
+        });
+        oTable.api().draw();    // filter tabel
     });
     // END: Section of Filter 
 
