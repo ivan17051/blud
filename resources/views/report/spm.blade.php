@@ -159,15 +159,24 @@
                                 <td class="paddingfont fontBold" style="font-size:14px;" width="30%">Jumlah</td>
                                 <td class="paddingfont fontBold" style="font-size:14px;" width="30%">Keterangan</td>
                             </tr>
+                            @php
+                            $jumlahPotongan=0;
+                            $jumlahPajak=0;
+                            @endphp
+                            @foreach($transaksi->potongan as $key => $unit)
                             <tr>
-                                <td class="paddingfont"></td>
-                                <td class="paddingfont"></td>
-                                <td class="paddingfont"></td>
-                                <td class="paddingfont"></td>
+                                <td class="paddingfont">{{$key+1}}</td>
+                                <td class="paddingfont">{{$unit[0]}}</td>
+                                <td class="paddingfont">{{number_format($unit[2],0,',','.')}}</td>
+                                <td class="paddingfont">{{$unit[1]}}</td>
                             </tr>
+                            @php
+                            $jumlahPotongan += $unit[2];
+                            @endphp
+                            @endforeach
                             <tr>
                                 <td class="paddingfont fontCenter" colspan=2>Jumlah</td>
-                                <td class="paddingfont">0,00</td>
+                                <td class="paddingfont">{{$jumlahPotongan}}</td>
                                 <td class="paddingfont"></td>
                             </tr>
                             <tr>
@@ -179,9 +188,6 @@
                                 <td class="paddingfont fontBold" style="font-size:14px;" width="30%">Jumlah</td>
                                 <td class="paddingfont fontBold" style="font-size:14px;" width="30%">Kode Billing</td>
                             </tr>
-                            @php
-                            $jumlah=0;
-                            @endphp
                             @foreach($transaksi->pajak as $key => $unit)
                             <tr>
                                 <td class="paddingfont">{{$key+1}}</td>
@@ -190,12 +196,12 @@
                                 <td class="paddingfont">{{$unit[4]}}</td>
                             </tr>
                             @php
-                            $jumlah += $unit[3];
+                            $jumlahPajak += $unit[3];
                             @endphp
                             @endforeach
                             <tr>
                                 <td class="paddingfont fontCenter" colspan=2>Jumlah</td>
-                                <td class="paddingfont">{{number_format($jumlah,0,',','.')}}</td>
+                                <td class="paddingfont">{{number_format($jumlahPajak,0,',','.')}}</td>
                                 <td class="paddingfont"></td>
                             </tr>
                         </tbody>
@@ -207,28 +213,28 @@
                         </tr>
                         <tr>
                           <td class="paddingfont">Jumlah yang diminta</td>
-                          <td class="paddingfont">Rp. {{number_format($transaksi->jumlah,0,',','.')}}</td>
+                          <td class="paddingfont">{{number_format($transaksi->jumlah,0,',','.')}}</td>
                         </tr>
                         <tr>
                             <td class="paddingfont">Jumlah potongan</td>
-                            <td class="paddingfont">0,00</td>
+                            <td class="paddingfont">{{number_format($jumlahPotongan,0,',','.')}}</td>
                         </tr>
                         <tr>
                             <td class="paddingfont">Jumlah yang dibayarkan</td>
-                            <td class="paddingfont">Rp. {{number_format($transaksi->jumlah,0,',','.')}}</td>
+                            <td class="paddingfont">{{number_format($transaksi->jumlah-$jumlahPotongan,0,',','.')}}</td>
                         </tr>
                         <tr>
-                            <td class="paddingfont" colspan=2>Uang sejumlah : <i>({{ucwords(Terbilang::make(550000000))}})</i></td>
+                            <td class="paddingfont" colspan=2>Uang sejumlah : <i>({{ucwords(Terbilang::make($transaksi->jumlah-$jumlahPotongan))}})</i></td>
                         </tr>
                         <tr>
                           <td width="60%">
                               <table width="100%" cellspacing="0" cellpadding="0" border="0">
                                   <tbody>
                                       <tr>
-                                          <td class="paddingfont fontBold">Jumlah SPP yang diminta : Rp. 500.000.000</td>
+                                          <td class="paddingfont fontBold">Jumlah SPP yang diminta : Rp. {{number_format($transaksi->jumlah-$jumlahPotongan,0,',','.')}}</td>
                                       </tr>
                                       <tr>
-                                          <td class="paddingfont"><i>({{ucwords(Terbilang::make(500000000))}} Rupiah)</i></td>
+                                          <td class="paddingfont"><i>({{ucwords(Terbilang::make($transaksi->jumlah-$jumlahPotongan))}} Rupiah)</i></td>
                                       </tr>
                                       <tr>
                                         <td></td>
