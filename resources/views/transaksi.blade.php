@@ -231,6 +231,66 @@ $role = Auth::user()->id;
     </div>
 </div>
 
+<!-- Modal Ubah Potongan -->
+<div class="modal modal-danger fade" id="ubahPotongan" tabindex="-1" role="dialog" aria-labelledby="Tambah Potongan" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ubahLabel">Tambah Potongan</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="GET" id="addpotongan">
+                    <div class="row">    
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label><b>Kode</b></label>
+                                <input type="text" name="kode" class="form-control" placeholder="Kode" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label><b>Nama Potongan</b></label>
+                                <input type="text" name="potongan" class="form-control" placeholder="Nama Potongan" required>
+                            </div>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <div class="form-group">
+                                <label><b>Nominal</b></label>
+                                <input type="text" name="nominal" class="form-control" placeholder="Nominal" pattern="^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary float-right">Tambah</button>
+                        </div>
+                    </div>
+                </form>
+                <form action="{{route('transaksi.update')}}" method="POST" id="daftarpotongan">
+                    <input type="hidden" name="id">
+                    @csrf
+                    @method('PUT')
+                    <table class="table" id="potongantable">
+                        <thead>
+                            <tr>
+                                <th>Kode</th>
+                                <th>Nama Potongan</th>
+                                <th>Nominal</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="button" onclick="$('#daftarpotongan').submit()" class="btn btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 <!-- Modal Cetak spp Transaksi -->
@@ -772,6 +832,22 @@ function ubahPajak(idtransaksi){
     $('#ubahPajak').modal('show');
 }
 
+function ubahPotongan(idtransaksi){
+    $('#daftarpotongan').find('input[name=id]').val(idtransaksi);
+    var str=''
+    for(var potongan of oData[idtransaksi]['potongan']){
+        var str=`<tr>
+            <td>${potongan[0]}<input value="${potongan[0]}" type="hidden" name="kodepotongan[]"></input></td>
+            <td>${potongan[1]}<input value="${potongan[1]}" type="hidden" name="potongan[]"></input></td>
+            <td>${potongan[2]}<input value="${potongan[3]}" type="hidden" name="nominalpotongan[]"></input></td>
+            <td><button type="button" onclick="$(this).parent().parent().remove()" class="btn btn-sm btn-outline-danger border-0" title="delete"><i class="fas fa-trash fa-sm"></i></button></td>
+        </tr>`;
+    }
+    $('#potongantable tbody').html(str);
+    $('#ubahPotongan').modal({backdrop: 'static', keyboard: false});
+    $('#ubahPotongan').modal('show');
+}
+
 function format(data){
     console.log(data);
     //jika ada permintaan revisi, tampilkan pesan
@@ -795,8 +871,9 @@ function format(data){
         pajakstr='<tr><td class="text-center" colspan=5>Kosong</td><tr>'
     }
 
-    var potonganstr = '';
-
+    var potonganstr = data.potongan.reduce(function(e,i){
+        return e+='<tr><td>'+i[0]+'</td><td>'+i[1]+'</td><td>'+i[2]+'</td></tr>';
+    },'');
     if(potonganstr===''){
         potonganstr='<tr><td class="text-center" colspan=5>Kosong</td><tr>'
     }
@@ -923,11 +1000,11 @@ $(document).ready(function(){
         columns: [
             { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' , title:'No.', name:'no'},
             { data:'tipe', orderable: false, width: 1 , title:'Tipe', name:'tipe'},
-            { data:'tanggalref', title:'Tanggal', name:'Tanggal'},
+            { data:'tanggalref', title:'Tanggal', name:'tanggalref'},
             { data:'subkegiatan.nama',orderable: false, title:'Subkegiatan', name:'subkegiatan'},
             { data:'nomor', title:'Nomor', name:'nomor'},
             { data:'keterangan', orderable: false, width: '23rem', title:'Keperluan', name:'keperluan'},
-            { data:'jumlah', title:'Jumlah', name:'Jumlah'},
+            { data:'jumlah', title:'Jumlah', name:'jumlah'},
             @if(in_array($user->role,['PKM']))
             
             { data:'spp', orderable: false, searchable: false , title:'SPP', name:'spp'},
@@ -986,6 +1063,21 @@ $(document).ready(function(){
         $('#addpajak input').val('');
         $('#addpajak select').val('').change();
     });
+
+    $('#addpotongan').submit(function(e){
+        e.preventDefault();
+        var inputan= my.getFormData($(e.target));
+        var str=`<tr>
+                <td>${inputan['kode']}<input value="${inputan['kode']}" type="hidden" name="kodepotongan[]"></input></td>
+                <td>${inputan['potongan']}<input value="${inputan['potongan']}" type="hidden" name="potongan[]"></input></td>
+                <td>${inputan['nominal']}<input value="${inputan['nominal']}" type="hidden" name="nominalpotongan[]"></input></td>
+                <td><button type="button" onclick="$(this).parent().parent().remove()" class="btn btn-sm btn-outline-danger border-0" title="delete"><i class="fas fa-trash fa-sm"></i></button></td>
+            </tr>`;
+        $('#potongantable tbody').append(str);
+        //reset input
+        $('#addpotongan input').val('');
+        $('#addpotongan select').val('').change();
+    })
 
     // START: Section of Filter 
     var tagContainer=$('#tagsinput');
