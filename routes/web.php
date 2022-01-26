@@ -61,20 +61,17 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/transaksi/acc', 'TransaksiController@accTransaksi')->name('transaksi.acc');
     Route::delete('/transaksi/tolak', 'TransaksiController@tolakTransaksi')->name('transaksi.tolak');
     Route::put('/transaksi/batal', 'TransaksiController@batalkanPengajuanSP2D')->name('transaksi.batal');
+
+    Route::put('/ubah-password', 'PasswordController@update');
+
+    Route::get('/sptb/{id}', 'TransaksiController@sptb');
+    Route::get('/spp/{id}', 'TransaksiController@spp');
+    Route::get('/sppup/{id}', 'TransaksiController@sppup');
+    Route::get('/spm/{id}', 'TransaksiController@spm');
+    Route::get('/sp2d/{id}', 'TransaksiController@sp2d');
+
+    Route::get('/pejabat/byunitkerja/{idunitkerja}','DataController@getPejabatByUnitKerja')->name('pejabat.byunitkerja');
 });
 Route::get('/coba', function () {
     return view('coba');
 });
-Route::get('/cobasppup', function () {
-    return view('report.sppup');
-});
-Route::get('/cobaspm', function () {
-    return view('report.spm');
-});
-Route::get('/sptb/{id}', 'TransaksiController@sptb');
-Route::get('/spp/{id}', 'TransaksiController@spp');
-Route::get('/sppup/{id}', 'TransaksiController@sppup');
-Route::get('/spm/{id}', 'TransaksiController@spm');
-Route::get('/sp2d/{id}', 'TransaksiController@sp2d');
-
-Route::get('/pejabat/byunitkerja/{idunitkerja}','DataController@getPejabatByUnitKerja')->name('pejabat.byunitkerja');
