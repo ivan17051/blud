@@ -192,12 +192,15 @@ class TransaksiController extends Controller
             // 'jenis' => 'required|in:0,1',
             'tanggalref' => 'required_without:id|string',
             'idgrup' => 'required_without:id|integer',
-            'rekening' => 'nullable|array',
+            'rekening' => 'nullable|array',                 //--REKENING
             'jumlah' => 'nullable|array',
-            'pajak' => 'nullable|array',
+            'pajak' => 'nullable|array',                    //--PAJAK
             'nominalpajak' => 'nullable|array',
             'kodebilling' => 'nullable|array',
             'tanggalkadaluarsa' => 'nullable|array',
+            'kodepotongan' => 'nullable|array',             //--POTONGAN
+            'potongan' => 'nullable|array',
+            'nominalpotongan' => 'nullable|array',
             'idrekanan' => 'required_without:id|integer',
             'dibayarkan' => 'required_without:id|integer',
             // 'tipepembukuan' => 'nullable|string|in:pindahbuku,tunai',
@@ -245,6 +248,18 @@ class TransaksiController extends Controller
             }
         }
 
+        //membuat array potongan untuk db dng urutan [kode, nama potongan, nominal ]
+        $newPotonganArray=[];
+        if(isset($input['potongan']) ){
+            foreach ($input['potongan'] as $i=>$id) {
+                array_push($newPotonganArray,[
+                    $input['kodepotongan'][$i],
+                    $input['potongan'][$i],
+                    $input['nominalpotongan'][$i]
+                ]);
+            }
+        }
+
         //jika edit transaksi old
         if(isset($input['id'])){
             $t=Transaksi::find($input['id']);
@@ -277,6 +292,11 @@ class TransaksiController extends Controller
                 $input['pajak']=$newPajakArray;
             }
 
+            //update info potongan pada row transaksi
+            if(isset($input['potongan'])){
+                $input['potongan']=$newPotonganArray;
+            }
+
             $t->fill($input);
             $t->fill([
                 'idm'=>$user->id,
@@ -293,6 +313,7 @@ class TransaksiController extends Controller
             $input['jumlah']=$newJumlah;
             $input['rekening']=$newRekeningArray;
             $input['pajak']=$newPajakArray;
+            $input['potongan']=$newPotonganArray;
 
             //update info saldo pada row transaksi
             $saldotemporary=$saldo->saldo-floatval($input['jumlah']);
