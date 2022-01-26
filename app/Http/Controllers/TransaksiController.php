@@ -37,7 +37,7 @@ class TransaksiController extends Controller
     public function data(Request $request){
         $user = Auth::user();
         if(in_array($user->role,['admin','PIH','KEU'])){
-            $data = Transaksi::where('isactive',1)
+            $data = Transaksi::where('transaksi.isactive',1)
                 ->where('status','>',1)->with(['unitkerja','subkegiatan']);
                 // status lebih dari 1 artinya sudah masuk pengajuan sp2d
         }else{
