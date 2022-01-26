@@ -398,6 +398,7 @@ $role = Auth::user()->id;
                             <option value="LS">LS</option>
                             <option value="TU">TU</option>
                         </optgroup>
+                        @if(in_array($user->role,['KEU','PIH','admin']))
                         <optgroup label="PKM" data-max-options="1">
                             <option value="TANJUNGSARI">PKM TANJUNGSARI</option>
                             <option value="SIMOMULYO">PKM SIMOMULYO</option>
@@ -463,6 +464,7 @@ $role = Auth::user()->id;
                             <option value="SIWALANKERTO">PKM SIWALANKERTO</option>
                             <option value="SAWAHPULO">PKM SAWAH PULO</option>
                         </optgroup>
+                        @endif
                     </select>
                 </div>
                 <div class="h-100 d-inline-block">
