@@ -92,6 +92,88 @@ $role = Auth::user()->id;
     </div>
 </div>
 
+<!-- Modal Edit Transaksi -->
+<div class="modal modal-danger fade" id="sunting" tabindex="-1" role="dialog" aria-labelledby="Sunting Transaksi" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tambahLabel">Sunting Transaksi</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{route('transaksi.update')}}" method="POST">
+            @csrf
+            @method('PUT')
+            <div class="modal-body">
+                <input type="hidden" name=id>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>UPLS</b></label>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" name="tipe" required >
+                                <option value="">--Pilih--</option>
+                                <option value="UP">UP</option>
+                                <option value="LS">LS</option>
+                                <option value="TU">TU</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>Tanggal</b></label>
+                            <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                                <input readonly type="text" class="form-control datetimepicker-input" data-target="#datetimepicker2" id="tanggalref" name="tanggalref" required/>
+                                <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><b>Subkegiatan</b></label>
+                    <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idgrup" required >
+                        <option value="">--Pilih--</option>
+                        @foreach($subkegiatan as $sk)
+                        <option value="{{$sk->idgrup}}">{{$sk->kode.', '.$sk->nama.', '.$sk->tahun}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label><b>Bayar Kepada</b></label>
+                            <select class="form-control" name="dibayarkan" required onchange="filterFormulirOnChange(this)">
+                                <option value="">--Pilih--</option>
+                                <option value="1">Bendahara</option>
+                                <option value="2">Rekanan</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label><b>.</b></label>
+                            <select class="form-control" name="idrekanan" required >
+                                <option value="">--Pilih--</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><b>Keperluan</b></label>
+                    <textarea id="keterangan" name="keterangan" class="form-control" placeholder="Keterangan" maxlength="250" rows="3" style="resize: none;" required></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Modal Ubah Rekening -->
 <div class="modal modal-danger fade" id="ubahRek" tabindex="-1" role="dialog" aria-labelledby="Tambah Rekening" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -800,6 +882,21 @@ async function cetak(type, id, tipepembukuan=null){
     }
 }
 
+function edit(self){
+    var $modal=$('#sunting');
+    var tr = $(self).closest('tr');
+    var data = oTable.fnGetData(tr);
+    
+    $modal.find('input[name=id]').val(data['id']);
+    $modal.find('select[name=tipe]').val(data['tipe_raw']).change();
+    $modal.find('input[name=tanggalref]').val(data['tanggal_raw']);
+    $modal.find('select[name=idgrup]').val(data['idgrup']).change();
+    $modal.find('select[name=dibayarkan]').val(data['flagkepada']).change();
+    $modal.find('select[name=idrekanan]').val(data['idkepada']).change();
+    $modal.find('textarea[name=keterangan]').val(data['keterangan']);
+    $modal.find('input[name=rekening]').val(data['rekening']);
+}
+
 function ubahRek(idtransaksi){
     $('#daftarrekening').find('input[name=id]').val(idtransaksi);
     var str=''
@@ -978,6 +1075,14 @@ $(document).ready(function(){
     const maxDate='{{$maxDate}}';
     const minDate='{{$minDate}}';
     $('#datetimepicker').datetimepicker({
+        locale: 'id',
+        format: 'L',
+        defaultDate: maxDate,
+        maxDate: maxDate,
+        minDate: minDate,
+    });
+
+    $('#datetimepicker2').datetimepicker({
         locale: 'id',
         format: 'L',
         defaultDate: maxDate,

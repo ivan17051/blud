@@ -46,8 +46,10 @@ class TransaksiController extends Controller
         }
         
         $datatable = Datatables::of($data);
-        $datatable->editColumn('tanggalref', function ($t) { return Carbon::parse($t->tanggal)->translatedFormat('d M Y');})
+        $datatable->addColumn('tanggal_raw', function ($t) { return $t->tanggal; })
+            ->editColumn('tanggalref', function ($t) { return Carbon::parse($t->tanggal)->translatedFormat('d M Y');})
             ->addIndexColumn()
+            ->addColumn('tipe_raw', function ($t) { return $t->tipe; })
             ->editColumn('tipe', function ($t) { 
                 switch ($t->tipe) {
                     case 'TU':
@@ -68,7 +70,7 @@ class TransaksiController extends Controller
                 return $t->status;
             })
             ->editColumn('jumlah', function ($t){
-                return number_format($t->jumlah,2,',','.');
+                return number_format($t->jumlah,0,',','.');
             })
             ->editColumn('status', function ($t) { 
                 switch ($t->status) {
@@ -106,18 +108,18 @@ class TransaksiController extends Controller
                 ->addColumn('sp2d',function($t){
                     if($t->status===3){
                         //sp2d telah di-acc
-                        return '<button disabled class="btn btn-sm btn-success d-block mb-2 text-nowrap"><i class="fas fa-lock fa-sm"></i> Accepted</button>'.
+                        return '<button disabled class="btn btn-sm btn-success d-block mb-2 text-nowrap"><i class="fas fa-lock fa-sm"></i> Diterima</button>'.
                                 '<button class="btn btn-sm btn-primary " onclick="cetak(\'sp2d\',\''.$t->id.'\',\''.$t->tipepembukuan.'\')">Cetak</button>';
                     }
                     else if($t->status===2){
                         //Tombol acc untuk sp2d
-                        return '<a href="javascript:void(0);" class="btn btn-sm btn-danger " onclick="tolak(this)"><i class="fas fa-times fa-sm"></i> Reject</a>'.
+                        return '<a href="javascript:void(0);" class="btn btn-sm btn-danger " onclick="tolak(this)"><i class="fas fa-times fa-sm"></i> Tolak</a>'.
                             '<a href="javascript:void(0);" class="btn btn-sm btn-warning " onclick="acc(this)"><i class="fas fa-check fa-sm"></i> Terima</a>'.
                             '<button class="btn btn-sm btn-info " onclick="cetak(\'sp2d\',\''.$t->id.'\',\''.$t->tipepembukuan.'\')"> Preview</button>';
                     }
                     else if($t->status===4){  
                         //4 artinya revisi
-                        return '<button disabled class="btn btn-sm btn-outline-default border-0" title="revisi">rejected</button>';
+                        return '<button disabled class="btn btn-sm btn-danger btn-outline-default mb-2 border-0" title="revisi"><i class="fas fa-times fa-sm"></i> Ditolak</button>';
                     }
                     else{
                         return '<button disabled class="btn btn-sm btn-outline-default border-0" title="terkunci"><i class="fas fa-lock fa-sm"></i></button>';
@@ -128,18 +130,15 @@ class TransaksiController extends Controller
             $datatable
                 ->addColumn('action', function ($t) use($user){ 
                     $html='';
-                    if ($t->status<3) {
-                        $html.='<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" title="delete"><i class="fas fa-trash fa-sm"></i></button>&nbsp';
+                    if ($t->status<2 || $t->status==4) {
+                        $html.='<button onclick="edit(this)" class="btn btn-sm btn-outline-warning border-0" style="width:2rem;" title="Sunting Transaksi" data-toggle="modal" data-target="#sunting"><i class="fas fa-edit fa-sm"></i></button>';
+                        $html.='<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" style="width:2rem;" title="Hapus Transaksi"><i class="fas fa-trash fa-sm"></i></button>';
                     }
-                    $html.='<button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" title="info">&nbsp<i class="fas fa-ellipsis-v fa-sm"></i>&nbsp</button>';
+                    $html.='<button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" style="width:2rem;" title="Info"><i class="fas fa-ellipsis-v fa-sm"></i></button>';
                     return $html;
                 })
-                ->addColumn('sptb',function($t){
-                    return '<button class="btn btn-sm btn-primary " onclick="cetak(\'sptb\',\''.$t->id.'\')">Cetak</button>';
-        
-                })
                 ->addColumn('spp',function($t){
-                    return '<button class="btn btn-sm btn-primary " onclick="cetak(\'spp\',\''.$t->id.'\')">Cetak</button>';
+                    return '<button class="btn btn-sm btn-primary " onclick="cetak(\'spp\',\''.$t->id.'\')" title="Cetak SPP">Cetak</button>';
         
                 })
                 ->addColumn('spm',function($t){
@@ -148,14 +147,14 @@ class TransaksiController extends Controller
                         return '<button class="btn btn-sm btn-warning " onclick="buatSpm(this)">Buat</button>';
                     }
                     else{
-                        return '<button class="btn btn-sm btn-primary " onclick="cetak(\'spm\',\''.$t->id.'\')">Cetak</button>';
+                        return '<button class="btn btn-sm btn-primary " onclick="cetak(\'spm\',\''.$t->id.'\')" title="Cetak SPM">Cetak</button>';
                     }
                 })
                 ->addColumn('sp2d',function($t){
                     if($t->status===3){
                         //sp2d telah di-acc
-                        return '<button disabled class="btn btn-sm btn-success d-block mb-2 text-nowrap"><i class="fas fa-lock fa-sm"></i> Accepted</button>'.
-                            '<button class="btn btn-sm btn-primary " onclick="cetak(\'sp2d\',\''.$t->id.'\',\''.$t->tipepembukuan.'\')">Cetak</button>';
+                        return '<button disabled class="btn btn-sm btn-success d-block mb-2 text-nowrap"><i class="fas fa-lock fa-sm"></i> Diterima</button>'.
+                            '<button class="btn btn-sm btn-primary " onclick="cetak(\'sp2d\',\''.$t->id.'\',\''.$t->tipepembukuan.'\')" title="Cetak SP2D">Cetak</button>';
                     }
                     else if($t->status===2){
                         //menunggu di-acc
@@ -165,19 +164,19 @@ class TransaksiController extends Controller
                         //boleh mengajukan
                         $html='';
                         if($t->status===4){  
-                            $html.='<button disabled class="btn btn-sm btn-outline-default border-0" title="revisi">rejected</button>';
+                            $html.='<button disabled class="btn btn-sm btn-danger btn-outline-default mb-2 border-0" title="revisi"><i class="fas fa-times fa-sm"></i> Ditolak</button>';
                         }
-                        return $html.'<a href="javascript:void(0);" class="btn btn-sm btn-warning " onclick="acc(this)"><i class="fas fa-paper-plane fa-sm"></i> Forward</a>';
+                        return $html.'<a href="javascript:void(0);" class="btn btn-sm btn-warning " onclick="acc(this)" title="Forward"><i class="fas fa-paper-plane fa-sm"></i> Fwd</a>';
                     }
                     else{
-                        return '<button disabled class="btn btn-sm btn-outline-default border-0" title="terkunci"><i class="fas fa-lock fa-sm"></i></button>';
+                        return '<button disabled class="btn btn-sm btn-outline-default border-0" title="Terkunci"><i class="fas fa-lock fa-sm"></i></button>';
                     }
                 });
         }
         else{
             $datatable
                 ->addColumn('action', function ($t) { 
-                    return '<button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" title="info">&nbsp<i class="fas fa-ellipsis-v fa-sm"></i>&nbsp</button>';
+                    return '<button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" title="Info">&nbsp<i class="fas fa-ellipsis-v fa-sm"></i>&nbsp</button>';
                 });
         }
         return $datatable->make(true);  
@@ -557,15 +556,15 @@ class TransaksiController extends Controller
     public function sptb(Request $request, $id){
         // $otorisator = Pejabat::select('id', 'nama', 'nip', 'jabatan')->findOrFail($request->idotorisator);
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
-        $otorisator = Pejabat::where('idunitkerja', Auth::user()->idunitkerja)->where('jabatan', 'KPA')->first();
+        $otorisator = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'KPA')->first();
         return view('report.sptb', ['transaksi' => $transaksi, 'otorisator' => $otorisator]);
     }
     public function spp(Request $request, $id){
         // $otorisator = Pejabat::select('id', 'nama', 'nip', 'jabatan')->findOrFail($request->idotorisator);
         // $bendahara = Pejabat::findOrFail($request->idbendahara);
-        $bendahara = Pejabat::where('idunitkerja', Auth::user()->idunitkerja)->where('jabatan', 'Bendahara Pengeluaran')->first();
-        $otorisator = Pejabat::where('idunitkerja', Auth::user()->idunitkerja)->where('jabatan', 'KPA')->first();
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
+        $bendahara = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'Bendahara Pengeluaran')->first();
+        $otorisator = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'KPA')->first();
         $saldo = Saldo::where('idgrup',$transaksi->idgrup)
             ->where('idunitkerja',$transaksi->idunitkerja)
             ->orderBy('tanggal', 'DESC')
@@ -576,22 +575,22 @@ class TransaksiController extends Controller
     public function sppup(Request $request, $id){
         // $otorisator = Pejabat::select('id', 'nama', 'nip', 'jabatan')->findOrFail($request->idotorisator);
         // $bendahara = Pejabat::findOrFail($request->idbendahara);
-        $bendahara = Pejabat::where('idunitkerja', Auth::user()->idunitkerja)->where('jabatan', 'Bendahara Pengeluaran')->first();
-        $otorisator = Pejabat::where('idunitkerja', Auth::user()->idunitkerja)->where('jabatan', 'KPA')->first();
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
+        $bendahara = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'Bendahara Pengeluaran')->first();
+        $otorisator = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'KPA')->first();
         return view('report.sppup', ['transaksi' => $transaksi, 'otorisator' => $otorisator, 'bendahara' => $bendahara]);
     }
     public function spm(Request $request, $id){
-        $bendahara = Pejabat::where('idunitkerja', Auth::user()->idunitkerja)->where('jabatan', 'Bendahara Pengeluaran')->first();
-        $otorisator = Pejabat::where('idunitkerja', Auth::user()->idunitkerja)->where('jabatan', 'KPA')->first();
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
+        $bendahara = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'Bendahara Pengeluaran')->first();
+        $otorisator = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'KPA')->first();
         return view('report.spm', ['transaksi' => $transaksi, 'bendahara' => $bendahara, 'otorisator' => $otorisator]);
     }
     public function sp2d(Request $request, $id){
-        $unitkerja = UnitKerja::where('id', Auth::user()->idunitkerja)->first();
-        $bendahara = Pejabat::where('idunitkerja', Auth::user()->idunitkerja)->where('jabatan', 'Bendahara Pengeluaran')->first();
-        $otorisator = Pejabat::where('idunitkerja', Auth::user()->idunitkerja)->where('jabatan', 'KPA')->first();
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
+        $unitkerja = UnitKerja::where('id', $transaksi->idunitkerja)->first();
+        $bendahara = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'Bendahara Pengeluaran')->first();
+        $otorisator = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'KPA')->first();
         $saldo = Saldo::where('idgrup',$transaksi->idgrup)
             ->where('idunitkerja',$transaksi->idunitkerja)
             ->orderBy('tanggal', 'DESC')
