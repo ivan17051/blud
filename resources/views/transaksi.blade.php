@@ -795,6 +795,12 @@ function format(data){
         pajakstr='<tr><td class="text-center" colspan=5>Kosong</td><tr>'
     }
 
+    var potonganstr = '';
+
+    if(potonganstr===''){
+        potonganstr='<tr><td class="text-center" colspan=5>Kosong</td><tr>'
+    }
+
     //pastikan tombol ubah tidak ada untuk transaksi yg sedang diajukan sp2d nya atau sudah disetujui
     var tombolubah='<button class="btn btn-sm btn-primary float-right" onclick="ubahRek('+data.id+')" title="Tambah Rekening"><i class="fas fa-plus fa-sm"></i> Tambah</button>';
     if(data['status_raw']==='2' || data['status_raw']==='3'){
@@ -805,6 +811,12 @@ function format(data){
     var tombolubahPajak='<button class="btn btn-sm btn-primary float-right" onclick="ubahPajak('+data.id+')" title="Tambah Rekening"><i class="fas fa-plus fa-sm"></i> Tambah</button>';
     if(data['status_raw']==='2' || data['status_raw']==='3'){
         tombolubahPajak='';
+    }
+
+    //pastikan tombol ubah tidak ada untuk transaksi yg sedang diajukan sp2d nya atau sudah disetujui
+    var tombolubahPotongan='<button class="btn btn-sm btn-primary float-right" onclick="ubahPotongan('+data.id+')" title="Tambah Potongan"><i class="fas fa-plus fa-sm"></i> Tambah</button>';
+    if(data['status_raw']==='2' || data['status_raw']==='3'){
+        tombolubahPotongan='';
     }
 
     var str='<tr><td></td><td colspan="'+ @if(in_array($user->role,['PKM'])) '12' @elseif(in_array($user->role,['KEU'])) '9' @else '8' @endif +'" style="bacground-color:#f9f9f9;">'+pesanerror+
@@ -839,7 +851,15 @@ function format(data){
             ${tombolubahPajak}
         </div>`+
         `<div class="tab-pane fade" id="potongan_${data.id}" role="tabpanel" aria-labelledby="potongan_${data.id}">
-            masih maintenance
+        <table class="table">
+                <thead>
+                    <tr><th><b>Kode</b></th><th><b>Nama Potongan</b></th><th><b>Nominal</b></th></tr>
+                </thead>
+                <tbody>
+                ${potonganstr}
+                </tbody>
+            </table>
+            ${tombolubahPotongan}
         </div>`+
     '</div>'+
     '</td></tr>';

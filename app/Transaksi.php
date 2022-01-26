@@ -19,6 +19,7 @@ class Transaksi extends Model
         'riwayat' => 'array',
         'rekening' => 'array',
         'pajak' => 'array',
+        'potongan' => 'array',
    ];
 
     protected $fillable = [
@@ -38,6 +39,9 @@ class Transaksi extends Model
         "tanggalref",
         "riwayat",
         "pajak",
+        "potongan",
+        "nocek",
+        "tanggalcek",
         "status",
 	    "isactive",
         "idc",
