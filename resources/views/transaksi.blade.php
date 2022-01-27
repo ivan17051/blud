@@ -998,7 +998,7 @@ function format(data){
             <a class="nav-link active" id="tab1" data-toggle="tab" href="#rekening_${data.id}" role="tab" aria-controls="rekening_${data.id}" aria-selected="true">Rekening</a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="tab2" data-toggle="tab" href="#pajak_${data.id}" role="tab" aria-controls="pajak_${data.id}" aria-selected="false">Pajak</a>
+            <a class="nav-link" id="tab2" data-toggle="tab" href="#pajak_${data.id}" role="tab" aria-controls="pajak_${data.id}" aria-selected="false">Informasi</a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" id="tab2" data-toggle="tab" href="#potongan_${data.id}" role="tab" aria-controls="potongan_${data.id}" aria-selected="false">Potongan</a>

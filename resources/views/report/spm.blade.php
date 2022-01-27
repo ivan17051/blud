@@ -213,15 +213,15 @@
                         </tr>
                         <tr>
                           <td class="paddingfont">Jumlah yang diminta</td>
-                          <td class="paddingfont">{{number_format($transaksi->jumlah,0,',','.')}}</td>
+                          <td class="paddingfont">{{number_format($transaksi->jumlah-$jumlahPotongan,0,',','.')}}</td>
                         </tr>
                         <tr>
                             <td class="paddingfont">Jumlah potongan</td>
-                            <td class="paddingfont">{{number_format($jumlahPotongan,0,',','.')}}</td>
+                            <td class="paddingfont">{{number_format($jumlahPajak,0,',','.')}}</td>
                         </tr>
                         <tr>
                             <td class="paddingfont">Jumlah yang dibayarkan</td>
-                            <td class="paddingfont">{{number_format($transaksi->jumlah-$jumlahPotongan,0,',','.')}}</td>
+                            <td class="paddingfont">{{number_format($transaksi->jumlah-$jumlahPotongan-$jumlahPajak,0,',','.')}}</td>
                         </tr>
                         <tr>
                             <td class="paddingfont" colspan=2>Uang sejumlah : <i>({{ucwords(Terbilang::make($transaksi->jumlah-$jumlahPotongan))}})</i></td>
