@@ -14,6 +14,8 @@ use App\User;
 use App\Saldo;
 use App\Pajak;
 use Validator;
+use Datatables;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -71,19 +73,34 @@ class DataController extends Controller
     }
 
     public function saldo(Request $request){
-        $subkegiatan=SubKegiatan::where('isactive', 1)->get();
-        $saldos=NULL;
-        if ($request->input('idgrup') and $request->input('idunitkerja')){
-            $saldos=Saldo::where('idgrup',$request->input('idgrup'))
-                ->where('idunitkerja',$request->input('idunitkerja'))
-                ->orderBy('tanggal', 'asc')
-                ->orderBy('id', 'asc')
-                ->get();
+        return view('masterData.saldo');
+    }
 
-            return view('masterData.saldo', ['subkegiatan'=>$subkegiatan, 'saldos'=>$saldos])
-                ->withInput($request->input());
-        }
-        return view('masterData.saldo', ['subkegiatan'=>$subkegiatan, 'saldos'=>$saldos])->with('success','Berhasil menyimpan');
+    public function saldoTable(Request $request, $idunitkerja){
+        $datatable = Datatables::of(Rekening::select('id','kode','nama')->with(['saldo'=>function($q) use($idunitkerja){
+            $q->select('id','idunitkerja','idrekening','saldo','tanggal','tipe')
+                ->where('idunitkerja',$idunitkerja)
+                ->orderBy('tanggal','DESC');
+            }])->orderBy('id','ASC')
+        );
+        $datatable->addIndexColumn()
+            ->editColumn('tanggal', function ($t) { return Carbon::parse($t->tanggal)->translatedFormat('d M Y');})
+            ->addColumn('anggaran',function($t){
+                if($t->saldo->isEmpty()) return 0;
+                return $t->saldo->last()->saldo - 0;
+            })
+            ->addColumn('realisasi',function($t){
+                if($t->saldo->isEmpty()) return 0;
+                return $t->saldo->last()->saldo - $t->saldo->first()->saldo;
+            })
+            ->addColumn('edit', function ($t) { 
+                return '<button onclick="edit(this)" class="btn btn-sm btn-outline-warning border-0 text-nowrap" title="sunting">&nbsp<i class="fas fa-edit fa-sm"></i>&nbsp</button>';
+            })
+            ->addColumn('action', function ($t) { 
+                return '<button onclick="show(this)" class="btn btn-sm btn-outline-success border-0 dt-control" title="info"><i class="fas fa-plus fa-md"></i></button>';
+            })
+            ->rawColumns(['edit','action']);;
+        return $datatable->make(TRUE);
     }
 
     public function pajak(){

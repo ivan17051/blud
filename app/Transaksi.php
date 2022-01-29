@@ -25,7 +25,6 @@ class Transaksi extends Model
     protected $fillable = [
         "tipe",
         "nomor",
-        "idgrup",
         "idunitkerja",
         "rekening",
         "idkepada",

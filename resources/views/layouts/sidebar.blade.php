@@ -67,6 +67,12 @@ $user = Auth::user()->role;
             <i class="fas fa-fw fa-exchange-alt"></i>
             <span>Transaksi</span></a>
     </li>
+    <!-- Nav Item - SPM Tertolak -->
+    <li class="nav-item @yield('spmtertolakStatus')">
+        <a class="nav-link" href="{{url('/spmtertolak')}}">
+            <i class="fas fa-fw fa-exchange-alt"></i>
+            <span>SPM Tertolak</span></a>
+    </li>
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
