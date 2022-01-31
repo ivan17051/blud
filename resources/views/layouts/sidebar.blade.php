@@ -67,6 +67,12 @@ $user = Auth::user()->role;
             <i class="fas fa-fw fa-exchange-alt"></i>
             <span>Transaksi</span></a>
     </li>
+    <!-- Nav Item - BKU -->
+    <li class="nav-item @yield('bkuStatus')">
+        <a class="nav-link" href="{{url('/bku')}}">
+            <i class="fas fa-fw fa-book"></i>
+            <span>BKU</span></a>
+    </li>
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">

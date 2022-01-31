@@ -30,6 +30,7 @@ class Transaksi extends Model
         "kodetransaksi",
         "kodepekerjaan",
         "isspj",
+        "isbku",
         "rekening",
         "idkepada",
         "flagkepada",

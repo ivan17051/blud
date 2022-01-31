@@ -154,8 +154,11 @@ class TransaksiController extends Controller
                 ->addColumn('sp2d',function($t){
                     if($t->status===3){
                         //sp2d telah di-acc
+                        $toBKU_btn='<button class="btn btn-sm btn-warning " onclick="transaksi2bku(this)" title="to BKU">to BKU</button>';
+                        if($t->isbku===1) $toBKU_btn='<button class="btn btn-sm btn-warning " disabled title="to BKU"><i class="fas fa-lock fa-sm"> to BKU</button>';
                         return '<button disabled class="btn btn-sm btn-success d-block mb-2 text-nowrap"><i class="fas fa-lock fa-sm"></i> Diterima</button>'.
-                            '<button class="btn btn-sm btn-primary " onclick="cetak(\'sp2d\',\''.$t->id.'\',\''.$t->tipepembukuan.'\')" title="Cetak SP2D">Cetak</button>';
+                            '<button class="btn btn-sm btn-primary mb-2" onclick="cetak(\'sp2d\',\''.$t->id.'\',\''.$t->tipepembukuan.'\')" title="Cetak SP2D">Cetak</button>'.
+                            $toBKU_btn;
                     }
                     else if($t->status===2){
                         //menunggu di-acc
