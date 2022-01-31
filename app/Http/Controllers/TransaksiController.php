@@ -535,12 +535,7 @@ class TransaksiController extends Controller
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
         $bendahara = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'Bendahara Pengeluaran')->first();
         $otorisator = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'KPA')->first();
-        $saldo = Saldo::where('idgrup',$transaksi->idgrup)
-            ->where('idunitkerja',$transaksi->idunitkerja)
-            ->orderBy('tanggal', 'DESC')
-            ->orderBy('id', 'DESC')
-            ->first();
-        return view('report.spp', ['transaksi' => $transaksi, 'otorisator' => $otorisator, 'bendahara' => $bendahara, 'saldo' => $saldo]);
+        return view('report.spp', ['transaksi' => $transaksi, 'otorisator' => $otorisator, 'bendahara' => $bendahara ]);
     }
     public function sppup(Request $request, $id){
         // $otorisator = Pejabat::select('id', 'nama', 'nip', 'jabatan')->findOrFail($request->idotorisator);
@@ -561,11 +556,6 @@ class TransaksiController extends Controller
         $unitkerja = UnitKerja::where('id', $transaksi->idunitkerja)->first();
         $bendahara = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'Bendahara Pengeluaran')->first();
         $otorisator = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'KPA')->first();
-        $saldo = Saldo::where('idgrup',$transaksi->idgrup)
-            ->where('idunitkerja',$transaksi->idunitkerja)
-            ->orderBy('tanggal', 'DESC')
-            ->orderBy('id', 'DESC')
-            ->first();
-        return view('report.sp2d', ['transaksi' => $transaksi, 'bendahara' => $bendahara, 'otorisator' => $otorisator, 'unitkerja' => $unitkerja, 'saldo' => $saldo, 'request' => $request]);
+        return view('report.sp2d', ['transaksi' => $transaksi, 'bendahara' => $bendahara, 'otorisator' => $otorisator, 'unitkerja' => $unitkerja, 'request' => $request]);
     }
 }
