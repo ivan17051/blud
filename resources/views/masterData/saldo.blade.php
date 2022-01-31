@@ -22,21 +22,29 @@ active
             <form action="{{route('saldo.update')}}" method="POST">
             @csrf
             @method('PUT')
-            <input type="hidden" name="idgrup">
             <input type="hidden" name="idunitkerja">
+            <input type="hidden" name="idrekening">
             <div class="modal-body">
                 <div class="form-group">
+                    <label><b>Kode</b></label>
+                    <input type="text" id="koderekening" name="koderekening" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label><b>Nama Rekening</b></label>
+                    <input type="text" id="namarekening" name="namarekening" class="form-control">
+                </div>
+                <!-- <div class="form-group">
                     <label><b>Tanggal</b></label>
                     <input type="date" id="tanggal" name="tanggal" class="form-control" placeholder="Tanggal" required>
-                </div>
+                </div> -->
                 <div class="form-group">
                     <label><b>Saldo</b></label>
                     <input type="text" id="saldo" name="saldo" class="form-control" placeholder="Saldo" pattern="^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$" required>
                 </div>
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label><b>Keterangan</b></label>
                     <textarea id="keterangan" name="keterangan" class="form-control" placeholder="Keterangan" maxlength="99" rows="3" style="resize: none;"></textarea>
-                </div>
+                </div> -->
                 <div class="form-group">
                     <label style="color:var(--danger);"><b>Appli untuk semua PKM <i class="fas fa-exclamation-triangle"></i></b></label>
                     <div class="custom-control custom-switch mt-2">
@@ -167,6 +175,8 @@ active
 @section('script')
 @include('layouts.alert')
 <script type="text/javascript">
+var oIdunitkerja;
+var oUnitkerja;
 $(document).ready(function(){
     //tambahkan swal pada set isall
     $('#isall').change(function(e){
@@ -208,9 +218,10 @@ $(document).ready(function(){
         tagContainer.tagsinput('removeAll');
         values.forEach(function(s, i){
             var label=$(selectContainer[0].selectedOptions[i]).closest('optgroup').prop('label');            
-            let idunitkerja=selectContainer[0].selectedOptions[i].dataset.idunitkerja;
+            oIdunitkerja=selectContainer[0].selectedOptions[i].dataset.idunitkerja;
+            oUnitkerja=s;
             tagContainer.tagsinput('add', s);
-            fetchtable(idunitkerja);        // fetch for table
+            fetchtable(oIdunitkerja);        // fetch for table
         });
     });
     // END: Section of Filter 
@@ -267,6 +278,10 @@ function format(data){
         return e+='<tr><td>'+moment(i['tanggal']).format('MMM YYYY')+'</td><td>'+i['saldo']+'</td><td>'+(i['tipe']?i['tipe']:'-')+'</td></tr>';
     },'');
 
+    if(detailstr===''){
+        detailstr='<tr><td colspan="3" class="text-center">kosong</td></tr>'
+    }
+
     var str='<tr><td></td>'+
     '<td colspan="6">'+
     `<table class="table">
@@ -282,6 +297,23 @@ function format(data){
     var $view=$(str);
 
     return $view;
+}
+
+function tambah(self){
+    var $modal=$('#tambah');
+    var tr = $(self).closest('tr');
+    var row = oTable.api().row( tr );
+    var data=oTable.fnGetData(tr);
+    console.log(data);
+    // $modal.find('input[name=id]').val(data['ID']);
+    let saldolen = data.saldo.length;
+    $modal.find('input[name=saldo]').val(data['anggaran']);
+    $modal.find('input[name=idrekening]').val(data['id']);
+    $modal.find('input[name=koderekening]').val(data['kode']).prop('readonly', true);
+    $modal.find('input[name=namarekening]').val(data['nama']).prop('readonly', true);
+    $modal.find('input[name=idunitkerja]').val(oIdunitkerja);
+    $modal.find('#tambahLabel').html('Ubah Saldo <b>'+oUnitkerja+'</b>')
+    $modal.modal('show');
 }
 </script>
 @endsection

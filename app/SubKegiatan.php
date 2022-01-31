@@ -18,6 +18,7 @@ class SubKegiatan extends Model
     protected $fillable = [
         "idkegiatan",
         "idpejabat",
+        "idunitkerja",
         "kode",
         "nama",
         "tanggal",

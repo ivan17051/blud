@@ -52,7 +52,7 @@ class Transaksi extends Model
         return $this->belongsTo(UnitKerja::class, 'idunitkerja');
     }
 
-    public function subkegiatan(){
-        return $this->hasOne(SubKegiatan::class, 'idgrup', 'idgrup');
-    }
+    // public function subkegiatan(){
+    //     return $this->hasOne(SubKegiatan::class, 'idgrup', 'idgrup');
+    // }
 }
