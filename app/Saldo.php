@@ -16,8 +16,8 @@ class Saldo extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        "idgrup",
 	    "idunitkerja",
+        "idrekening",
         "saldo",
         "tanggal",
         "tipe",
@@ -25,4 +25,8 @@ class Saldo extends Model
         "idc",
         "idm"
     ];
+
+    public function rekening(){
+        return $this->hasOne(Rekening::class, 'idrekening');
+    }
 }

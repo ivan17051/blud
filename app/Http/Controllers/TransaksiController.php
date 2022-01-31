@@ -24,8 +24,7 @@ class TransaksiController extends Controller
 {
     public function index(){
         $user = Auth::user();
-        $subkegiatan=SubKegiatan::where('isactive', 1)->join('msaldo', 'msubkegiatan.idgrup', '=', 'msaldo.idgrup')->select('msaldo.idgrup', 'msaldo.idunitkerja', 'msubkegiatan.idgrup','msubkegiatan.idkegiatan','msubkegiatan.kode','msubkegiatan.nama')->where('idunitkerja', Auth::user()->idunitkerja)->get();
-        
+        $subkegiatan=SubKegiatan::where('isactive', 1)->select('id','idkegiatan','kode','nama')->where('idunitkerja', Auth::user()->idunitkerja)->get();
         $rekening=Rekening::where('isactive', 1)->select('id','kode','nama')->get();
         $rekanan=Rekanan::where('isactive', 1)->select('id','nama')->get();
         $pejabat=Pejabat::where('isactive', 1)->select('id','idunitkerja','nama','nip','jabatan','rekening')->where('idunitkerja',$user->idunitkerja)->get();
@@ -38,11 +37,13 @@ class TransaksiController extends Controller
         $user = Auth::user();
         if(in_array($user->role,['admin','PIH','KEU'])){
             $data = Transaksi::where('transaksi.isactive',1)
-                ->where('status','>',1)->with(['unitkerja','subkegiatan']);
+                ->where('status','>',1)->with(['unitkerja','subkegiatan'])
+                ->orderBy('id','DESC');;
                 // status lebih dari 1 artinya sudah masuk pengajuan sp2d
         }else{
             $data = Transaksi::where('isactive',1)->with(['unitkerja','subkegiatan'])
-                    ->where('idunitkerja',$user->idunitkerja);
+                    ->where('idunitkerja',$user->idunitkerja)
+                    ->orderBy('id','DESC');
         }
         
         $datatable = Datatables::of($data);
@@ -191,7 +192,10 @@ class TransaksiController extends Controller
             'tipe' => 'required_without:id|string|in:UP,LS,TU',
             // 'jenis' => 'required|in:0,1',
             'tanggalref' => 'required_without:id|string',
-            'idgrup' => 'required_without:id|integer',
+            'idsubkegiatan' => 'required_without:id|integer',
+            'kodetransaksi' => 'nullable',
+            'kodepekerjaan' => 'nullable',
+            'isspj' => 'nullable',
             'rekening' => 'nullable|array',                 //--REKENING
             'jumlah' => 'nullable|array',
             'pajak' => 'nullable|array',                    //--PAJAK
@@ -211,6 +215,7 @@ class TransaksiController extends Controller
         
         $input = $validator->valid();
         $input['idunitkerja']=$user->idunitkerja;
+        $idunitkerja=$user->idunitkerja;
         if(isset($input['idrekanan'])){
             $input['idkepada']=$input['idrekanan'];
         }
@@ -221,13 +226,33 @@ class TransaksiController extends Controller
         //membuat array rekening untuk db dng urutan [id, kode, nama rekening, jumlah]
         $newRekeningArray=[];
         $newJumlah=0;
+        $newSaldo=0;
         if(isset($input['rekening']) ){
             foreach ($input['rekening'] as $i=>$idrekening) {
-                $rekening=Rekening::where('id',$idrekening)->select('id','kode','nama')->first()->toArray();
+                $rekening=Rekening::where('id',$idrekening)->select('id','kode','nama')->with(['saldo'=>function($q) use($idunitkerja){
+                    $q->select('id','idunitkerja','idrekening','saldo','tanggal','tipe')
+                        ->where('idunitkerja',$idunitkerja)
+                        ->orderBy('tanggal','DESC')
+                        ->first();
+                    }])->first()->toArray();
                 $newJumlah+=floatval($input['jumlah'][$i]);
+
+                try {
+                    $saldo=$rekening['saldo'][0];
+                    $saldoValue=$saldo['saldo']-floatval($input['jumlah'][$i]);
+                    if($saldoValue < 0){   //cek kecukupan saldo
+                        throw new Exception("Saldo tidak mencukupi");
+                    }
+                    $newSaldo+=$saldoValue;
+                } catch (\Throwable $th) {
+                    return back()->with('error','Saldo tidak mencukupi');
+                }
+
+                unset($rekening['saldo']);
                 $rekening=array_values($rekening);
                 array_push($rekening,floatval($input['jumlah'][$i]));
                 array_push($newRekeningArray,$rekening);
+                
             }
             $input['rekening']=$newRekeningArray;
             $input['jumlah']=$newJumlah;
@@ -269,22 +294,7 @@ class TransaksiController extends Controller
 
             //update info saldo pada row transaksi
             if(isset($input['rekening'])){
-                //get saldo teraktual
-                $saldo=Saldo::where('idgrup',$t->idgrup)
-                    ->where('idunitkerja',$t->idunitkerja)
-                    ->orderBy('tanggal', 'DESC')
-                    ->orderBy('id', 'DESC')
-                    ->first();
-
-                if(isset($saldo)===FALSE){  //belum ada saldo sama sekali
-                    return back()->with('error','Sub-Kegiatan belum memiliki saldo');
-                }
-                elseif($saldo->saldo-floatval($input['jumlah']) < 0){   //cek kecukupan saldo
-                    return back()->with('error','Saldo tidak mencukupi');
-                }
-
-                $saldotemporary=$saldo->saldo-floatval($input['jumlah']);
-                $t->saldo=$saldotemporary;
+                $t->saldo=$newSaldo;
             }
 
             //update info pajak pada row transaksi
@@ -303,33 +313,13 @@ class TransaksiController extends Controller
             ]);
         }
         else{ //jika create transaksi baru
-            //get saldo teraktual
-            $saldo=Saldo::where('idgrup',$input['idgrup'])
-                ->where('idunitkerja',$input['idunitkerja'])
-                ->orderBy('tanggal', 'DESC')
-                ->orderBy('id', 'DESC')
-                ->first();
-
             $input['jumlah']=$newJumlah;
             $input['rekening']=$newRekeningArray;
             $input['pajak']=$newPajakArray;
             $input['potongan']=$newPotonganArray;
 
-            //update info saldo pada row transaksi
-            $saldotemporary=$saldo->saldo-floatval($input['jumlah']);
-
-            if(isset($saldo)===FALSE){  //belum ada saldo sama sekali
-                return back()->with('error','Sub-Kegiatan belum memiliki saldo');
-            }
-            elseif($saldo->saldo-floatval($input['jumlah']) < 0){   //cek kecukupan saldo
-                return back()->with('error','Saldo tidak mencukupi');
-            }
-
             $input['jumlah']=$newJumlah;
             $input['rekening']=$newRekeningArray;
-
-            //update info saldo pada row transaksi
-            $saldotemporary=$saldo->saldo-floatval($input['jumlah']);
 
             //cari transaksi teraktual di tahun ini untuk ambil nomor
             $year=Carbon::createFromFormat('d/m/Y', $input['tanggalref'])->year;
@@ -355,7 +345,7 @@ class TransaksiController extends Controller
                 'idc'=>$user->id,
                 'idm'=>$user->id,
                 'nomor'=>$nomor,
-                'saldo'=>$saldotemporary
+                'saldo'=>$newSaldo
             ]);
         }
 
@@ -487,61 +477,41 @@ class TransaksiController extends Controller
 
             //setelah ada persetujuan sp2d dari keuangan
             if($model->status === 3){
-                $tgl=Carbon::createFromDate($model->tanggalref);
-                $tgl->day = 1;
-                $saldos=Saldo::where('idgrup',$model->idgrup)
-                    ->where('idunitkerja',$model->idunitkerja)
-                    ->whereDate('tanggal','>=',$tgl->format('Y-m-d'))
-                    ->orderBy('tanggal', 'DESC')
-                    ->orderBy('id', 'DESC')
-                    ->get();
-                if($saldos->isEmpty() OR in_array($saldos[0]->tipe, ['inisial','revisi']) ){
-                    //get saldo teraktual
-                    $s=Saldo::where('idgrup',$model->idgrup)
-                        ->where('idunitkerja',$model->idunitkerja)
-                        ->orderBy('tanggal', 'DESC')
-                        ->orderBy('id', 'DESC')
-                        ->first();
-                    
-                    //cek kecukupan saldo
-                    $newjumlah=$s->saldo-floatval($model->jumlah);
-                    if($newjumlah < 0){  
-                        throw new \Exception('Saldo tidak mencukupi');
+                $newSaldo=0;
+                $idunitkerja=$model->idunitkerja;
+                
+                foreach ($model->rekening as $i=>$rekeningArr) {
+                    $saldo=Saldo::select('id','idunitkerja','idrekening','saldo','tanggal','tipe')->where('idrekening',$rekeningArr[0])->where('idunitkerja', $idunitkerja)->orderBy('tanggal','DESC')->first();
+
+                    if(isset($saldo)===FALSE){   //cek row saldo ada atau tidak
+                        throw new Exception("Saldo tidak mencukupi");
                     }
-                    $model->saldo=$newjumlah;
 
-                    // jika kosong atau belum saldo tipe NON-inisial atau NON-revisi
-                    $newsaldo=new Saldo();
-                    $newsaldo->fill([
-                        'idunitkerja'=>$model->idunitkerja,
-                        'idgrup'=>$model->idgrup,
-                        'saldo'=>$newjumlah,
-                        'tanggal'=>Carbon::now()->format('Y-m-d'),
-                        'idm'=>$userId,
-                        'idc'=>$userId
-                    ]);
-                    $newsaldo->save();
-                }else{
-                    //update saldo-saldo tanggal tsb hingga saat ini
-                    foreach ($saldos as $i=>$s) {
+                    $saldoValue=$saldo['saldo']-floatval($rekeningArr[3]);  //index 3 adalah jumlah yg digunakan
+                    if($saldoValue < 0){   //cek kecukupan saldo
+                        throw new Exception("Saldo tidak mencukupi");
+                    }
+                    $newSaldo+=$saldoValue;
 
-                        //cek kecukupan saldo
-                        $newjumlah=$s->saldo-floatval($model->jumlah);
-                        if($newjumlah < 0){  
-                            throw new \Exception('Saldo tidak mencukupi');
-                        }
-                        if($i==0){
-                            $model->saldo=$newjumlah;
-                        }
-
-                        $s->fill([
-                            'saldo' => $newjumlah,
-                            'idm' => $userId
+                    if (in_array($saldo->tipe, ['saldo awal','revisi'])) {
+                        $saldo= $saldo->replicate();
+                        $saldo->fill([
+                            'saldo'=>$saldoValue,
+                            'tanggal'=>Carbon::now()->format('Y-m-d'),
+                            'idm'=>$userId,
+                            'idc'=>$userId,
+                            'tipe'=>null,
                         ]);
-                        $s->save();
+                    }else{
+                        $saldo->fill([
+                            'saldo'=>$saldoValue,
+                            'tanggal'=>Carbon::now()->format('Y-m-d'),
+                            'idm'=>$userId,
+                        ]);
                     }
+                    $saldo->save();
                 }
-
+                $model->saldo=$newSaldo;
             }
 
             $model->save();

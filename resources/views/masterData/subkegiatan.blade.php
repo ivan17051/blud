@@ -34,25 +34,6 @@ active
                         </select>
                     </div>
                     <div class="col-md-6 form-group">
-                        <label><b>Kelompok Subkegiatan</b></label>
-                        <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idgrup">
-                            <option value="" selected>Pilih SubKegiatan</option>
-                            @foreach($grupSubkeg as $unit)
-                            <option value="{{$unit->idgrup}}">{{$unit->kode}} : {{$unit->nama}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4 form-group">
-                        <label><b>Kode SubKegiatan</b></label>
-                        <input type="text" id="kode" name="kode" class="form-control" placeholder="Kode Kegiatan" required>
-                    </div>
-                    <div class="col-md-3 form-group">
-                        <label><b>Tanggal</b></label>
-                        <input type="date" id="tanggal" name="tanggal" class="form-control" placeholder="Tanggal" required>
-                    </div>
-                    <div class="col-md-5 form-group">
                         <label><b>Penanggung Jawab</b></label>
                         <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idpejabat" required >
                             <option value="" selected disabled>Pilih Penanggung Jawab</option>
@@ -60,6 +41,87 @@ active
                             <option value="{{$unit->id}}">{{$unit->nama}}</option>
                             @endforeach
                         </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label><b>Kode SubKegiatan</b></label>
+                        <input type="text" id="kode" name="kode" class="form-control" placeholder="Kode Kegiatan" required>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label><b>Tanggal</b></label>
+                        <input type="date" id="tanggal" name="tanggal" class="form-control" placeholder="Tanggal" required>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="d-block"><b>Unit Kerja</b></label>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idunitkerja" required>
+                                <option value="">--Pilih--</option>
+                                <option value="38">Puskesmas Tanjungsari, TANJUNGSARI</option>
+                                <option value="39">Puskesmas Simomulyo, SIMOMULYO</option>
+                                <option value="40">Puskesmas Manukan Kulon, MANUKANKULON</option>
+                                <option value="41">Puskesmas Balongsari, BALONGSARI</option>
+                                <option value="42">Puskesmas Asemrowo, ASEMROWO</option>
+                                <option value="43">Puskesmas Sememi, SEMEMI</option>
+                                <option value="44">Puskesmas Benowo, BENOWO</option>
+                                <option value="45">Puskesmas Jeruk, JERUK</option>
+                                <option value="46">Puskesmas Lidah Kulon, LIDAHKULON</option>
+                                <option value="47">Puskesmas Lontar, LONTAR</option>
+                                <option value="48">Puskesmas Peneleh, PENELEH</option>
+                                <option value="49">Puskesmas Ketabang, KETABANG</option>
+                                <option value="50">Puskesmas Kedungdoro, KEDUNGDORO</option>
+                                <option value="51">Puskesmas Dr. Soetomo, DRSOETOMO</option>
+                                <option value="52">Puskesmas Tembok Dukuh, TEMBOKDUKUH</option>
+                                <option value="53">Puskesmas Gundih, GUNDIH</option>
+                                <option value="54">Puskesmas Tambakrejo, TAMBAKREJO</option>
+                                <option value="55">Puskesmas Simolawang, SIMOLAWANG</option>
+                                <option value="56">Puskesmas Perak Timur, PERAKTIMUR</option>
+                                <option value="57">Puskesmas Pegirian, PEGIRIAN</option>
+                                <option value="58">Puskesmas Sidotopo, SIDOTOPO</option>
+                                <option value="59">Puskesmas Wonokusumo, WONOKUSUMO</option>
+                                <option value="60">Puskesmas Krembangan Selatan, KREMBANGANSELATAN</option>
+                                <option value="61">Puskesmas Dupak, DUPAK</option>
+                                <option value="62">Puskesmas Kenjeran, KENJERAN</option>
+                                <option value="63">Puskesmas Tanah Kali Kedinding, TAKAL</option>
+                                <option value="64">Puskesmas Sidotopo Wetan, SIDOTOPOWETAN</option>
+                                <option value="65">Puskesmas Rangkah, RANGKAH</option>
+                                <option value="66">Puskesmas Pacar Keling, PACARKELING</option>
+                                <option value="67">Puskesmas Gading, GADING</option>
+                                <option value="68">Puskesmas Pucangsewu, PUCANGSEWU</option>
+                                <option value="69">Puskesmas Mojo, MOJO</option>
+                                <option value="70">Puskesmas Kalirungkut, KALIRUNGKUT</option>
+                                <option value="71">Puskesmas Medokan Ayu, MEDOKANAYU</option>
+                                <option value="72">Puskesmas Tenggilis, TENGGILIS</option>
+                                <option value="73">Puskesmas Gunung Anyar, GUNUNGANYAR</option>
+                                <option value="74">Puskesmas Menur, MENUR</option>
+                                <option value="75">Puskesmas Klampis Ngasem, KLAMPISNGASEM</option>
+                                <option value="76">Puskesmas Mulyorejo, MULYOREJO</option>
+                                <option value="77">Puskesmas Sawahan, SAWAHAN</option>
+                                <option value="78">Puskesmas Putat Jaya, PUTATJAYA</option>
+                                <option value="79">Puskesmas Banyu Urip, BANYUURIP</option>
+                                <option value="80">Puskesmas Pakis, PAKIS</option>
+                                <option value="81">Puskesmas Jagir, JAGIR</option>
+                                <option value="82">Puskesmas Wonokromo, WONOKROMO</option>
+                                <option value="83">Puskesmas Ngagel Rejo, NGAGELREJO</option>
+                                <option value="84">Puskesmas Kedurus, KEDURUS</option>
+                                <option value="85">Puskesmas Dukuh Kupang, DUKUHKUPANG</option>
+                                <option value="86">Puskesmas Wiyung, WIYUNG</option>
+                                <option value="87">Puskesmas Gayungan, GAYUNGAN</option>
+                                <option value="88">Puskesmas Jemursari, JEMURSARI</option>
+                                <option value="89">Puskesmas Sidosermo, SIDOSERMO</option>
+                                <option value="90">Puskesmas Kebonsari, KEBONSARI</option>
+                                <option value="103">Puskesmas Bangkingan, BANGKINGAN</option>
+                                <option value="104">Puskesmas Made, MADE</option>
+                                <option value="117">Puskesmas Moro Krembangan , MOROKREMBANGAN</option>
+                                <option value="121">Puskesmas Tambak Wedi, TAMBAKWEDI</option>
+                                <option value="122">Puskesmas Bulak Banteng, BULAKBANTENG</option>
+                                <option value="135">Puskesmas Keputih, KEPUTIH</option>
+                                <option value="138">Puskesmas Kalijudan, KALIJUDAN</option>
+                                <option value="148">Puskesmas Balas Klumprik, BALASKLUMPRIK</option>
+                                <option value="151">Puskesmas Siwalankerto, SIWALANKERTO</option>
+                                <option value="984">Puskesmas Sawah Pulo, SAWAHPULO</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -89,6 +151,7 @@ active
             <form action="{{route('subkegiatan.update')}}" method="POST">
             @csrf
             @method('PUT')
+            <input type="hidden" name="id">
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-6 form-group">
@@ -102,26 +165,6 @@ active
                         </select>
                     </div>
                     <div class="col-md-6 form-group">
-                        <label><b>Kelompok Subkegiatan</b></label>
-                        <input type="hidden" name="idgrup">
-                        <select id="idgrup" class="form-control" name="idgrup" disabled>
-                            <option value="" selected>Pilih SubKegiatan</option>
-                            @foreach($grupSubkeg as $unit)
-                            <option value="{{$unit->idgrup}}">{{$unit->kode}} : {{$unit->nama}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4 form-group">
-                        <label><b>Kode SubKegiatan</b></label>
-                        <input type="text" id="kode" name="kode" class="form-control" placeholder="Kode Kegiatan" required>
-                    </div>
-                    <div class="col-md-3 form-group">
-                        <label><b>Tanggal</b></label>
-                        <input type="date" id="tanggal" name="tanggal" class="form-control" placeholder="Tanggal" required>
-                    </div>
-                    <div class="col-md-5 form-group">
                         <label><b>Penanggung Jawab</b></label>
                         <select id="idpejabat" class="form-control" name="idpejabat" required>
                             <option value="" selected disabled>Pilih Penanggung Jawab</option>
@@ -129,6 +172,87 @@ active
                             <option value="{{$unit->id}}">{{$unit->nama}}</option>
                             @endforeach
                         </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label><b>Kode SubKegiatan</b></label>
+                        <input type="text" id="kode" name="kode" class="form-control" placeholder="Kode Kegiatan" required>
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <label><b>Tanggal</b></label>
+                        <input type="date" id="tanggal" name="tanggal" class="form-control" placeholder="Tanggal" required>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="d-block"><b>Unit Kerja</b></label>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idunitkerja" required>
+                                <option value="">--Pilih--</option>
+                                <option value="38">Puskesmas Tanjungsari, TANJUNGSARI</option>
+                                <option value="39">Puskesmas Simomulyo, SIMOMULYO</option>
+                                <option value="40">Puskesmas Manukan Kulon, MANUKANKULON</option>
+                                <option value="41">Puskesmas Balongsari, BALONGSARI</option>
+                                <option value="42">Puskesmas Asemrowo, ASEMROWO</option>
+                                <option value="43">Puskesmas Sememi, SEMEMI</option>
+                                <option value="44">Puskesmas Benowo, BENOWO</option>
+                                <option value="45">Puskesmas Jeruk, JERUK</option>
+                                <option value="46">Puskesmas Lidah Kulon, LIDAHKULON</option>
+                                <option value="47">Puskesmas Lontar, LONTAR</option>
+                                <option value="48">Puskesmas Peneleh, PENELEH</option>
+                                <option value="49">Puskesmas Ketabang, KETABANG</option>
+                                <option value="50">Puskesmas Kedungdoro, KEDUNGDORO</option>
+                                <option value="51">Puskesmas Dr. Soetomo, DRSOETOMO</option>
+                                <option value="52">Puskesmas Tembok Dukuh, TEMBOKDUKUH</option>
+                                <option value="53">Puskesmas Gundih, GUNDIH</option>
+                                <option value="54">Puskesmas Tambakrejo, TAMBAKREJO</option>
+                                <option value="55">Puskesmas Simolawang, SIMOLAWANG</option>
+                                <option value="56">Puskesmas Perak Timur, PERAKTIMUR</option>
+                                <option value="57">Puskesmas Pegirian, PEGIRIAN</option>
+                                <option value="58">Puskesmas Sidotopo, SIDOTOPO</option>
+                                <option value="59">Puskesmas Wonokusumo, WONOKUSUMO</option>
+                                <option value="60">Puskesmas Krembangan Selatan, KREMBANGANSELATAN</option>
+                                <option value="61">Puskesmas Dupak, DUPAK</option>
+                                <option value="62">Puskesmas Kenjeran, KENJERAN</option>
+                                <option value="63">Puskesmas Tanah Kali Kedinding, TAKAL</option>
+                                <option value="64">Puskesmas Sidotopo Wetan, SIDOTOPOWETAN</option>
+                                <option value="65">Puskesmas Rangkah, RANGKAH</option>
+                                <option value="66">Puskesmas Pacar Keling, PACARKELING</option>
+                                <option value="67">Puskesmas Gading, GADING</option>
+                                <option value="68">Puskesmas Pucangsewu, PUCANGSEWU</option>
+                                <option value="69">Puskesmas Mojo, MOJO</option>
+                                <option value="70">Puskesmas Kalirungkut, KALIRUNGKUT</option>
+                                <option value="71">Puskesmas Medokan Ayu, MEDOKANAYU</option>
+                                <option value="72">Puskesmas Tenggilis, TENGGILIS</option>
+                                <option value="73">Puskesmas Gunung Anyar, GUNUNGANYAR</option>
+                                <option value="74">Puskesmas Menur, MENUR</option>
+                                <option value="75">Puskesmas Klampis Ngasem, KLAMPISNGASEM</option>
+                                <option value="76">Puskesmas Mulyorejo, MULYOREJO</option>
+                                <option value="77">Puskesmas Sawahan, SAWAHAN</option>
+                                <option value="78">Puskesmas Putat Jaya, PUTATJAYA</option>
+                                <option value="79">Puskesmas Banyu Urip, BANYUURIP</option>
+                                <option value="80">Puskesmas Pakis, PAKIS</option>
+                                <option value="81">Puskesmas Jagir, JAGIR</option>
+                                <option value="82">Puskesmas Wonokromo, WONOKROMO</option>
+                                <option value="83">Puskesmas Ngagel Rejo, NGAGELREJO</option>
+                                <option value="84">Puskesmas Kedurus, KEDURUS</option>
+                                <option value="85">Puskesmas Dukuh Kupang, DUKUHKUPANG</option>
+                                <option value="86">Puskesmas Wiyung, WIYUNG</option>
+                                <option value="87">Puskesmas Gayungan, GAYUNGAN</option>
+                                <option value="88">Puskesmas Jemursari, JEMURSARI</option>
+                                <option value="89">Puskesmas Sidosermo, SIDOSERMO</option>
+                                <option value="90">Puskesmas Kebonsari, KEBONSARI</option>
+                                <option value="103">Puskesmas Bangkingan, BANGKINGAN</option>
+                                <option value="104">Puskesmas Made, MADE</option>
+                                <option value="117">Puskesmas Moro Krembangan , MOROKREMBANGAN</option>
+                                <option value="121">Puskesmas Tambak Wedi, TAMBAKWEDI</option>
+                                <option value="122">Puskesmas Bulak Banteng, BULAKBANTENG</option>
+                                <option value="135">Puskesmas Keputih, KEPUTIH</option>
+                                <option value="138">Puskesmas Kalijudan, KALIJUDAN</option>
+                                <option value="148">Puskesmas Balas Klumprik, BALASKLUMPRIK</option>
+                                <option value="151">Puskesmas Siwalankerto, SIWALANKERTO</option>
+                                <option value="984">Puskesmas Sawah Pulo, SAWAHPULO</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -179,7 +303,7 @@ active
                     <thead>
                         <tr>
                             <th hidden>ID</th>
-                            <th hidden>ID Grup</th>
+                            <th hidden>ID UnitKerja</th>
                             <th hidden>ID Pejabat</th>
                             <th hidden>ID Kegiatan</th>
                             <th>Kode SubKegiatan</th>
@@ -192,7 +316,7 @@ active
                     <tfoot>
                         <tr>
                             <th hidden>ID</th>
-                            <th hidden>ID Grup</th>
+                            <th hidden>ID UnitKerja</th>
                             <th hidden>ID Pejabat</th>
                             <th hidden>ID Kegiatan</th>
                             <th>Kode SubKegiatan</th>
@@ -206,7 +330,7 @@ active
                         @foreach($subkegiatan as $unit)
                         <tr>
                             <td hidden>{{$unit->id}}</td>
-                            <td hidden>{{$unit->idgrup}}</td>
+                            <td hidden>{{$unit->idunitkerja}}</td>
                             <td hidden>{{$unit->idpejabat}}</td>
                             <td hidden>{{$unit->idkegiatan}}</td>
                             <td>{{$unit->kode}}</td>
@@ -239,13 +363,12 @@ function edit(self){
         res[oTable.cols[i]]=val;
         return res;
     },{});
-    console.log(data);
+    // console.log(data);
     $modal.find('input[name=id]').val(data['ID']);
-    $modal.find('select[name=idgrup]').val(data['ID Grup']).change();
-    $modal.find('input[name=idgrup]').val(data['ID Grup']);
     $modal.find('select[name=idkegiatan]').val(data['ID Kegiatan']).change();
     $modal.find('input[name=idkegiatan]').val(data['ID Kegiatan']);
     $modal.find('select[name=idpejabat]').val(data['ID Pejabat']).change();
+    $modal.find('select[name=idunitkerja]').val(data['ID UnitKerja']).change();
     $modal.find('input[name=kode]').val(data['Kode SubKegiatan']);
     $modal.find('input[name=nama]').val(data['Nama']);
     $modal.find('input[name=tanggal]').val(data['Tanggal']);
