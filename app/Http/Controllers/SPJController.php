@@ -6,11 +6,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Validator;
+use Datatables;
 use App\Pejabat;
 use App\UnitKerja;
 use App\Transaksi;
 use App\Rekanan;
 use App\Saldo;
+use App\SubKegiatan;
 
 class SPJController extends Controller
 {
@@ -34,93 +36,50 @@ class SPJController extends Controller
                 ->where('status','>',1)->with(['unitkerja','subkegiatan']);
                 // status lebih dari 1 artinya sudah masuk pengajuan sp2d
         }else{
-            $data = Transaksi::where('isactive',1)->where('isspj',1)
-                ->where('idunitkerja',$user->idunitkerja);
+            $data = Transaksi::where('isactive',1)->where('isspj',1)->where('idunitkerja',$user->idunitkerja)
+                ->select('id','idunitkerja','kodetransaksi','kodepekerjaan','tanggal','keterangan','isactive','idkepada');
         }
-        $datatable = Datatables::of($data);
-        // $datatable->editColumn('tanggalref', function ($t) { return Carbon::parse($t->tanggal)->translatedFormat('d M Y');})
-        //     ->addIndexColumn()
-        //     ->editColumn('jenis', function ($t) { 
-        //         return $t->jenis===1?"<p class=\"text-success\"><b><i class=\"fas fa-arrow-up fa-sm\"></i>&nbspdebit</b></p>":"<p class=\"text-danger\"><b><i class=\"fas fa-arrow-down fa-sm\"></i>&nbspkredit</b></p>";
-        //     })
-        //     ->addColumn('status_raw', function ($t) {
-        //         return $t->status;
-        //     })
-        //     ->editColumn('jumlah', function ($t){
-        //         return number_format($t->jumlah,0,',','.');
-        //     })
-        //     ->editColumn('status', function ($t) { 
-        //         switch ($t->status) {
-        //             case 0:
-        //                 return '<button class="btn btn-sm btn-outline-dark border-0" title="acc"><i class="fas fa-hourglass-half fa-sm"></i>&nbsp belum</button>';
-        //                 break;
-        //             case 1:
-        //                 return '<button class="btn btn-sm btn-warning border-0" title="acc"><i class="fas fa-check fa-sm"></i>&nbsp ppd</button>';
-        //                 break;
-        //             case 2:
-        //                 return '<button class="btn btn-sm btn-info border-0" title="acc"><i class="fas fa-check fa-sm"></i>&nbsp sopd</button>';
-        //                 break;
-        //             case 2:
-        //                 return '<button class="btn btn-sm btn-success border-0" title="acc"><i class="fas fa-check fa-sm"></i>&nbsp spd</button>';
-        //                 break;
-        //             default:
-        //                 return '';
-        //         }
-        //     })
-        //     ->rawColumns(['tipe','jenis','status','action','sptb','spp','spm','sp2d']);
-        // if(in_array($user->role,['PKM'])){
-        //     $datatable
-        //         ->addColumn('action', function ($t) use($user){ 
-        //             $html='';
-        //             if ($t->status<2 || $t->status==4) {
-        //                 $html.='<button onclick="edit(this)" class="btn btn-sm btn-outline-warning border-0" style="width:2rem;" title="Sunting Transaksi" data-toggle="modal" data-target="#sunting"><i class="fas fa-edit fa-sm"></i></button>';
-        //                 $html.='<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" style="width:2rem;" title="Hapus Transaksi"><i class="fas fa-trash fa-sm"></i></button>';
-        //             }
-        //             $html.='<button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" style="width:2rem;" title="Info"><i class="fas fa-ellipsis-v fa-sm"></i></button>';
-        //             return $html;
-        //         })
-        //         ->addColumn('spp',function($t){
-        //             return '<button class="btn btn-sm btn-primary " onclick="cetak(\'spp\',\''.$t->id.'\')" title="Cetak SPP">Cetak</button>';
         
-        //         })
-        //         ->addColumn('spm',function($t){
-        //             if($t->status<1){
-        //                 //tombol membuat spm
-        //                 return '<button class="btn btn-sm btn-warning " onclick="buatSpm(this)">Buat</button>';
-        //             }
-        //             else{
-        //                 return '<button class="btn btn-sm btn-primary " onclick="cetak(\'spm\',\''.$t->id.'\')" title="Cetak SPM">Cetak</button>';
-        //             }
-        //         })
-        //         ->addColumn('sp2d',function($t){
-        //             if($t->status===3){
-        //                 //sp2d telah di-acc
-        //                 return '<button disabled class="btn btn-sm btn-success d-block mb-2 text-nowrap"><i class="fas fa-lock fa-sm"></i> Diterima</button>'.
-        //                     '<button class="btn btn-sm btn-primary " onclick="cetak(\'sp2d\',\''.$t->id.'\',\''.$t->tipepembukuan.'\')" title="Cetak SP2D">Cetak</button>';
-        //             }
-        //             else if($t->status===2){
-        //                 //menunggu di-acc
-        //                 return '<a href="javascript:void(0);" class="btn btn-sm btn-warning " onclick="batal(this)"><i class="fas fa-ban fa-sm"></i> Batal</a>';
-        //             }
-        //             else if($t->status===1 or $t->status===4){  //4 artinya revisi
-        //                 //boleh mengajukan
-        //                 $html='';
-        //                 if($t->status===4){  
-        //                     $html.='<button disabled class="btn btn-sm btn-danger btn-outline-default mb-2 border-0" title="revisi"><i class="fas fa-times fa-sm"></i> Ditolak</button>';
-        //                 }
-        //                 return $html.'<a href="javascript:void(0);" class="btn btn-sm btn-warning " onclick="acc(this)" title="Forward"><i class="fas fa-paper-plane fa-sm"></i> Fwd</a>';
-        //             }
-        //             else{
-        //                 return '<button disabled class="btn btn-sm btn-outline-default border-0" title="Terkunci"><i class="fas fa-lock fa-sm"></i></button>';
-        //             }
-        //         });
-        // }
-        // else{
-        //     $datatable
-        //         ->addColumn('action', function ($t) { 
-        //             return '<button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" title="Info">&nbsp<i class="fas fa-ellipsis-v fa-sm"></i>&nbsp</button>';
-        //         });
-        // }
+        $datatable = Datatables::of($data);
+        $datatable->editColumn('tanggal', function ($t) { return Carbon::parse($t->tanggal)->translatedFormat('d M Y');})
+            ->addColumn('tanggal_raw', function ($t) { 
+                return $t->tanggal;
+            })
+            ->addIndexColumn()
+            ->addColumn('idunitkerja', function ($t) {
+                return $t->idunitkerja;
+            })
+            ->editColumn('kodetransaksi', function ($t){
+                return $t->kodetransaksi;
+            })
+            ->editColumn('kodepekerjaan', function ($t) { 
+                return $t->kodepekerjaan;
+            })
+            ->editColumn('keterangan', function ($t) { 
+                return $t->keterangan;
+            })
+            ->editColumn('idrekanan', function ($t) { 
+                return $t->idkepada;
+            })
+            ->rawColumns(['tanggal','idunitkerja','kodetransaksi','kodepekerjaan','keterangan','action']);
+        if(in_array($user->role,['PKM'])){
+            $datatable
+                ->addColumn('action', function ($t) use($user){ 
+                    $html='';
+                    if ($t->status<2 || $t->status==4) {
+                        $html.='<button onclick="edit(this)" class="btn btn-sm btn-outline-warning border-0" style="width:2rem;" title="Sunting Transaksi" data-toggle="modal" data-target="#sunting"><i class="fas fa-edit fa-sm"></i></button>';
+                        $html.='<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" style="width:2rem;" title="Hapus Transaksi"><i class="fas fa-trash fa-sm"></i></button>';
+                    }
+                    $html.='<button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" style="width:2rem;" title="Info"><i class="fas fa-ellipsis-v fa-sm"></i></button>';
+                    return $html;
+                });
+        }
+        else{
+            $datatable
+                ->addColumn('action', function ($t) { 
+                    return '<button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" title="Info">&nbsp<i class="fas fa-ellipsis-v fa-sm"></i>&nbsp</button>';
+                });
+        }
         return $datatable->make(true);  
     }
 
@@ -161,45 +120,12 @@ class SPJController extends Controller
 
         //membuat array rekening untuk db dng urutan [id, kode, nama rekening, jumlah]
         $newRekeningArray=[];
-        $newJumlah=0;
-        if(isset($input['rekening']) ){
-            foreach ($input['rekening'] as $i=>$idrekening) {
-                $rekening=Rekening::where('id',$idrekening)->select('id','kode','nama')->first()->toArray();
-                $newJumlah+=floatval($input['jumlah'][$i]);
-                $rekening=array_values($rekening);
-                array_push($rekening,floatval($input['jumlah'][$i]));
-                array_push($newRekeningArray,$rekening);
-            }
-            $input['rekening']=$newRekeningArray;
-            $input['jumlah']=$newJumlah;
-        }
 
         //membuat array pajak untuk db dng urutan [id, kode, nama pajak, nominal, kodebilling, tanggal kadaluarsa]
         $newPajakArray=[];
-        if(isset($input['pajak']) ){
-            foreach ($input['pajak'] as $i=>$id) {
-                $pajak=Pajak::where('id',$id)->select('id','kode','nama')->first()->toArray();
-                $pajak=array_values($pajak);
-                $pajak=array_merge($pajak, [
-                    floatval($input['nominalpajak'][$i]),
-                    $input['kodebilling'][$i],
-                    $input['tanggalkadaluarsa'][$i],
-                ]);
-                array_push($newPajakArray,$pajak);
-            }
-        }
 
         //membuat array potongan untuk db dng urutan [kode, nama potongan, nominal ]
         $newPotonganArray=[];
-        if(isset($input['potongan']) ){
-            foreach ($input['potongan'] as $i=>$id) {
-                array_push($newPotonganArray,[
-                    $input['kodepotongan'][$i],
-                    $input['potongan'][$i],
-                    $input['nominalpotongan'][$i]
-                ]);
-            }
-        }
 
         //jika edit transaksi old
         if(isset($input['id'])){
@@ -218,7 +144,7 @@ class SPJController extends Controller
                     ->first();
 
                 if(isset($saldo)===FALSE){  //belum ada saldo sama sekali
-                    return back()->with('error','Sub-Kegiatan belum memiliki saldo');
+                    return back()->with('error','Belum memiliki saldo');
                 }
                 elseif($saldo->saldo-floatval($input['jumlah']) < 0){   //cek kecukupan saldo
                     return back()->with('error','Saldo tidak mencukupi');
@@ -261,6 +187,8 @@ class SPJController extends Controller
             }
             //convert agar nomor ada leading zero
             $nomor = substr(str_repeat(0, 5).strval($nomor), - 5);
+
+            $subkegiatan = SubKegiatan::where('idunitkerja',$input['idunitkerja'])->where('isactive',1)->select('id')->first();
             
             $t=new Transaksi();
             $t->fill($input);
@@ -271,7 +199,10 @@ class SPJController extends Controller
                 'idc'=>$user->id,
                 'idm'=>$user->id,
                 'nomor'=>$nomor,
-                'saldo'=> 0
+                'jumlah'=> 0,
+                'saldo'=> 0,
+                'isspj'=>1,
+                'idsubkegiatan'=>$subkegiatan->id,
             ]);
         }
         

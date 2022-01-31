@@ -7,7 +7,7 @@ active
 @section('content')
 
 <!-- Modal Tambah SPJ -->
-<div class="modal modal-danger fade" id="tambah" tabindex="-1" role="dialog" aria-labelledby="Tambah Rekanan" aria-hidden="true">
+<div class="modal modal-danger fade" id="tambah" tabindex="-1" role="dialog" aria-labelledby="Tambah SPJ" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -87,8 +87,8 @@ active
     </div>
 </div>
 
-<!-- Modal Sunting Pejabat -->
-<div class="modal modal-danger fade" id="sunting" tabindex="-1" role="dialog" aria-labelledby="Sunting Rekanan" aria-hidden="true">
+<!-- Modal Sunting SPJ -->
+<div class="modal modal-danger fade" id="sunting" tabindex="-1" role="dialog" aria-labelledby="Sunting SPJ" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -97,168 +97,68 @@ active
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{route('pejabat.update')}}" method="POST">
+            <form action="{{route('spj.update')}}" method="POST">
             @csrf
             @method('PUT')
             <input type="hidden" name="id">
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-6">
-                    <div class="form-group">
-                        <label class="d-block"><b>Unit Kerja</b></label>
-                        <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idunitkerja" required>
-                        @if( in_array($user->role,['admin','PIH']) )
-                            <option value="">--Pilih--</option>
-                            <option value="1">Dinas Kesehatan Kota Surabaya, DKK</option>
-                            <option value="2">Bagian Sekretariat, SEKRETARIAT</option>
-                            <option value="3">Sub. Bag. Penyusunan Program, SUNGRAM</option>
-                            <option value="4">Sub. Bag. Tata Usaha, TU</option>
-                            <option value="5">UNIT PEGAWAIAN, UP</option>
-                            <option value="6">Sub. Bag. Keuangan dan Perlengkapan, KEUANGAN</option>
-                            <option value="7">INFORMASI TEKNOLOGI, IT</option>
-                            <option value="8">SISTEM INFORMASI KESEHATAN, SIK</option>
-                            <option value="9">PERIJINAN, PERIJINAN</option>
-                            <option value="10">KONSULTAN, KONSULTAN</option>
-                            <option value="11">GUDANG, GUDANG</option>
-                            <option value="12">PERPUSTAKAAN, PERPUSTAKAAN</option>
-                            <option value="13">SEKPRO, SEKPRO</option>
-                            <option value="14">AMBULAN, AMBULAN</option>
-                            <option value="15">KEAMANAN, KEAMANAN</option>
-                            <option value="16">SEKRETARIS DINAS,SEKRETARIS  DINAS</option>
-                            <option value="17">Bidang Pelayanan Kesehatan, YANKES</option>
-                            <option value="18">Seksi Pelayanan Kesehatan Dasar, YANKESDAS</option>
-                            <option value="19">Seksi Pelayanan Kesehatan Khusus, YANKESKHUSUS</option>
-                            <option value="20">Seksi Pelayanan Kesehatan Rujukan, YANKESRUJUKAN</option>
-                            <option value="21">Bidang Pengembangan SDM Kesehatan, PSDMK</option>
-                            <option value="22">Seksi Perencanaan dan Pendayagunaan SDM Kesehatan, PSDMPERENCANAAN</option>
-                            <option value="23">Seksi Pendidikan dan Pelatihan SDM Kesehatan, PSDMPENDIDIKAN</option>
-                            <option value="24">Seksi Registrasi dan Akreditasi SDM Kesehatan, PSDMREGISTRASI</option>
-                            <option value="25">Bidang Jaminan Dan Sarana Kesehatan, JAMSARKES</option>
-                            <option value="26">Seksi Jaminan Kesehatan, JAMKESMAS</option>
-                            <option value="27">Seksi Kefarmasian, FARMASI</option>
-                            <option value="28">Seksi Sarana dan Peralatan Kesehatan, SARALKES</option>
-                            <option value="30">Bidang Pengendalian Masalah Kesehatan, PMK</option>
-                            <option value="31">Seksi Pengendalian dan Pemberantasan Penyakit, P2P</option>
-                            <option value="32">Seksi Wabah dan Bencana, WABEN</option>
-                            <option value="33">Seksi Kesehatan Lingkungan, KESLING</option>
-                            <option value="34">IMUNISASI, IMUNISASI</option>
-                            <option value="35">PONDOK ASI,PONDOK  ASI</option>
-                            <option value="37">Laboratorium Kesehatan Daerah Kota Surabaya,LAB  DKK</option>
-                            <option value="38">Puskesmas Tanjungsari, TANJUNGSARI</option>
-                            <option value="39">Puskesmas Simomulyo, SIMOMULYO</option>
-                            <option value="40">Puskesmas Manukan Kulon, MANUKANKULON</option>
-                            <option value="41">Puskesmas Balongsari, BALONGSARI</option>
-                            <option value="42">Puskesmas Asemrowo, ASEMROWO</option>
-                            <option value="43">Puskesmas Sememi, SEMEMI</option>
-                            <option value="44">Puskesmas Benowo, BENOWO</option>
-                            <option value="45">Puskesmas Jeruk, JERUK</option>
-                            <option value="46">Puskesmas Lidah Kulon, LIDAHKULON</option>
-                            <option value="47">Puskesmas Lontar, LONTAR</option>
-                            <option value="48">Puskesmas Peneleh, PENELEH</option>
-                            <option value="49">Puskesmas Ketabang, KETABANG</option>
-                            <option value="50">Puskesmas Kedungdoro, KEDUNGDORO</option>
-                            <option value="51">Puskesmas Dr. Soetomo, DRSOETOMO</option>
-                            <option value="52">Puskesmas Tembok Dukuh, TEMBOKDUKUH</option>
-                            <option value="53">Puskesmas Gundih, GUNDIH</option>
-                            <option value="54">Puskesmas Tambakrejo, TAMBAKREJO</option>
-                            <option value="55">Puskesmas Simolawang, SIMOLAWANG</option>
-                            <option value="56">Puskesmas Perak Timur, PERAKTIMUR</option>
-                            <option value="57">Puskesmas Pegirian, PEGIRIAN</option>
-                            <option value="58">Puskesmas Sidotopo, SIDOTOPO</option>
-                            <option value="59">Puskesmas Wonokusumo, WONOKUSUMO</option>
-                            <option value="60">Puskesmas Krembangan Selatan, KREMBANGANSELATAN</option>
-                            <option value="61">Puskesmas Dupak, DUPAK</option>
-                            <option value="62">Puskesmas Kenjeran, KENJERAN</option>
-                            <option value="63">Puskesmas Tanah Kali Kedinding, TAKAL</option>
-                            <option value="64">Puskesmas Sidotopo Wetan, SIDOTOPOWETAN</option>
-                            <option value="65">Puskesmas Rangkah, RANGKAH</option>
-                            <option value="66">Puskesmas Pacar Keling, PACARKELING</option>
-                            <option value="67">Puskesmas Gading, GADING</option>
-                            <option value="68">Puskesmas Pucangsewu, PUCANGSEWU</option>
-                            <option value="69">Puskesmas Mojo, MOJO</option>
-                            <option value="70">Puskesmas Kalirungkut, KALIRUNGKUT</option>
-                            <option value="71">Puskesmas Medokan Ayu, MEDOKANAYU</option>
-                            <option value="72">Puskesmas Tenggilis, TENGGILIS</option>
-                            <option value="73">Puskesmas Gunung Anyar, GUNUNGANYAR</option>
-                            <option value="74">Puskesmas Menur, MENUR</option>
-                            <option value="75">Puskesmas Klampis Ngasem, KLAMPISNGASEM</option>
-                            <option value="76">Puskesmas Mulyorejo, MULYOREJO</option>
-                            <option value="77">Puskesmas Sawahan, SAWAHAN</option>
-                            <option value="78">Puskesmas Putat Jaya, PUTATJAYA</option>
-                            <option value="79">Puskesmas Banyu Urip, BANYUURIP</option>
-                            <option value="80">Puskesmas Pakis, PAKIS</option>
-                            <option value="81">Puskesmas Jagir, JAGIR</option>
-                            <option value="82">Puskesmas Wonokromo, WONOKROMO</option>
-                            <option value="83">Puskesmas Ngagel Rejo, NGAGELREJO</option>
-                            <option value="84">Puskesmas Kedurus, KEDURUS</option>
-                            <option value="85">Puskesmas Dukuh Kupang, DUKUHKUPANG</option>
-                            <option value="86">Puskesmas Wiyung, WIYUNG</option>
-                            <option value="87">Puskesmas Gayungan, GAYUNGAN</option>
-                            <option value="88">Puskesmas Jemursari, JEMURSARI</option>
-                            <option value="89">Puskesmas Sidosermo, SIDOSERMO</option>
-                            <option value="90">Puskesmas Kebonsari, KEBONSARI</option>
-                            <option value="103">Puskesmas Bangkingan, BANGKINGAN</option>
-                            <option value="104">Puskesmas Made, MADE</option>
-                            <option value="117">Puskesmas Moro Krembangan , MOROKREMBANGAN</option>
-                            <option value="121">Puskesmas Tambak Wedi, TAMBAKWEDI</option>
-                            <option value="122">Puskesmas Bulak Banteng, BULAKBANTENG</option>
-                            <option value="135">Puskesmas Keputih, KEPUTIH</option>
-                            <option value="138">Puskesmas Kalijudan, KALIJUDAN</option>
-                            <option value="148">Puskesmas Balas Klumprik, BALASKLUMPRIK</option>
-                            <option value="151">Puskesmas Siwalankerto, SIWALANKERTO</option>
-                            <option value="984">Puskesmas Sawah Pulo, SAWAHPULO</option>
-                        @else
-                            @foreach($unitkerja as $uk)
-                            <option value="">--Pilih--</option>
-                            <option value="{{$uk->id}}">{{$uk->nama.', '.$uk->nama_alias}}</option>
-                            @endforeach
-                        @endif
-                        </select>
-                    </div>
+                        <div class="form-group">
+                            <label><b>ID Pekerjaan</b></label>
+                            <input type="text" id="kodepekerjaan" name="kodepekerjaan" class="form-control" placeholder="ID Pekerjaan" required>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label><b>Nama</b></label>
-                            <input type="text" name="nama" class="form-control" placeholder="Nama" required>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label><b>NIK</b></label>
-                            <input type="text" name="nik" class="form-control" placeholder="NIK" required>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label><b>NIP</b></label>
-                            <input type="text" name="nip" class="form-control" placeholder="NIP" required>
+                            <label><b>ID Transaksi</b></label>
+                            <input type="text" id="kodetransasi" name="kodetransaksi" class="form-control" placeholder="ID Transaksi" required>
                         </div>  
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label><b>Rekening</b></label>
-                            <input type="text" name="rekening" class="form-control" placeholder="Rekening" >
-                        </div>
-                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label><b>Golongan</b></label>
-                            <input type="text" name="golongan" class="form-control" placeholder="Golongan" >
+                            <label><b>Rekanan</b></label>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idrekanan" required>
+                              <option value="">--Pilih--</option>
+                              @foreach($rekanan as $unit)
+                              <option value="{{$unit->id}}">{{$unit->nama}}</option>
+                              @endforeach
+                            </select>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <div class="form-group">
-                            <label><b>Jabatan</b></label>
-                            <input type="text" name="jabatan" class="form-control" placeholder="Jabatan" >
+                            <label><b>Tanggal Pengeluaran</b></label>
+                            <input type="date" id="tanggalref" name="tanggalref" class="form-control">
                         </div>
                     </div>
-                </div>                
-                
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label><b>Bulan akan di-SPJ kan</b></label>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="bulanspj" required>
+                              <option value="" selected disabled>--Pilih--</option>
+                              <option value="01">Januari</option>
+                              <option value="02">Februari</option>
+                              <option value="03">Maret</option>
+                              <option value="04">April</option>
+                              <option value="05">Mei</option>
+                              <option value="06">Juni</option>
+                              <option value="07">Juli</option>
+                              <option value="08">Agustus</option>
+                              <option value="09">September</option>
+                              <option value="10">Oktober</option>
+                              <option value="11">November</option>
+                              <option value="12">Desember</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>   
+                <div class="form-group">
+                    <label><b>Keperluan</b></label>
+                    <textarea id="keterangan" name="keterangan" class="form-control" placeholder="Keperluan" maxlength="250" rows="3" style="resize: none;" required></textarea>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
@@ -319,18 +219,15 @@ active
 function edit(self){
     var $modal=$('#sunting');
     var tr = $(self).closest('tr');
-    var data=oTable.row(tr).data().reduce(function(res,val,i){
-        res[oTable.cols[i]]=val;
-        return res;
-    },{});
-    
-    $modal.find('select[name=idunitkerja]').val(data['idunitkerja']).change();
-    $modal.find('input[name=id]').val(data['ID']);
-    $modal.find('input[name=nama]').val(data['Nama']);
-    $modal.find('input[name=nip]').val(data['NIP']);
-    $modal.find('input[name=nik]').val(data['nik']);
-    $modal.find('input[name=golongan]').val(data['golongan']);
-    $modal.find('input[name=jabatan]').val(data['Jabatan']);
+    var data = oTable.fnGetData(tr);
+    console.log(data);
+    $modal.find('input[name=id]').val(data['id']);
+    $modal.find('select[name=tipe]').val(data['tipe_raw']).change();
+    $modal.find('input[name=tanggalref]').val(data['tanggal_raw']);
+    $modal.find('input[name=kodetransaksi]').val(data['kodetransaksi']);
+    $modal.find('input[name=kodepekerjaan]').val(data['kodepekerjaan']);
+    $modal.find('select[name=idrekanan]').val(data['idkepada']).change();
+    $modal.find('textarea[name=keterangan]').val(data['keterangan']);
     $modal.find('input[name=rekening]').val(data['rekening']);
 }
 
@@ -485,19 +382,16 @@ $(document).ready(function(){
         ajax: {type: "POST", url: '{{route("spj.data")}}', data:{'_token':@json(csrf_token())}},
         columns: [
             { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' , title:'No.', name:'no'},
-            { data:'tanggalref', title:'Tanggal', name:'tanggalref'},
-            { data:'nama',orderable: false, title:'Subkegiatan', name:'subkegiatan.nama'},
-            { data:'nomor', title:'Nomor', name:'nomor'},
-            { data:'nomor', title:'Nomor', name:'nomor'},
-            { data:'nomor', title:'Nomor', name:'nomor'},
-            { data:'nomor', title:'Nomor', name:'nomor'},
-            { data:'nomor', title:'Nomor', name:'nomor'},
+            { data:'tanggal', title:'Tanggal', name:'tanggal'},
+            { data:'kodetransaksi', title:'ID Transaksi', name:'kodetransaksi'},
+            { data:'kodepekerjaan', title:'ID Pekerjaan', name:'kodepekerjaan'},
             { data:'keterangan', orderable: false, width: '23rem', title:'Keperluan', name:'keterangan'},
             @if(in_array($user->role,['PKM']))
-            { data:'action', orderable: false, searchable: false, className: "text-right", width: '4rem', title:'Aksi', name:'aksi'},
+            { data:'action', orderable: false, searchable: false, className: "text-right", width: '3rem', title:'Aksi', name:'aksi'},
             @endif
-            { data:'unitkerja.nama', visible: false, name:'unitkerja.nama'},
-            { data:'status_raw', visible: false, name:'status'},
+            { data:'idunitkerja', visible: false, name:'idunitkerja'},
+            { data:'idrekanan', visible: false, name:'idrekanan'},
+            { data:'tanggal_raw', visible: false, name:'tanggal_raw'},
         ],
     }).yadcf([
         // {
