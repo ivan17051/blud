@@ -548,7 +548,9 @@ $role = Auth::user()->id;
     @method('put')
     <input type="hidden" name="id">
 </form>
-<form hidden action="" method="GET" id="update" target="_blank">
+<form hidden action="{{route('transaksi.update')}}" method="POST" id="update" target="_blank">
+    @csrf
+    @method('put')
     <input type="hidden" name="id">
     <input type="hidden" name="inputCek">
     <input type="hidden" name="inputTglCek">
@@ -844,7 +846,7 @@ function buatSpm(self){
         preConfirm: () => {
             var val = document.getElementById('tipepembukuan').value;
             if(val==='') {
-                alert("pilih tipe pembukuan");
+                alert("Pilih Tipe Pembukuan Terlebih Dahulu");
                 return false;
             }
             $acc.find('input[name=tipepembukuan]').val(val);
@@ -923,8 +925,8 @@ async function cetak(type, id, tipepembukuan=null){
                     preConfirm: () => {
                         var valCek = document.getElementById('inputCek').value;
                         var valTgl = document.getElementById('inputTglCek').value;
-                        if(valCek==='') {
-                            alert("pilih tipe pembukuan");
+                        if(valCek==='' || valTgl==='') {
+                            alert("Isi No. Cek dan Tanggal Terlebih Dahulu");
                             return false;
                         }
                         $('#update').find('input[name=inputCek]').val(valCek);
@@ -932,7 +934,8 @@ async function cetak(type, id, tipepembukuan=null){
                     },
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        $('#update').attr('action',"{{url('sp2d')}}/"+id).submit();
+                        // $('#update').attr('action',"{{url('sp2d')}}/"+id).submit();
+                        $('#update').submit();
                     }
                 })
             }else{
@@ -1010,10 +1013,10 @@ function format(data){
     //jika ada permintaan revisi, tampilkan pesan
     var pesanerror='';
     if(data.pesanpenolakan && data['status_raw']==="4"){
-        pesanerror='<div class="alert alert-danger alert-solid" role="alert">'+data.pesanpenolakan+'</div>';
+        pesanerror='<div class="alert alert-danger alert-solid" role="alert"><b>Catatan:</b> '+data.pesanpenolakan+'</div>';
     }
     var rekeningstr = data.rekening.reduce(function(e,i){
-        return e+='<tr><td> '+i[1]+' - '+i[2]+'</td><td> Rp. '+i[3]+' </td></tr>';
+        return e+='<tr><td> '+i[1]+' - '+i[2]+'</td><td> '+number_format(i[3],0,',','.')+' </td></tr>';
     },'');
 
     if(rekeningstr===''){
@@ -1021,7 +1024,7 @@ function format(data){
     }
 
     var pajakstr = data.pajak.reduce(function(e,i){
-        return e+='<tr><td>'+i[1]+'</td><td>'+i[2]+'</td><td>'+i[4]+'</td><td>'+moment(i[5]).format('L')+'</td><td>Rp. '+i[3]+'</td></tr>';
+        return e+='<tr><td>'+i[1]+'</td><td>'+i[2]+'</td><td>'+i[4]+'</td><td>'+moment(i[5]).format('L')+'</td><td> '+number_format(i[3],0,',','.')+'</td></tr>';
     },'');
 
     if(pajakstr===''){
@@ -1029,7 +1032,7 @@ function format(data){
     }
 
     var potonganstr = data.potongan.reduce(function(e,i){
-        return e+='<tr><td>'+i[0]+'</td><td>'+i[1]+'</td><td>'+i[2]+'</td></tr>';
+        return e+='<tr><td>'+i[0]+'</td><td>'+i[1]+'</td><td> '+number_format(i[2],0,',','.')+'</td></tr>';
     },'');
     if(potonganstr===''){
         potonganstr='<tr><td class="text-center" colspan=5>Kosong</td><tr>'

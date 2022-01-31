@@ -16,7 +16,6 @@ use App\Transaksi;
 use App\Pajak;
 use Datatables;
 use Carbon\Carbon;
-use PDF;
 use Validator;
 use Illuminate\Support\Facades\DB;
 
@@ -24,7 +23,7 @@ class TransaksiController extends Controller
 {
     public function index(){
         $user = Auth::user();
-        $subkegiatan=SubKegiatan::where('isactive', 1)->select('id','idkegiatan','kode','nama')->where('idunitkerja', Auth::user()->idunitkerja)->get();
+        $subkegiatan=SubKegiatan::where('isactive', 1)->where('idunitkerja', Auth::user()->idunitkerja)->get();
         $rekening=Rekening::where('isactive', 1)->select('id','kode','nama')->get();
         $rekanan=Rekanan::where('isactive', 1)->select('id','nama')->get();
         $pejabat=Pejabat::where('isactive', 1)->select('id','idunitkerja','nama','nip','jabatan','rekening')->where('idunitkerja',$user->idunitkerja)->get();

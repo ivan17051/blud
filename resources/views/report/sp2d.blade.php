@@ -232,7 +232,7 @@
                                   <tr>
                                       <td class="paddingfont">Pagu Anggaran</td>
                                       <td class="paddingfont">:</td>
-                                      <td class="paddingfont fontBold">Rp. {{number_format($transaksi->saldo,0,',','.')}}</td>
+                                      <td class="paddingfont fontBold"> {{number_format($saldo->saldo,0,',','.')}}</td>
                                   </tr>
                                 </tbody>
                               </table>
