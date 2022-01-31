@@ -46,7 +46,8 @@ $user = Auth::user()->role;
                 @if(in_array($user, array('admin', 'PKM')))
                 <a class="collapse-item @yield('rekananStatus')" href="{{url('rekanan')}}">Rekanan</a>
                 <a class="collapse-item @yield('pejabatStatus')" href="{{url('pejabat')}}">Pejabat</a>
-                @elseif(in_array($user, array('PIH')))
+                @endif
+                @if(in_array($user, array('admin', 'PIH')))
                 <a class="collapse-item @yield('saldoStatus')" href="{{url('saldo')}}">Saldo</a>
                 @endif
             </div>
@@ -60,6 +61,13 @@ $user = Auth::user()->role;
     <!-- <div class="sidebar-heading">
         Transaksi
     </div> -->
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item @yield('spjStatus')">
+        <a class="nav-link" href="{{url('/spj')}}">
+            <i class="fas fa-fw fa-envelope"></i>
+            <span>SPJ</span></a>
+    </li>
 
     <!-- Nav Item - Transaksi -->
     <li class="nav-item @yield('transaksiStatus')">
