@@ -26,6 +26,10 @@ class Transaksi extends Model
         "tipe",
         "nomor",
         "idunitkerja",
+        "idsubkegiatan",
+        "kodetransaksi",
+        "kodepekerjaan",
+        "isspj",
         "rekening",
         "idkepada",
         "flagkepada",
@@ -52,7 +56,7 @@ class Transaksi extends Model
         return $this->belongsTo(UnitKerja::class, 'idunitkerja');
     }
 
-    // public function subkegiatan(){
-    //     return $this->hasOne(SubKegiatan::class, 'idgrup', 'idgrup');
-    // }
+    public function subkegiatan(){
+        return $this->belongsTo(SubKegiatan::class, 'idsubkegiatan');
+    }
 }
