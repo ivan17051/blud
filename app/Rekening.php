@@ -22,4 +22,14 @@ class Rekening extends Model
         "idc",
         "idm"
     ];
+
+    /**
+     * The saldo that belong to the Rekening
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function saldo()
+    {
+        return $this->hasMany(Saldo::class, 'idrekening');
+    }
 }

@@ -51,10 +51,10 @@ $role = Auth::user()->id;
                 </div>
                 <div class="form-group">
                     <label><b>Subkegiatan</b></label>
-                    <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idgrup" required >
+                    <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idsubkegiatan" required >
                         <option value="">--Pilih--</option>
                         @foreach($subkegiatan as $sk)
-                        <option value="{{$sk->idgrup}}">{{$sk->kode.', '.$sk->nama.', '.$sk->tahun}}</option>
+                        <option value="{{$sk->id}}">{{$sk->kode.', '.$sk->nama}}</option>
                         @endforeach
                     </select>
                 </div>
@@ -80,7 +80,7 @@ $role = Auth::user()->id;
                 </div>
                 <div class="form-group">
                     <label><b>Keperluan</b></label>
-                    <textarea id="keterangan" name="keterangan" class="form-control" placeholder="Keterangan" maxlength="250" rows="3" style="resize: none;" required></textarea>
+                    <textarea name="keterangan" class="form-control" placeholder="Keterangan" maxlength="250" rows="3" style="resize: none;" required></textarea>
                 </div>
             </div>
             <div class="modal-footer">
@@ -123,7 +123,7 @@ $role = Auth::user()->id;
                         <div class="form-group">
                             <label><b>Tanggal</b></label>
                             <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
-                                <input readonly type="text" class="form-control datetimepicker-input" data-target="#datetimepicker2" id="tanggalref" name="tanggalref" required/>
+                                <input readonly type="text" class="form-control datetimepicker-input" data-target="#datetimepicker2" name="tanggalref" required/>
                                 <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
@@ -133,10 +133,10 @@ $role = Auth::user()->id;
                 </div>
                 <div class="form-group">
                     <label><b>Subkegiatan</b></label>
-                    <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idgrup" required >
+                    <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idsubkegiatan" required >
                         <option value="">--Pilih--</option>
                         @foreach($subkegiatan as $sk)
-                        <option value="{{$sk->idgrup}}">{{$sk->kode.', '.$sk->nama.', '.$sk->tahun}}</option>
+                        <option value="{{$sk->id}}">{{$sk->kode.', '.$sk->nama}}</option>
                         @endforeach
                     </select>
                 </div>
@@ -889,11 +889,11 @@ function edit(self){
     var $modal=$('#sunting');
     var tr = $(self).closest('tr');
     var data = oTable.fnGetData(tr);
-    
+    console.log(data);
     $modal.find('input[name=id]').val(data['id']);
     $modal.find('select[name=tipe]').val(data['tipe_raw']).change();
     $modal.find('input[name=tanggalref]').val(data['tanggal_raw']);
-    $modal.find('select[name=idgrup]').val(data['idgrup']).change();
+    $modal.find('select[name=idsubkegiatan]').val(data['idsubkegiatan']).change();
     $modal.find('select[name=dibayarkan]').val(data['flagkepada']).change();
     $modal.find('select[name=idrekanan]').val(data['idkepada']).change();
     $modal.find('textarea[name=keterangan]').val(data['keterangan']);

@@ -36,6 +36,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/user', 'DataController@deleteUser')->name('user.delete');
 
         Route::get('/saldo', 'DataController@saldo')->name('saldo');
+        Route::post('/saldo/{idunitkerja}', 'DataController@saldoTable')->name('saldo.table');
         Route::put('/saldo', 'DataController@storeSaldo')->name('saldo.update');
         
         Route::get('/pajak', 'DataController@pajak');

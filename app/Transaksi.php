@@ -25,8 +25,11 @@ class Transaksi extends Model
     protected $fillable = [
         "tipe",
         "nomor",
-        "idgrup",
         "idunitkerja",
+        "idsubkegiatan",
+        "kodetransaksi",
+        "kodepekerjaan",
+        "isspj",
         "rekening",
         "idkepada",
         "flagkepada",
@@ -54,6 +57,6 @@ class Transaksi extends Model
     }
 
     public function subkegiatan(){
-        return $this->hasOne(SubKegiatan::class, 'idgrup', 'idgrup');
+        return $this->belongsTo(SubKegiatan::class, 'idsubkegiatan');
     }
 }

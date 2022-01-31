@@ -14,6 +14,8 @@ use App\User;
 use App\Saldo;
 use App\Pajak;
 use Validator;
+use Datatables;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -35,18 +37,15 @@ class DataController extends Controller
 
     public function subkegiatan(){
         $listKegiatan = Kegiatan::where('isactive', 1)->get();
-        $grupSubkeg = SubKegiatan::where('isactive', 1)->get();
         $pejabat = Pejabat::where('isactive', 1)->get();
         $subkegiatan = SubKegiatan::with(['getKegiatan' => function($query) { 
             $query->select('id', 'kode', 'nama');}])->where('isactive', 1)->get();
-        return view('masterData.subkegiatan', ['subkegiatan' => $subkegiatan, 'kegiatan' => $listKegiatan, 
-            'grupSubkeg' => $grupSubkeg, 'pejabat' => $pejabat]);
+        return view('masterData.subkegiatan', ['subkegiatan' => $subkegiatan, 'kegiatan' => $listKegiatan, 'pejabat' => $pejabat]);
     }
 
     public function rekening(){
-        $listSubKegiatan = SubKegiatan::all();
         $rekening = Rekening::where('isactive', 1)->get();
-        return view('masterData.rekening', ['subkegiatan' => $listSubKegiatan, 'rekening' => $rekening]);
+        return view('masterData.rekening', ['rekening' => $rekening]);
     }
 
     public function pejabat(){
@@ -71,19 +70,34 @@ class DataController extends Controller
     }
 
     public function saldo(Request $request){
-        $subkegiatan=SubKegiatan::where('isactive', 1)->get();
-        $saldos=NULL;
-        if ($request->input('idgrup') and $request->input('idunitkerja')){
-            $saldos=Saldo::where('idgrup',$request->input('idgrup'))
-                ->where('idunitkerja',$request->input('idunitkerja'))
-                ->orderBy('tanggal', 'asc')
-                ->orderBy('id', 'asc')
-                ->get();
+        return view('masterData.saldo');
+    }
 
-            return view('masterData.saldo', ['subkegiatan'=>$subkegiatan, 'saldos'=>$saldos])
-                ->withInput($request->input());
-        }
-        return view('masterData.saldo', ['subkegiatan'=>$subkegiatan, 'saldos'=>$saldos])->with('success','Berhasil menyimpan');
+    public function saldoTable(Request $request, $idunitkerja){
+        $datatable = Datatables::of(Rekening::select('id','kode','nama')->with(['saldo'=>function($q) use($idunitkerja){
+            $q->select('id','idunitkerja','idrekening','saldo','tanggal','tipe')
+                ->where('idunitkerja',$idunitkerja)
+                ->orderBy('tanggal','DESC');
+            }])->orderBy('id','ASC')
+        );
+        $datatable->addIndexColumn()
+            ->editColumn('tanggal', function ($t) { return Carbon::parse($t->tanggal)->translatedFormat('d M Y');})
+            ->addColumn('anggaran',function($t){
+                if($t->saldo->isEmpty()) return 0;
+                return number_format($t->saldo->last()->saldo - 0,0,',','.');
+            })
+            ->addColumn('realisasi',function($t){
+                if($t->saldo->isEmpty()) return 0;
+                return number_format($t->saldo->last()->saldo - $t->saldo->first()->saldo,0,',','.');
+            })
+            ->addColumn('edit', function ($t) { 
+                return '<button onclick="tambah(this)" class="btn btn-sm btn-outline-warning border-0 text-nowrap" title="sunting">&nbsp<i class="fas fa-edit fa-sm"></i>&nbsp</button>';
+            })
+            ->addColumn('action', function ($t) { 
+                return '<button onclick="show(this)" class="btn btn-sm btn-outline-success border-0 dt-control" title="info"><i class="fas fa-plus fa-md"></i></button>';
+            })
+            ->rawColumns(['edit','action']);;
+        return $datatable->make(TRUE);
     }
 
     public function pajak(){
@@ -128,8 +142,8 @@ class DataController extends Controller
         
         $input = array_map('trim', $request->all());
         $validator = Validator::make($input, [
-            'id' => 'nullable|exists:mkegiatan,id',
-            'idgrup' => 'integer',
+            'id' => 'nullable|exists:msubkegiatan,id',
+            'idunitkerja' => 'integer',
             'idkegiatan' => 'required|integer',
             'idpejabat' => 'required|integer',
             'kode' => 'required|string',
@@ -139,19 +153,6 @@ class DataController extends Controller
         if ($validator->fails()) return back()->with('error','Gagal menyimpan');
         
         $input = $validator->valid();
-        // Menonaktifkan subkegiatan lama
-        if(!empty($input['idgrup'])){
-            $sublama = SubKegiatan::where('idgrup', $input['idgrup'])->where('isactive', 1)->get();
-            foreach($sublama as $unit){
-                $unit->isactive = 0;
-                $unit->save();
-            }
-        }
-        // Jika tdk menggantikan subkegiatan lama, maka buat grup baru
-        else{
-            DB::table('grupsubkegiatan')->insert(['isactive'=>1]);
-            $input['idgrup']=DB::table('grupsubkegiatan')->max('id');
-        }
         
         if(isset($input['id'])){
             $model = SubKegiatan::firstOrNew([
@@ -315,10 +316,10 @@ class DataController extends Controller
         $userId = Auth::id();
         $input = array_map('trim', $request->all());
         $validator = Validator::make($input, [
+            'idrekening'=>'required|exists:mrekening,id',
             'idunitkerja'=>'required|exists:munitkerja,id',
-            'idgrup'=>'required|exists:grupsubkegiatan,id',
             'saldo'=> array('required','regex:/^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$/'), // allow float
-            'tanggal'=>'required',
+            // 'tanggal'=>'required',
             'keterangan'=>'nullable',
             'isall'=>'nullable'
         ]);
@@ -327,6 +328,7 @@ class DataController extends Controller
         }
 
         $input = $validator->valid();
+        $tanggal= Carbon::now()->format('Y').'-01-01';
 
         //jika set untuk semua PKM
         if(isset($input['isall'])){
@@ -341,24 +343,36 @@ class DataController extends Controller
             DB::beginTransaction();
             foreach ($unitkerja as $uk) {
                 $input['idunitkerja']=$uk;
-                $saldos_cnt=Saldo::where('idgrup',$request->input('idgrup'))
-                    ->where('idunitkerja',$uk)
+
+                //cek apakah rekening sudah ada inputan puskesmas
+                $saldos_cnt=Saldo::where('idunitkerja',$uk)
+                    ->where('idrekening',$input['idrekening'])
+                    ->where('tipe', null)
                     ->count();
-                $newsaldo=new Saldo();
-                $newsaldo->fill($input);
-                $newsaldo->fill(['idc'=>$userId,'idm'=>$userId]);
+                
                 if($saldos_cnt){
-                    $newsaldo->tipe='revisi';
-                }else{
-                    $newsaldo->tipe='inisial';
+                    throw new \Exception("Rekening sedang digunakan.");
                 }
-                $newsaldo->save();
+
+                $model = Saldo::firstOrNew([
+                    'tipe' => 'saldo awal',
+                    'tanggal' => $tanggal,
+                    'idrekening'=>$input['idrekening'],
+                    'idunitkerja'=> $uk,
+                ]);
+
+                if(isset($model->id)===FALSE){
+                    $model->fill(['idc'=>$userId]);
+                }
+                $model->fill($input);
+                $model->fill(['idm'=>$userId]);
+                $model->save();
             }
             DB::commit();
             return redirect()->route('saldo',$input)->with('success','Berhasil menyimpan');
-        } catch (\Throwable $th) {
+        } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error','Gagal menyimpan');
+            return back()->with('error',$e->getMessage());
         }
     }
 
