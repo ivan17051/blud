@@ -35,17 +35,52 @@ class BkuController extends Controller
                 ->with(['transaksi'=>function($q){
                     $q->select('id','nomor','isspj','isbku');
                 }])
+                ->with(['rekening'=>function($q){
+                    $q->select('id','kode','nama');
+                }])
                 ->orderBy('id','DESC');
         }else{
             $data = BKU::where('isactive',1)
                 ->with(['transaksi'=>function($q){
                     $q->select('id','nomor','isspj','isbku');
                 }])
+                ->with(['rekening'=>function($q){
+                    $q->select('id','kode','nama');
+                }])
                 ->where('idunitkerja',$user->idunitkerja)
                 ->orderBy('id','DESC');
         }
         $datatable = Datatables::of($data);
-        return $datatable->make(true);
+        $datatable
+            ->editColumn('jenis', function($t){
+                if($t->jenis==1) return '<a href="javascript:void(0)" class="text-success fs-20"><i class="fas fa-level-down-alt"></i></a>';
+                else return '<a href="javascript:void(0)" class="text-info fs-20"><i class="fas fa-level-up-alt"></i></a>';
+            })
+            ->editColumn('KT', function($t){
+                if($t->KT==1) return '<a href="javascript:void(0)" class="text-success fs-20"><i class="fas fa-check"></i></a>';
+                return '';
+            })
+            ->editColumn('SB', function($t){
+                if($t->SB==1) return '<a href="javascript:void(0)" class="text-success fs-20"><i class="fas fa-check"></i></a>';
+                return '';
+            })
+            ->editColumn('PNJ', function($t){
+                if($t->PNJ==1) return '<a href="javascript:void(0)" class="text-success fs-20"><i class="fas fa-check"></i></a>';
+                return '';
+            })
+            ->editColumn('PJK', function($t){
+                if($t->PJK==1) return '<a href="javascript:void(0)" class="text-success fs-20"><i class="fas fa-check"></i></a>';
+                return '';
+            })
+            ->editColumn('RO', function($t){
+                if($t->RO==1) return '<a href="javascript:void(0)" class="text-success fs-20"><i class="fas fa-check"></i></a>';
+                return '';
+            })
+            ->addColumn('action', function($t){
+                return '<button class="btn btn-outline-default border-0" disabled><i class="fas fa-lock"></i></a>';
+            })
+            ->rawColumns(['jenis','KT','SB','PNJ','PJK','RO','action']);
+        return $datatable->addIndexColumn()->make(true);
     }
 
     public function storeUpdateBKU(Request $request){

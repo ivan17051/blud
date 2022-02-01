@@ -39,4 +39,8 @@ class BKU extends Model
     public function transaksi(){
         return $this->belongsTo(Transaksi::class, 'idtransaksi');
     }
+
+    public function rekening(){
+        return $this->belongsTo(Rekening::class, 'idrekening');
+    }
 }

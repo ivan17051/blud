@@ -174,6 +174,25 @@ $role = Auth::user()->id;
             <div class="table-responsive">
                 <table class="table table-bordered" id="bkutable" width="100%" cellspacing="0">
                     <thead>
+                        <tr>
+                            <th rowspan="2"></th>
+                            <th rowspan="2"></th>
+                            <th rowspan="2"></th>
+                            <th rowspan="2"></th>
+                            <th rowspan="2"></th>
+                            <th rowspan="2"></th>
+                            <th colspan="5" class="text-center">Buku Pembantu</th>
+                            <th rowspan="2"></th>
+                            <th rowspan="2"></th>
+                            <th rowspan="2"></th>
+                        </tr>
+                        <tr>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
@@ -188,6 +207,32 @@ $role = Auth::user()->id;
 @section('script')
 @include('layouts.alert')
 <script type="text/javascript">
+$(document).ready(function(){
+    function renderTanggal(d,t,row){
+        return moment(row['tanggal']).format('L');
+    }
 
+    oTable = $("#bkutable").dataTable({
+        processing: true,
+        serverSide: true,
+        ajax: {type: "POST", url: '{{route("bku.data")}}', data:{'_token':@json(csrf_token())}},
+        columns: [
+            { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' , title:'No.', name:'no'},
+            { data:'nomor', title:'No. BKU', name:'nomor'},
+            { data:'tanggal', title:'Tanggal', name:'tanggal', render: renderTanggal},
+            { data:'jenis', orderable: false , title:'BKU', name:'jenis', className:'text-center'},
+            { data:'tipe', orderable: false, width: 1 , title:'UPLS', name:'tipe'},
+            { data:'rekening.kode', title:'Rekening', name:'rekening.kode'},
+            { data:'KT', orderable: false, width: 1 , title:'KT', name:'KT'},
+            { data:'SB', orderable: false, width: 1 , title:'SB', name:'SB'},
+            { data:'PNJ', orderable: false, width: 1 , title:'PNJ', name:'PNJ'},
+            { data:'PJK', orderable: false, width: 1 , title:'PJK', name:'PJK'},
+            { data:'RO', orderable: false, width: 1 , title:'RO', name:'RO'},
+            { data:'uraian', orderable: false, width: '23rem', title:'Keperluan', name:'uraian'},
+            { data:'nominal', title:'Nominal', name:'nominal'},
+            { data:'action', title:'Aksi', name:'action', orderable:false, searchable:false},
+        ],
+    })
+})
 </script>
 @endsection

@@ -139,3 +139,11 @@ td.day.disabled{
     padding: 0px;
     border: 0;
 }
+
+/** Font Size  **/
+
+.fs-20{
+    font-size: 20px;
+}
+
+/** END of Font Size  **/
