@@ -146,4 +146,12 @@ td.day.disabled{
     font-size: 20px;
 }
 
+.o-f-edelivery:before {
+    content: url('../img/edelivery.ico');
+}
+
 /** END of Font Size  **/
+
+.border-1-gray-1{
+    border: 1px solid #cdcbcb!important;
+}

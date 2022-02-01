@@ -37,8 +37,7 @@ class BkuController extends Controller
                 }])
                 ->with(['rekening'=>function($q){
                     $q->select('id','kode','nama');
-                }])
-                ->orderBy('id','DESC');
+                }]);
         }else{
             $data = BKU::where('isactive',1)
                 ->with(['transaksi'=>function($q){
@@ -47,11 +46,13 @@ class BkuController extends Controller
                 ->with(['rekening'=>function($q){
                     $q->select('id','kode','nama');
                 }])
-                ->where('idunitkerja',$user->idunitkerja)
-                ->orderBy('id','DESC');
+                ->where('idunitkerja',$user->idunitkerja);
         }
         $datatable = Datatables::of($data);
         $datatable
+            ->editColumn('nominal', function ($t){
+                return number_format($t->nominal,0,',','.');
+            })
             ->editColumn('jenis', function($t){
                 if($t->jenis==1) return '<a href="javascript:void(0)" class="text-success fs-20"><i class="fas fa-level-down-alt"></i></a>';
                 else return '<a href="javascript:void(0)" class="text-info fs-20"><i class="fas fa-level-up-alt"></i></a>';
@@ -105,6 +106,18 @@ class BkuController extends Controller
 
         try {
             DB::beginTransaction();
+            $year=Carbon::parse($model->tanggalref)->year;
+            $bku_aktual=BKU::select('id','nomor')
+                ->where('isactive',1)
+                ->whereYear('tanggal',$year)
+                ->orderBy('id', 'DESC')
+                ->where('idunitkerja',$model->idunitkerja)->first();
+            if(isset($bku_aktual)){
+                $nomor=intval($bku_aktual->nomor)+1;
+            }else{
+                $nomor=1;
+            }
+
             foreach ($model->rekening as $i => $rekeningArr) {
                 $bku = new BKU();
                 $bku->fill($input);
@@ -112,13 +125,15 @@ class BkuController extends Controller
                 $bku->fill([
                     'nominal'=> $rekeningArr[3],
                     'idrekening'=> $rekeningArr[0],
-                    'nomor'=> '09090',
+                    'nomor'=> substr(str_repeat(0, 5).strval($nomor), - 5),   //convert agar nomor ada leading zero
                     'uraian'=> $model->keterangan,
                     'tanggal'=> $model->tanggalref,
                     'idc'=>$user->id,
                     'idm'=>$user->id,
                 ]);
                 $bku->save();
+                
+                $nomor+=1; 
             }
             $model->fill([
                 'isbku' => 1
@@ -131,5 +146,18 @@ class BkuController extends Controller
             return back()->with('error','Gagal memproses.');
         }
         
+    }
+
+    public function cetak(Request $request, $idunitkerja, $bulan){
+        $user = Auth::user();
+        $unitkerja=UnitKerja::where('id',$idunitkerja)->select('id','kode','nama')->first();
+        $bku = BKU::where('isactive',1)
+                ->with(['transaksi'=>function($q){
+                    $q->select('id','nomor','isspj','isbku');
+                }])
+                ->where('idunitkerja',$idunitkerja)
+                ->whereMonth('tanggal',$bulan)
+                ->orderBy('id','ASC')->get();
+        return view('report.bku', ['bku'=>$bku, 'unitkerja'=>$unitkerja]);
     }
 }

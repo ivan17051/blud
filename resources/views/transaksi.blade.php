@@ -1160,6 +1160,14 @@ $(document).ready(function(){
         minDate: curDate,
     });
 
+    function renderNomor(d,t,row){
+        if(row['isspj']==1){
+            return row['nomor'] + '<button class="btn btn-sm btn-light text-nowrap border-1-gray-1 rounded-pill" disabled=""><i class="o-f-edelivery" ></i> '+
+                row['kodetransaksi']+'</button>';
+        }
+        return row['nomor'];
+    }
+
     oTable = $("#transaksitable").dataTable({
         processing: true,
         serverSide: true,
@@ -1169,7 +1177,7 @@ $(document).ready(function(){
             { data:'tipe', orderable: false, width: 1 , title:'Tipe', name:'tipe'},
             { data:'tanggalref', title:'Tanggal', name:'tanggalref'},
             { data:'subkegiatan.nama',orderable: false, title:'Subkegiatan', name:'subkegiatan.nama'},
-            { data:'nomor', title:'Nomor', name:'nomor'},
+            { data:'nomor', title:'Nomor', name:'nomor', render:renderNomor},
             { data:'keterangan', orderable: false, width: '23rem', title:'Keperluan', name:'keterangan'},
             { data:'jumlah', title:'Jumlah', name:'jumlah'},
             @if(in_array($user->role,['PKM']))

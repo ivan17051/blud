@@ -12,6 +12,7 @@ table{border-collapse:collapse;margin-left: auto;margin-right: auto; background-
 .borderKanan{border-right:solid 1px;}
 .borderAtas{border-top:solid 1px;}
 .borderKiri{border-left:solid 1px;}
+.borderSemua th, .borderSemua td{border:solid 1px;}
 
 .posisiAtas{vertical-align:top;}
 .posisiTengah{vertical-align:middle;}
