@@ -481,9 +481,51 @@ $role = Auth::user()->id;
                 </div>
                 <div class="form-group">
                     <label><b>Tanggal BKU</b></label>
-                    <div class="input-group date datetimepicker2" data-target-input="nearest" id="dtp4">
+                    <div class="input-group date datetimepicker2" data-target-input="nearest" id="dtp5">
                         <input readonly type="text" class="form-control datetimepicker-input" data-target="#dtp5" name="tanggal" required/>
                         <div class="input-group-append" data-target="#dtp5" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                    </div>
+                </div>  
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="submit" class="btn btn-primary">Proses</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Impor ESPJ To BKU -->
+<div class="modal modal-danger fade" id="importESPJ" tabindex="-1" role="dialog" aria-labelledby="Import ESPJ" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="importESPJLabel">ESPJ ke BKU </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{route('bku.transaksi2bku')}}" method="post" onsubmit="return submit_espj(event);">
+                @csrf
+                <input type="hidden" name="idtransaksi">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label><b>ID Transaksi</b></label>
+                    <div class="input-group">
+                        <input readonly type="text" pattern="[0-9]{1,7}" name="kodetransaksi" class="form-control" placeholder="ID Transaksi" required>
+                        <div class="input-group-append">
+                        <button class="btn btn-dark" type="button" onclick="pilih_espj()">?</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><b>Tanggal BKU</b></label>
+                    <div class="input-group date datetimepicker2" data-target-input="nearest" id="dtp6">
+                        <input readonly type="text" class="form-control datetimepicker-input" data-target="#dtp6" name="tanggal" required/>
+                        <div class="input-group-append" data-target="#dtp6" data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                         </div>
                     </div>
@@ -523,7 +565,7 @@ $role = Auth::user()->id;
                             
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#importSPPLS" data-placement="top" title="Tambah BKU SPP LS">LS</a>
-                                <a class="dropdown-item" href="#">eSPJ</a>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#importESPJ" data-placement="top" title="Tambah BKU ESPJ">eSPJ</a>
                             </div>
                         </div>
                         <button class="btn btn-sm btn-primary " type="button" data-toggle="modal" data-target="#tambah" data-placement="top" title="Tambah BKU">
@@ -794,25 +836,48 @@ function openPilihSPP(urlparams, sign_, callback){
     }
     sign=sign_;
     callbackPilihSpp=callback;
-    sppTable = $("#spptable").dataTable({
+
+    if(sign==1){    //SPP LS to BKU
+        $('#pilihSppLabel').text('Pilih SPP');
+        sppTable = $("#spptable").dataTable({
+            processing: true,
+            serverSide: true,
+            order: [[ 1, "desc" ]],
+            ajax: {type: "POST", url: '{{route("bku.getspp")}}'+urlparams, data:{'_token':@json(csrf_token())}},
+            columns: [
+                { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' , title:'No.', name:'no'},
+                { data:'nomor', title:'Nomor', name:'nomor',render: function(e,d,data){
+                    return '<button onclick="callbackPilihSpp(\''+data['nomor']+'\','+data['id']+')" class="btn btn-sm btn-light text-nowrap border-1-gray-1 rounded-pill" >'+data['nomor']+'</button>';
+                }},
+                { data:'tanggalref', title:'Tanggal', name:'tanggalref', render: function(e,d,row){return moment(row['tanggalref']).format('L');}},
+                { data:'subkegiatan.kode', orderable: false, title:'Kode Subkegiatan', name:'subkegiatan.kode'},
+                { data:'keterangan', orderable: false, title:'Uraian', name:'keterangan'},
+            ],
+        });
+    }
+    else if(sign==2){   // e-SPJ to BKU
+        $('#pilihSppLabel').text('Pilih e-SPJ');
+        sppTable = $("#spptable").dataTable({
         processing: true,
         serverSide: true,
         order: [[ 1, "desc" ]],
         ajax: {type: "POST", url: '{{route("bku.getspp")}}'+urlparams, data:{'_token':@json(csrf_token())}},
         columns: [
             { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' , title:'No.', name:'no'},
-            { data:'nomor', title:'Nomor', name:'nomor',render: function(e,d,data){
-                return '<button onclick="callbackPilihSpp(\''+data['nomor']+'\','+data['id']+')" class="btn btn-sm btn-light text-nowrap border-1-gray-1 rounded-pill" >'+data['nomor']+'</button>';
+            { data:'kodetransaksi', title:'ID Transaksi', name:'kodetransaksi',render: function(e,d,data){
+                return '<button onclick="callbackPilihSpp(\''+data['kodetransaksi']+'\','+data['id']+')" class="btn btn-sm btn-light text-nowrap border-1-gray-1 rounded-pill" ><i class="o-f-edelivery" ></i> '+data['kodetransaksi']+'</button>';
             }},
             { data:'tanggalref', title:'Tanggal', name:'tanggalref', render: function(e,d,row){return moment(row['tanggalref']).format('L');}},
             { data:'subkegiatan.kode', orderable: false, title:'Kode Subkegiatan', name:'subkegiatan.kode'},
             { data:'keterangan', orderable: false, title:'Uraian', name:'keterangan'},
         ],
     });
+    }
+    
 }
 
 function pilihSPP_LS(){
-    openPilihSPP('?upls=UP',1, function(nomor,id){
+    openPilihSPP('?upls=LS&status=3',1, function(nomor,id){
         $form = $('#importSPPLS form');
         $form.find('input[name=idtransaksi]').val(id);
         $form.find('input[name=nomorsp2d]').val(nomor);
@@ -825,6 +890,23 @@ function submitSPP_LS(e){
     if(my.getFormData($(e.target)).id===''){
         e.preventDefault();
         alert('belum memilih spp');
+    }
+}
+
+function pilih_espj(){
+    openPilihSPP('?upls=UP,TU,GU&isspj=1',2, function(kodetransaksi,id){
+        $form = $('#importESPJ form');
+        $form.find('input[name=idtransaksi]').val(id);
+        $form.find('input[name=kodetransaksi]').val(kodetransaksi);
+        $('#pilihSpp').modal('hide');
+    });
+    $('#pilihSpp').modal({backdrop: 'static', keyboard: false}).modal('show');
+}
+
+function submit_espj(e){
+    if(my.getFormData($(e.target)).id===''){
+        e.preventDefault();
+        alert('belum memilih espj');
     }
 }
 </script>

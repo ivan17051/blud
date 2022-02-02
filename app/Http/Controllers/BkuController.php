@@ -108,7 +108,7 @@ class BkuController extends Controller
                 return '';
             })
             ->addColumn('action', function($t){
-                if(isset($t->idtransaksi)===FALSE){
+                if(isset($t->transaksi->nomor)===FALSE){
                     return '<button onclick="edit(this)" class="btn btn-sm btn-outline-warning border-0" style="width:2rem;" title="Sunting Transaksi" ><i class="fas fa-edit fa-sm"></i></button>'.
                         '<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" style="width:2rem;" title="Hapus Transaksi"><i class="fas fa-trash fa-sm"></i></button>';
                 }
@@ -247,7 +247,6 @@ class BkuController extends Controller
                 $bku->fill([
                     'RO'=> 1,
                 ]);
-
                 $bku->save();
                 $nomor+=1; 
 
@@ -293,11 +292,19 @@ class BkuController extends Controller
         $user = Auth::user();
         $upls = explode(',',$request->upls);
         $data = Transaksi::where('isactive',1)->with(['subkegiatan'])
-                ->select('id', 'nomor', 'tipe', 'idunitkerja', 'idsubkegiatan', 'tanggalref', 'keterangan')
+                ->select('id', 'nomor', 'tipe', 'idunitkerja', 'idsubkegiatan', 'tanggalref', 'keterangan', 'kodetransaksi')
                 ->where('idunitkerja',$user->idunitkerja)
                 ->where('isbku',0)
-                ->where('status',3)     //sp2d sudah muncul
                 ->whereIn('tipe',$upls);
+
+        if(isset($request->status)){
+            $data->where('status',$request->status);     //sp2d sudah muncul
+        }
+
+        if(isset($request->isspj)){
+            $data->where('isspj',$request->isspj);     //isspj
+        }
+
         $datatable = Datatables::of($data);
         return $datatable->addIndexColumn()->make(true);
     }
