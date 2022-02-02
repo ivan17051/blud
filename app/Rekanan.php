@@ -19,6 +19,7 @@ class Rekanan extends Model
         "nama",
         "alamat",
         "pimpinan",
+        "namabank",
         "rekening",
         "npwp",
 	    "isactive",
