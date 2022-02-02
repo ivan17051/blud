@@ -226,22 +226,41 @@ class BkuController extends Controller
                 $nomor=1;
             }
 
+            // LOOP ke Rekening yg ada di row transaksi
             foreach ($model->rekening as $i => $rekeningArr) {
                 $bku = new BKU();
                 $bku->fill($input);
                 $bku->fill($model->toArray());
                 $bku->fill([
+                    'keterangan'=> NULL,
                     'nominal'=> $rekeningArr[3],
                     'idrekening'=> $rekeningArr[0],
                     'nomor'=> substr(str_repeat(0, 5).strval($nomor), - 5),   //convert agar nomor ada leading zero
                     'uraian'=> $model->keterangan,
-                    'tanggal'=> $model->tanggalref,
+                    'tanggal'=> isset($input['tanggal']) ? $input['tanggal'] : $model->tanggalref,
                     'idc'=>$user->id,
                     'idm'=>$user->id,
                 ]);
+
+
+                // Rekening LS pasti masuk Buku Pembantu RO
+                $bku->fill([
+                    'RO'=> 1,
+                ]);
+
                 $bku->save();
-                
                 $nomor+=1; 
+
+                //kalau tipe LS bikin 2, yaitu penerimaan dan pengeluaran
+                if($model->tipe==='LS'){
+                    $bku=$bku->replicate();
+                    $bku->fill([
+                        'jenis'=> $bku->jenis===0 ? 1 : 0,
+                        'nomor'=> substr(str_repeat(0, 5).strval($nomor), - 5),   //convert agar nomor ada leading zero
+                    ]);
+                    $bku->save();
+                    $nomor+=1; 
+                }
             }
             $model->fill([
                 'isbku' => 1
@@ -267,5 +286,19 @@ class BkuController extends Controller
                 ->whereMonth('tanggal',$bulan)
                 ->orderBy('id','ASC')->get();
         return view('report.bku', ['bku'=>$bku, 'unitkerja'=>$unitkerja]);
+    }
+
+    public function getSPP(Request $request){
+        if(isset($request->upls)==False) return abort(404);
+        $user = Auth::user();
+        $upls = explode(',',$request->upls);
+        $data = Transaksi::where('isactive',1)->with(['subkegiatan'])
+                ->select('id', 'nomor', 'tipe', 'idunitkerja', 'idsubkegiatan', 'tanggalref', 'keterangan')
+                ->where('idunitkerja',$user->idunitkerja)
+                ->where('isbku',0)
+                ->where('status',3)     //sp2d sudah muncul
+                ->whereIn('tipe',$upls);
+        $datatable = Datatables::of($data);
+        return $datatable->addIndexColumn()->make(true);
     }
 }

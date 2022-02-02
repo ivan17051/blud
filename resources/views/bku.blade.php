@@ -435,6 +435,69 @@ $role = Auth::user()->id;
     <input type="hidden" name="id">
 </form>
 
+<!-- Modal Pilih SPP -->
+<div class="modal modal-danger fade" id="pilihSpp" tabindex="-1" role="dialog" aria-labelledby="Pilih SPP" aria-hidden="true" style="z-index: 9999;">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pilihSppLabel">Pilih SPP</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered" id="spptable" width="100%" cellspacing="0">
+                    <thead>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Impor SPP LS To BKU -->
+<div class="modal modal-danger fade" id="importSPPLS" tabindex="-1" role="dialog" aria-labelledby="Import SPP LS" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="importSPPLSLabel">SPP LS ke BKU </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{route('bku.transaksi2bku')}}" method="post" onsubmit="return submitSPP_LS(event);">
+                @csrf
+                <input type="hidden" name="idtransaksi">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label><b>No. SPP</b></label>
+                    <div class="input-group">
+                        <input readonly type="text" pattern="[0-9]{1,5}" name="nomorsp2d" class="form-control" placeholder="No. Bukti" required>
+                        <div class="input-group-append">
+                        <button class="btn btn-dark" type="button" onclick="pilihSPP_LS()">?</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><b>Tanggal BKU</b></label>
+                    <div class="input-group date datetimepicker2" data-target-input="nearest" id="dtp4">
+                        <input readonly type="text" class="form-control datetimepicker-input" data-target="#dtp5" name="tanggal" required/>
+                        <div class="input-group-append" data-target="#dtp5" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                    </div>
+                </div>  
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="submit" class="btn btn-primary">Proses</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
@@ -459,6 +522,7 @@ $role = Auth::user()->id;
                             </button>
                             
                             <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#importSPPLS" data-placement="top" title="Tambah BKU SPP LS">LS</a>
                                 <a class="dropdown-item" href="#">eSPJ</a>
                             </div>
                         </div>
@@ -592,6 +656,9 @@ $role = Auth::user()->id;
 @section('script')
 @include('layouts.alert')
 <script type="text/javascript">
+var sppTable;
+var callbackPilihSpp;
+var sign=-99;
 $(document).ready(function(){
     function renderTanggal(d,t,row){
         return moment(row['tanggal']).format('L');
@@ -674,7 +741,7 @@ function edit(self){
     var $modal=$('#sunting');
     var tr = $(self).closest('tr');
     var data = oTable.fnGetData(tr);
-    console.log(data);
+    
     $modal.find('input[name=id]').val(data['id']);
     $modal.find('input[name=tanggal]').val(data['tanggal']);
     $modal.find('input[name=tanggalref]').val(data['tanggalref']);
@@ -718,6 +785,47 @@ function hapus(self){
             $('#delete').submit();
         }
     })
+}
+
+function openPilihSPP(urlparams, sign_, callback){
+    if(sign===sign_) return;
+    else if(sppTable){
+        sppTable.clear().fnDestroy();
+    }
+    sign=sign_;
+    callbackPilihSpp=callback;
+    sppTable = $("#spptable").dataTable({
+        processing: true,
+        serverSide: true,
+        order: [[ 1, "desc" ]],
+        ajax: {type: "POST", url: '{{route("bku.getspp")}}'+urlparams, data:{'_token':@json(csrf_token())}},
+        columns: [
+            { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' , title:'No.', name:'no'},
+            { data:'nomor', title:'Nomor', name:'nomor',render: function(e,d,data){
+                return '<button onclick="callbackPilihSpp(\''+data['nomor']+'\','+data['id']+')" class="btn btn-sm btn-light text-nowrap border-1-gray-1 rounded-pill" >'+data['nomor']+'</button>';
+            }},
+            { data:'tanggalref', title:'Tanggal', name:'tanggalref', render: function(e,d,row){return moment(row['tanggalref']).format('L');}},
+            { data:'subkegiatan.kode', orderable: false, title:'Kode Subkegiatan', name:'subkegiatan.kode'},
+            { data:'keterangan', orderable: false, title:'Uraian', name:'keterangan'},
+        ],
+    });
+}
+
+function pilihSPP_LS(){
+    openPilihSPP('?upls=UP',1, function(nomor,id){
+        $form = $('#importSPPLS form');
+        $form.find('input[name=idtransaksi]').val(id);
+        $form.find('input[name=nomorsp2d]').val(nomor);
+        $('#pilihSpp').modal('hide');
+    });
+    $('#pilihSpp').modal({backdrop: 'static', keyboard: false}).modal('show');
+}
+
+function submitSPP_LS(e){
+    if(my.getFormData($(e.target)).id===''){
+        e.preventDefault();
+        alert('belum memilih spp');
+    }
 }
 </script>
 @endsection

@@ -78,6 +78,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/bku/transaksi2bku', 'BkuController@transaksiToBKU')->name('bku.transaksi2bku');
     Route::get('/bku/cetak/{idunitkerja}/{bulan}', 'BkuController@cetak')->name('bku.cetak');
     Route::delete('/bku', 'BkuController@deleteBKU')->name('bku.delete');
+    Route::post('/bku/getspp', 'BkuController@getSPP')->name('bku.getspp');
 
     Route::get('/pejabat/byunitkerja/{idunitkerja}','DataController@getPejabatByUnitKerja')->name('pejabat.byunitkerja');
     Route::get('/spj', 'SPJController@spj');
