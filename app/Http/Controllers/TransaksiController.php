@@ -37,11 +37,13 @@ class TransaksiController extends Controller
         if(in_array($user->role,['admin','PIH','KEU'])){
             $data = Transaksi::where('transaksi.isactive',1)
                 ->where('status','>',1)->with(['unitkerja','subkegiatan'])
+                ->where('nomor','<>',null)
                 ->orderBy('id','DESC');;
                 // status lebih dari 1 artinya sudah masuk pengajuan sp2d
         }else{
             $data = Transaksi::where('isactive',1)->with(['unitkerja','subkegiatan'])
                     ->where('idunitkerja',$user->idunitkerja)
+                    ->where('nomor','<>',null)
                     ->orderBy('id','DESC');
         }
         
@@ -153,8 +155,9 @@ class TransaksiController extends Controller
                 ->addColumn('sp2d',function($t){
                     if($t->status===3){
                         //sp2d telah di-acc
-                        $toBKU_btn='<button class="btn btn-sm btn-warning " onclick="transaksi2bku(this)" title="to BKU">to BKU</button>';
-                        if($t->isbku===1) $toBKU_btn='<button class="btn btn-sm btn-warning " disabled title="to BKU"><i class="fas fa-lock fa-sm"> to BKU</button>';
+                        $toBKU_btn='';
+                        // $toBKU_btn='<button class="btn btn-sm btn-warning " onclick="transaksi2bku(this)" title="to BKU">to BKU</button>';
+                        // if($t->isbku===1) $toBKU_btn='<button class="btn btn-sm btn-warning " disabled title="to BKU"><i class="fas fa-lock fa-sm"> to BKU</button>';
                         return '<button disabled class="btn btn-sm btn-success d-block mb-2 text-nowrap"><i class="fas fa-lock fa-sm"></i> Diterima</button>'.
                             '<button class="btn btn-sm btn-primary mb-2" onclick="cetak(\'sp2d\',\''.$t->id.'\',\''.$t->tipepembukuan.'\')" title="Cetak SP2D">Cetak</button>'.
                             $toBKU_btn;
@@ -327,6 +330,7 @@ class TransaksiController extends Controller
             $year=Carbon::createFromFormat('d/m/Y', $input['tanggalref'])->year;
             $transaksi_aktual=Transaksi::select('id','nomor')
                 ->where('isactive',1)
+                ->where('nomor','<>',NULL)
                 ->whereYear('tanggalref',$year)
                 ->orderBy('id', 'DESC')
                 ->where('idunitkerja',$input['idunitkerja'])->first();
@@ -564,5 +568,50 @@ class TransaksiController extends Controller
         $bendahara = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'Bendahara Pengeluaran')->first();
         $otorisator = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'KPA')->first();
         return view('report.sp2d', ['transaksi' => $transaksi, 'bendahara' => $bendahara, 'otorisator' => $otorisator, 'unitkerja' => $unitkerja, 'request' => $request]);
+    }
+
+    public function espjToTransaksi(Request $request){
+        $user = Auth::user();
+        $input = $request->all();
+        
+        $idtransaksi=$input['idtransaksi'];
+        
+        $model=Transaksi::where('id',$idtransaksi)
+            ->where('isbku',0)
+            ->select('id','tanggalref', 'idunitkerja', 'idsubkegiatan', 'tipe', 'jenis', 'keterangan', 'rekening')->first();
+
+        if(isset($model)===FALSE){
+            return back()->with('error','ID transaksi tidak ditemukan.');
+        }elseif ($model->idunitkerja !== $user->idunitkerja) {
+            return back()->with('error','Tidak berhak.');
+        }
+
+        try {
+            DB::beginTransaction();
+            $year=Carbon::parse($model->tanggalref)->year;
+            $transaksi_aktual=Transaksi::select('id','nomor')
+                ->where('isactive',1)
+                ->where('nomor','<>',NULL)
+                ->whereYear('tanggalref',$year)
+                ->orderBy('id', 'DESC')
+                ->where('idunitkerja', $user->idunitkerja)->first();
+            if(isset($transaksi_aktual)){
+                $nomor=intval($transaksi_aktual->nomor)+1;
+            }else{
+                $nomor=1;
+            }
+
+            // Update Properti Transaksi
+            $model->fill([
+                'idm' => $user->id,
+                'nomor'=> substr(str_repeat(0, 5).strval($nomor), - 5),   //convert agar nomor ada leading zero
+            ]);
+            $model->save();
+            DB::commit();
+            return back()->with('success','Berhasil menarik e-SPJ.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return back()->with('error','Gagal menarik e-SPJ.');
+        }
     }
 }

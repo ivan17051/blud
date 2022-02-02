@@ -523,6 +523,60 @@ $role = Auth::user()->id;
     </div>
 </div>
 
+<!-- Modal Pilih SPP -->
+<div class="modal modal-danger fade" id="pilihSpp" tabindex="-1" role="dialog" aria-labelledby="Pilih SPP" aria-hidden="true" style="z-index: 9999;">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pilihSppLabel">Pilih SPP</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered" id="spptable" width="100%" cellspacing="0">
+                    <thead>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Tarik e-SPJ LS menjadi SPP LS -->
+<div class="modal modal-danger fade" id="tarik_eSPJ_LS" tabindex="-1" role="dialog" aria-labelledby="Tarik e-SPJ LS" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tarik_eSPJ_LSLabel">Tarik e-SPJ LS </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{route('transaksi.espj2transaksi')}}" method="post" onsubmit="return submit_espj_ls(event);">
+                @csrf
+                <input type="hidden" name="idtransaksi">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label><b>ID Transaksi</b></label>
+                    <div class="input-group">
+                        <input readonly type="text" pattern="[0-9]{1,7}" name="kodetransaksi" class="form-control" placeholder="ID Transaksi" required>
+                        <div class="input-group-append">
+                        <button class="btn btn-dark" type="button" onclick="pilih_espj_ls()">?</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="submit" class="btn btn-primary">Proses</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Form -->
 <form hidden action="{{route('transaksi.delete')}}" method="POST" id="delete">
     @csrf
@@ -574,8 +628,21 @@ $role = Auth::user()->id;
                     <h6 class="m-0 font-weight-bold text-primary">Data Transaksi</h6>
                 </div>
                 @if($user->role==='PKM')
-                <div class="col text-right">
-                    <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#tambah" data-placement="top" title="Tambah Transaksi">Tambah</button>        
+                <div class="col text-right dropdown">
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <div class="btn-group dropleft" role="group">
+                            <button class="btn btn-sm btn-primary dropdown-toggle dropleft" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            </button>
+                            
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#tarik_eSPJ_LS" data-placement="top" title="Tambah SPP LS">SPP LS</a>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#tarikSPP_GU" data-placement="top" title="Tambah SPP GU">SPP GU</a>
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-primary " type="button" data-toggle="modal" data-target="#tambah" data-placement="top" title="Tambah Transaksi">
+                            Tambah
+                        </button>
+                    </div>
                 </div>
                 @endif
             </div>
@@ -1125,6 +1192,56 @@ function format(data){
     return $view;
     return $view.prop("outerHTML");
 }
+
+//START of FORM Pilih SPP
+var sppTable;
+var callbackPilihSpp;
+var sign=-99;
+function openPilihSPP(urlparams, sign_, callback){
+    if(sign===sign_) return;
+    else if(sppTable){
+        sppTable.clear().fnDestroy();
+    }
+    sign=sign_;
+    callbackPilihSpp=callback;
+
+    if(sign==3){   // e-SPJ LS ditarik menjadi SPP LS
+        $('#pilihSppLabel').text('Pilih e-SPJ');
+        sppTable = $("#spptable").dataTable({
+            processing: true,
+            serverSide: true,
+            order: [[ 1, "desc" ]],
+            ajax: {type: "POST", url: '{{route("bku.getspp")}}'+urlparams, data:{'_token':@json(csrf_token())}},
+            columns: [
+                { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' , title:'No.', name:'no'},
+                { data:'kodetransaksi', title:'ID Transaksi', name:'kodetransaksi',render: function(e,d,data){
+                    return '<button onclick="callbackPilihSpp(\''+data['kodetransaksi']+'\','+data['id']+')" class="btn btn-sm btn-light text-nowrap border-1-gray-1 rounded-pill" ><i class="o-f-edelivery" ></i> '+data['kodetransaksi']+'</button>';
+                }},
+                { data:'tanggalref', title:'Tanggal', name:'tanggalref', render: function(e,d,row){return moment(row['tanggalref']).format('L');}},
+                { data:'subkegiatan.kode', orderable: false, title:'Kode Subkegiatan', name:'subkegiatan.kode'},
+                { data:'keterangan', orderable: false, title:'Uraian', name:'keterangan'},
+            ],
+        });
+    }
+}
+
+function pilih_espj_ls(){
+    openPilihSPP('?upls=LS&isspj=1&nomor=NULL',3, function(kodetransaksi,id){
+        $form = $('#tarik_eSPJ_LS form');
+        $form.find('input[name=idtransaksi]').val(id);
+        $form.find('input[name=kodetransaksi]').val(kodetransaksi);
+        $('#pilihSpp').modal('hide');
+    });
+    $('#pilihSpp').modal({backdrop: 'static', keyboard: false}).modal('show');
+}
+
+function submit_espj_ls(e){
+    if(my.getFormData($(e.target)).id===''){
+        e.preventDefault();
+        alert('belum memilih espj');
+    }
+}
+//END of FORM Pilih SPP
 
 $(document).ready(function(){
     $('#tambah').find('select[name=jenis]').val('0').change().attr('readonly',true);

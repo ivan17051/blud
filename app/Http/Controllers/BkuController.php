@@ -305,6 +305,11 @@ class BkuController extends Controller
             $data->where('isspj',$request->isspj);     //isspj
         }
 
+        if(isset($request->nomor)){
+            $nomor = $request->nomor=='NULL'? null : $request->nomor;
+            $data->where('nomor',$nomor);     //nomor
+        }
+
         $datatable = Datatables::of($data);
         return $datatable->addIndexColumn()->make(true);
     }

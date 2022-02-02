@@ -698,9 +698,7 @@ $role = Auth::user()->id;
 @section('script')
 @include('layouts.alert')
 <script type="text/javascript">
-var sppTable;
-var callbackPilihSpp;
-var sign=-99;
+
 $(document).ready(function(){
     function renderTanggal(d,t,row){
         return moment(row['tanggal']).format('L');
@@ -829,6 +827,11 @@ function hapus(self){
     })
 }
 
+
+//START of FORM Pilih SPP
+var sppTable;
+var callbackPilihSpp;
+var sign=-99;
 function openPilihSPP(urlparams, sign_, callback){
     if(sign===sign_) return;
     else if(sppTable){
@@ -909,5 +912,6 @@ function submit_espj(e){
         alert('belum memilih espj');
     }
 }
+//END of FORM Pilih SPP
 </script>
 @endsection
