@@ -254,6 +254,7 @@ class DataController extends Controller
             'id' => 'nullable|exists:mrekanan,id',
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
+            'namabank' => 'required|string|max:20',
             'pimpinan' => 'required|string|max:255',
             'rekening' => 'required|string|max:100',
             'npwp' => 'required|string|max:15',

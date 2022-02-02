@@ -31,17 +31,33 @@ active
                     <label><b>Alamat</b></label>
                     <input type="text" id="alamat" name="alamat" class="form-control" placeholder="Alamat" required>
                 </div>
-                <div class="form-group">
-                    <label><b>Nama Pimpinan</b></label>
-                    <input type="text" name="pimpinan" class="form-control" placeholder="Nama Pimpinan" required>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>Nama Pimpinan</b></label>
+                            <input type="text" name="pimpinan" class="form-control" placeholder="Nama Pimpinan" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>NPWP</b></label>
+                            <input type="text" name="npwp" maxlength="15" class="form-control" placeholder="NPWP" required>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label><b>Rekening</b></label>
-                    <input type="text" name="rekening" class="form-control" placeholder="Rekening" required>
-                </div>
-                <div class="form-group">
-                    <label><b>NPWP</b></label>
-                    <input type="text" name="npwp" class="form-control" placeholder="NPWP" required>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>Nama Bank</b></label>
+                            <input type="text" name="namabank" class="form-control" placeholder="Nama Bank" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>Rekening</b></label>
+                            <input type="text" name="rekening" class="form-control" placeholder="Rekening" required>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -76,17 +92,33 @@ active
                     <label><b>Alamat</b></label>
                     <input type="text" name="alamat" class="form-control" placeholder="Alamat" required>
                 </div>
-                <div class="form-group">
-                    <label><b>Nama Pimpinan</b></label>
-                    <input type="text" name="pimpinan" class="form-control" placeholder="Nama Pimpinan" required>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>Nama Pimpinan</b></label>
+                            <input type="text" name="pimpinan" class="form-control" placeholder="Nama Pimpinan" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>NPWP</b></label>
+                            <input type="text" name="npwp" maxlength="15" class="form-control" placeholder="NPWP" required>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label><b>Rekening</b></label>
-                    <input type="text" name="rekening" class="form-control" placeholder="Rekening" required>
-                </div>
-                <div class="form-group">
-                    <label><b>NPWP</b></label>
-                    <input type="text" name="npwp" maxlength="15" class="form-control" placeholder="NPWP" required>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>Nama Bank</b></label>
+                            <input type="text" name="namabank" class="form-control" placeholder="Nama Bank" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>Rekening</b></label>
+                            <input type="text" name="rekening" class="form-control" placeholder="Rekening" required>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -135,6 +167,7 @@ active
                             <th>Nama</th>
                             <th>Alamat</th>
                             <th>Pimpinan</th>
+                            <th hidden>Nama Bank</th>
                             <th>Rekening</th>
                             <th>NPWP</th>
                             <th>Aksi</th>
@@ -146,6 +179,7 @@ active
                             <th>Nama</th>
                             <th>Alamat</th>
                             <th>Pimpinan</th>
+                            <th hidden>Nama Bank</th>
                             <th>Rekening</th>
                             <th>NPWP</th>
                             <th>Aksi</th>
@@ -158,6 +192,7 @@ active
                             <td>{{$unit->nama}}</td>
                             <td>{{$unit->alamat}}</td>
                             <td>{{$unit->pimpinan}}</td>
+                            <td hidden>{{$unit->namabank}}</td>
                             <td>{{$unit->rekening}}</td>
                             <td>{{$unit->npwp}}</td>
                             <td>
@@ -190,6 +225,7 @@ function edit(self){
     $modal.find('input[name=id]').val(data['ID']);
     $modal.find('input[name=nama]').val(data['Nama']);
     $modal.find('input[name=alamat]').val(data['Alamat']);
+    $modal.find('input[name=namabank]').val(data['Nama Bank']);
     $modal.find('input[name=pimpinan]').val(data['Pimpinan']);
     $modal.find('input[name=rekening]').val(data['Rekening']);
     $modal.find('input[name=npwp]').val(data['NPWP']);
