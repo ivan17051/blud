@@ -13,20 +13,22 @@ use App\Transaksi;
 use App\Rekanan;
 use App\Saldo;
 use App\SubKegiatan;
+use App\Rekening;
 
 class SPJController extends Controller
 {
     public function spj(){
         $user = Auth::user();
         $unitKerja=UnitKerja::where('id',$user->idunitkerja)->select('id','nama','nama_alias')->get();
-        $rekanan=Rekanan::where('isactive', 1)->select('id', 'nama')->get();
+        $rekanan=Rekanan::where('isactive', 1)->get();
+        $rekening=Rekening::where('isactive', 1)->get();
         if(in_array($user->role,['admin','PIH'])){
             $spj = Transaksi::where('isspj', 1)->where('isactive', 1)->get();
         }else{
             $spj = Transaksi::where('isspj', 1)->where('isactive', 1)->where('idunitkerja',$user->idunitkerja)->get();
         }        
         
-        return view('spj', ['user' =>$user, 'unitkerja'=>$unitKerja, 'spj'=>$spj, 'rekanan'=>$rekanan]);
+        return view('spj', ['user' =>$user, 'unitkerja'=>$unitKerja, 'spj'=>$spj, 'rekanan'=>$rekanan, 'rekening'=>$rekening]);
     }
 
     public function data(Request $request){
@@ -37,7 +39,7 @@ class SPJController extends Controller
                 // status lebih dari 1 artinya sudah masuk pengajuan sp2d
         }else{
             $data = Transaksi::where('isactive',1)->where('isspj',1)->where('idunitkerja',$user->idunitkerja)
-                ->select('id','idunitkerja','kodetransaksi','kodepekerjaan','tanggal','keterangan','isactive','idkepada');
+                ->select('id','idunitkerja','kodetransaksi','kodepekerjaan','tanggal','keterangan','isactive','idkepada','rekening');
         }
         
         $datatable = Datatables::of($data);
@@ -60,6 +62,9 @@ class SPJController extends Controller
             })
             ->editColumn('idrekanan', function ($t) { 
                 return $t->idkepada;
+            })
+            ->editColumn('rekening', function ($t) { 
+                return $t->rekening;
             })
             ->rawColumns(['tanggal','idunitkerja','kodetransaksi','kodepekerjaan','keterangan','action']);
         if(in_array($user->role,['PKM'])){
@@ -92,7 +97,7 @@ class SPJController extends Controller
             // 'tipe' => 'required_without:id|string|in:UP,LS,TU',
             // 'jenis' => 'required|in:0,1',
             'tanggalref' => 'required_without:id|string',
-            'rekening' => 'nullable|array',                 //--REKENING
+            'rekening' => 'nullable',                 //--REKENING
             'jumlah' => 'nullable|array',
             'pajak' => 'nullable|array',                    //--PAJAK
             'nominalpajak' => 'nullable|array',
@@ -104,7 +109,7 @@ class SPJController extends Controller
             'idrekanan' => 'required_without:id|integer',
             'flagkepada' => 'nullable|integer',
             // 'tipepembukuan' => 'nullable|string|in:pindahbuku,tunai',
-            // 'jumlah' => array('required','regex:/^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$/'), // allow float
+            'jumlah' => array('required','regex:/^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$/'), // allow float
             'keterangan' => 'required_without:id|string|max:255',
         ]);
         if ($validator->fails()) return back()->with('error',$validator->messages());
@@ -117,10 +122,20 @@ class SPJController extends Controller
         if(isset($input['idrekanan'])){
             $input['flagkepada']=2;
         }
-
+        
         //membuat array rekening untuk db dng urutan [id, kode, nama rekening, jumlah]
         $newRekeningArray=[];
+        if(isset($input['rekening']) ){
+            $rekening=Rekening::where('id', $input['rekening'])->select('id','kode','nama')->first()->toArray();
 
+            $rekening=array_values($rekening);
+            array_push($rekening,floatval($input['jumlah']));
+            array_push($newRekeningArray,$rekening);
+                
+            $input['rekening']=$newRekeningArray;
+            
+        }
+        
         //membuat array pajak untuk db dng urutan [id, kode, nama pajak, nominal, kodebilling, tanggal kadaluarsa]
         $newPajakArray=[];
 
@@ -132,36 +147,6 @@ class SPJController extends Controller
             $t=Transaksi::find($input['id']);
             if($t->status===3){
                 return back()->with('error','SP2D sudah disetujui.');
-            }
-
-            //update info saldo pada row transaksi
-            if(isset($input['rekening'])){
-                //get saldo teraktual
-                $saldo=Saldo::where('idgrup',$t->idgrup)
-                    ->where('idunitkerja',$t->idunitkerja)
-                    ->orderBy('tanggal', 'DESC')
-                    ->orderBy('id', 'DESC')
-                    ->first();
-
-                if(isset($saldo)===FALSE){  //belum ada saldo sama sekali
-                    return back()->with('error','Belum memiliki saldo');
-                }
-                elseif($saldo->saldo-floatval($input['jumlah']) < 0){   //cek kecukupan saldo
-                    return back()->with('error','Saldo tidak mencukupi');
-                }
-
-                $saldotemporary=$saldo->saldo-floatval($input['jumlah']);
-                $t->saldo=$saldotemporary;
-            }
-
-            //update info pajak pada row transaksi
-            if(isset($input['pajak'])){
-                $input['pajak']=$newPajakArray;
-            }
-
-            //update info potongan pada row transaksi
-            if(isset($input['potongan'])){
-                $input['potongan']=$newPotonganArray;
             }
 
             $t->fill($input);
@@ -199,7 +184,6 @@ class SPJController extends Controller
                 'idc'=>$user->id,
                 'idm'=>$user->id,
                 'nomor'=>$nomor,
-                'jumlah'=> 0,
                 'saldo'=> 0,
                 'isspj'=>1,
                 'idsubkegiatan'=>$subkegiatan->id,

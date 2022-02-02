@@ -24,13 +24,13 @@ active
                     <div class="col-md-6">
                         <div class="form-group">
                             <label><b>ID Pekerjaan</b></label>
-                            <input type="text" id="kodepekerjaan" name="kodepekerjaan" class="form-control" placeholder="ID Pekerjaan" required>
+                            <input type="text" id="kodepekerjaan" name="kodepekerjaan" class="form-control" placeholder="ID Pekerjaan" required minlength=8 maxlength=8>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label><b>ID Transaksi</b></label>
-                            <input type="text" id="kodetransasi" name="kodetransaksi" class="form-control" placeholder="ID Transaksi" required>
+                            <input type="text" id="kodetransasi" name="kodetransaksi" class="form-control" placeholder="ID Transaksi" required minlength=7 maxlength=7>
                         </div>  
                     </div>
                 </div>
@@ -38,7 +38,7 @@ active
                     <div class="col-md-6">
                         <div class="form-group">
                             <label><b>Rekanan</b></label>
-                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idrekanan" required>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" data-size="5" name="idrekanan" required onchange="filterFormulirOnChange(this, '#tambah')">
                               <option value="">--Pilih--</option>
                               @foreach($rekanan as $unit)
                               <option value="{{$unit->id}}">{{$unit->nama}}</option>
@@ -49,33 +49,78 @@ active
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><b>Tanggal Pengeluaran</b></label>
-                            <input type="date" id="tanggalref" name="tanggalref" class="form-control">
+                            <input type="date" id="tanggalref" name="tanggalref" class="form-control" onchange="fillBulanSPJ(this, '#tambah')">
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><b>Bulan akan di-SPJ kan</b></label>
-                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="bulanspj" required>
+                            <select class="form-control" id="bulanspj" name="bulanspj" required disabled>
                               <option value="" selected disabled>--Pilih--</option>
-                              <option value="01">Januari</option>
-                              <option value="02">Februari</option>
-                              <option value="03">Maret</option>
-                              <option value="04">April</option>
-                              <option value="05">Mei</option>
-                              <option value="06">Juni</option>
-                              <option value="07">Juli</option>
-                              <option value="08">Agustus</option>
-                              <option value="09">September</option>
+                              <option value="1">Januari</option>
+                              <option value="2">Februari</option>
+                              <option value="3">Maret</option>
+                              <option value="4">April</option>
+                              <option value="5">Mei</option>
+                              <option value="6">Juni</option>
+                              <option value="7">Juli</option>
+                              <option value="8">Agustus</option>
+                              <option value="9">September</option>
                               <option value="10">Oktober</option>
                               <option value="11">November</option>
                               <option value="12">Desember</option>
                             </select>
                         </div>
                     </div>
-                </div>   
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label><b>Pimpinan</b></label>
+                            <input type="text" id="pimpinan" name="pimpinan" class="form-control" placeholder="Pimpinan" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label><b>NPWP</b></label>
+                            <input type="text" id="npwp" name="npwp" class="form-control" placeholder="NPWP" disabled>
+                        </div>  
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label><b>Nama Bank</b></label>
+                            <input type="text" id="namabank" name="namabank" class="form-control" placeholder="Nama Bank" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label><b>No. Rekening</b></label>
+                            <input type="text" id="norek" name="norek" class="form-control" placeholder="No. Rekening" disabled>
+                        </div>  
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>Rekening</b></label>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" data-size="5" name="rekening" required>
+                              <option value="" selected disabled>--Pilih--</option>
+                              @foreach($rekening as $unit)
+                              <option value="{{$unit->id}}">{{$unit->kode}} - {{$unit->nama}}</option>
+                              @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>Jumlah</b></label>
+                            <input type="text" id="jumlah" name="jumlah" class="form-control" placeholder="Jumlah">
+                        </div>  
+                    </div>
+                </div>
                 <div class="form-group">
                     <label><b>Keperluan</b></label>
-                    <textarea id="keterangan" name="keterangan" class="form-control" placeholder="Keperluan" maxlength="250" rows="3" style="resize: none;" required></textarea>
+                    <textarea id="keterangan" name="keterangan" class="form-control" placeholder="Keperluan" maxlength="250" rows="2" style="resize: none;" required></textarea>
                 </div>
             </div>
             <div class="modal-footer">
@@ -106,13 +151,13 @@ active
                     <div class="col-md-6">
                         <div class="form-group">
                             <label><b>ID Pekerjaan</b></label>
-                            <input type="text" id="kodepekerjaan" name="kodepekerjaan" class="form-control" placeholder="ID Pekerjaan" required>
+                            <input type="text" id="kodepekerjaan" name="kodepekerjaan" class="form-control" placeholder="ID Pekerjaan" required minlength=8 maxlength=8>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label><b>ID Transaksi</b></label>
-                            <input type="text" id="kodetransasi" name="kodetransaksi" class="form-control" placeholder="ID Transaksi" required>
+                            <input type="text" id="kodetransasi" name="kodetransaksi" class="form-control" placeholder="ID Transaksi" required minlength=7 maxlength=7>
                         </div>  
                     </div>
                 </div>
@@ -120,7 +165,7 @@ active
                     <div class="col-md-6">
                         <div class="form-group">
                             <label><b>Rekanan</b></label>
-                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idrekanan" required>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" data-size="5" name="idrekanan" required onchange="filterFormulirOnChange(this, '#sunting')">
                               <option value="">--Pilih--</option>
                               @foreach($rekanan as $unit)
                               <option value="{{$unit->id}}">{{$unit->nama}}</option>
@@ -131,33 +176,78 @@ active
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><b>Tanggal Pengeluaran</b></label>
-                            <input type="date" id="tanggalref" name="tanggalref" class="form-control">
+                            <input type="date" id="tanggalref" name="tanggalref" class="form-control" onchange="fillBulanSPJ(this, '#sunting')">
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><b>Bulan akan di-SPJ kan</b></label>
-                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="bulanspj" required>
+                            <select disabled class="form-control" name="bulanspj" required>
                               <option value="" selected disabled>--Pilih--</option>
-                              <option value="01">Januari</option>
-                              <option value="02">Februari</option>
-                              <option value="03">Maret</option>
-                              <option value="04">April</option>
-                              <option value="05">Mei</option>
-                              <option value="06">Juni</option>
-                              <option value="07">Juli</option>
-                              <option value="08">Agustus</option>
-                              <option value="09">September</option>
+                              <option value="1">Januari</option>
+                              <option value="2">Februari</option>
+                              <option value="3">Maret</option>
+                              <option value="4">April</option>
+                              <option value="5">Mei</option>
+                              <option value="6">Juni</option>
+                              <option value="7">Juli</option>
+                              <option value="8">Agustus</option>
+                              <option value="9">September</option>
                               <option value="10">Oktober</option>
                               <option value="11">November</option>
                               <option value="12">Desember</option>
                             </select>
                         </div>
                     </div>
-                </div>   
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label><b>Pimpinan</b></label>
+                            <input type="text" id="pimpinan" name="pimpinan" class="form-control" placeholder="Pimpinan" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label><b>NPWP</b></label>
+                            <input type="text" id="npwp" name="npwp" class="form-control" placeholder="NPWP" disabled>
+                        </div>  
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label><b>Nama Bank</b></label>
+                            <input type="text" id="namabank" name="namabank" class="form-control" placeholder="Nama Bank" disabled>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label><b>No. Rekening</b></label>
+                            <input type="text" id="norek" name="norek" class="form-control" placeholder="No. Rekening" disabled>
+                        </div>  
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>Rekening</b></label>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" data-size="5" name="rekening" required>
+                              <option value="" selected disabled>--Pilih--</option>
+                              @foreach($rekening as $unit)
+                              <option value="{{$unit->id}}">{{$unit->kode}} - {{$unit->nama}}</option>
+                              @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>Jumlah</b></label>
+                            <input type="text" id="jumlah" name="jumlah" class="form-control" placeholder="Jumlah">
+                        </div>  
+                    </div>
+                </div>
                 <div class="form-group">
                     <label><b>Keperluan</b></label>
-                    <textarea id="keterangan" name="keterangan" class="form-control" placeholder="Keperluan" maxlength="250" rows="3" style="resize: none;" required></textarea>
+                    <textarea id="keterangan" name="keterangan" class="form-control" placeholder="Keperluan" maxlength="250" rows="2" style="resize: none;" required></textarea>
                 </div>
             </div>
             <div class="modal-footer">
@@ -169,8 +259,8 @@ active
     </div>
 </div>
 
-<!-- Form -->
-<form hidden action="{{route('pejabat.update')}}" method="POST" id="delete">
+<!-- Form Delete -->
+<form hidden action="{{route('spj.update')}}" method="POST" id="delete">
     @csrf
     @method('delete')
     <input type="hidden" name="id">
@@ -216,11 +306,38 @@ active
 @section('script')
 @include('layouts.alert')
 <script>
+
+const rekanan = @json($rekanan);
+// console.log(rekanan[0]);
+
+const filterFormulirOnChange = async function(e, modal){
+    var $modal=$(modal);
+    var val = e.value;
+    
+    var dt;
+    dt=rekanan;
+    var pos = rekanan.findIndex(function(e){return e.id==val;});
+    
+    $modal.find('input[name=pimpinan]').val(rekanan[pos]['pimpinan']);
+    $modal.find('input[name=npwp]').val(rekanan[pos]['npwp']);
+    $modal.find('input[name=namabank]').val(rekanan[pos]['namabank']);
+    $modal.find('input[name=norek]').val(rekanan[pos]['rekening']);
+}
+
+const fillBulanSPJ = async function(e, modal){
+    var $modal=$(modal);
+    
+    var date = new Date(e.value);
+    var month = date.getMonth();
+    
+    $modal.find('select[name=bulanspj]').val(month+1).change();
+}
+
 function edit(self){
     var $modal=$('#sunting');
     var tr = $(self).closest('tr');
     var data = oTable.fnGetData(tr);
-    console.log(data);
+    
     $modal.find('input[name=id]').val(data['id']);
     $modal.find('select[name=tipe]').val(data['tipe_raw']).change();
     $modal.find('input[name=tanggalref]').val(data['tanggal_raw']);
@@ -228,16 +345,25 @@ function edit(self){
     $modal.find('input[name=kodepekerjaan]').val(data['kodepekerjaan']);
     $modal.find('select[name=idrekanan]').val(data['idkepada']).change();
     $modal.find('textarea[name=keterangan]').val(data['keterangan']);
-    $modal.find('input[name=rekening]').val(data['rekening']);
+    $modal.find('select[name=rekening]').val(data['rekening'][0][0]).change();
+    $modal.find('input[name=jumlah]').val(data['rekening'][0][3]);
+
+    var pos = rekanan.findIndex(function(e){return e.id==data['idkepada'];});
+    var date = new Date(data['tanggal_raw']);
+    var month = date.getMonth();
+
+    $modal.find('input[name=pimpinan]').val(rekanan[pos]['pimpinan']);
+    $modal.find('input[name=npwp]').val(rekanan[pos]['npwp']);
+    $modal.find('input[name=namabank]').val(rekanan[pos]['namabank']);
+    $modal.find('input[name=norek]').val(rekanan[pos]['rekening']);
+    $modal.find('select[name=bulanspj]').val(month+1).change();
 }
 
 function hapus(self){
     var tr = $(self).closest('tr');
-    var data=oTable.row(tr).data().reduce(function(res,val,i){
-        res[oTable.cols[i]]=val;
-        return res;
-    },{});
-    $('#delete').find('input[name=id]').val(data['ID']);
+    var data=oTable.fnGetData(tr);
+    
+    $('#delete').find('input[name=id]').val(data['id']);
     Swal.fire({
         customClass: {
             confirmButton: 'btn btn-primary mr-2',
@@ -272,12 +398,6 @@ function show(self){
 }
 
 function format(data){
-    console.log(data);
-    //jika ada permintaan revisi, tampilkan pesan
-    var pesanerror='';
-    if(data.pesanpenolakan && data['status_raw']==="4"){
-        pesanerror='<div class="alert alert-danger alert-solid" role="alert"><b>Catatan:</b> '+data.pesanpenolakan+'</div>';
-    }
     var rekeningstr = data.rekening.reduce(function(e,i){
         return e+='<tr><td> '+i[1]+' - '+i[2]+'</td><td> '+number_format(i[3],0,',','.')+' </td></tr>';
     },'');
@@ -286,50 +406,7 @@ function format(data){
         rekeningstr='<tr><td class="text-center" colspan=2>Kosong</td><tr>'
     }
 
-    var pajakstr = data.pajak.reduce(function(e,i){
-        return e+='<tr><td>'+i[1]+'</td><td>'+i[2]+'</td><td>'+i[4]+'</td><td>'+moment(i[5]).format('L')+'</td><td> '+number_format(i[3],0,',','.')+'</td></tr>';
-    },'');
-
-    if(pajakstr===''){
-        pajakstr='<tr><td class="text-center" colspan=5>Kosong</td><tr>'
-    }
-
-    var potonganstr = data.potongan.reduce(function(e,i){
-        return e+='<tr><td>'+i[0]+'</td><td>'+i[1]+'</td><td> '+number_format(i[2],0,',','.')+'</td></tr>';
-    },'');
-    if(potonganstr===''){
-        potonganstr='<tr><td class="text-center" colspan=5>Kosong</td><tr>'
-    }
-
-    var tombolubah='<button class="btn btn-sm btn-primary float-right" onclick="ubahRek('+data.id+')" title="Tambah Rekening"><i class="fas fa-plus fa-sm"></i> Tambah</button>';
-    var tombolubahPajak='<button class="btn btn-sm btn-primary float-right" onclick="ubahPajak('+data.id+')" title="Tambah Rekening"><i class="fas fa-plus fa-sm"></i> Tambah</button>';
-    var tombolubahPotongan='<button class="btn btn-sm btn-primary float-right" onclick="ubahPotongan('+data.id+')" title="Tambah Potongan"><i class="fas fa-plus fa-sm"></i> Tambah</button>';
-
-    //pastikan tombol ubah tidak ada untuk transaksi yg sedang diajukan sp2d nya atau sudah disetujui
-    if(data['status_raw']==='2' || data['status_raw']==='3'){
-        tombolubah='';
-        tombolubahPajak='';
-        tombolubahPotongan='';
-    }
-
-    @if($user->role !== 'PKM')
-    tombolubah='';
-    tombolubahPajak='';
-    tombolubahPotongan='';
-    @endif
-
-    var str='<tr><td></td><td colspan="'+ @if(in_array($user->role,['PKM'])) '12' @elseif(in_array($user->role,['KEU'])) '9' @else '8' @endif +'" style="bacground-color:#f9f9f9;">'+pesanerror+
-    `<ul class="nav nav-tabs" role="tablist">
-        <li class="nav-item" role="presentation">
-            <a class="nav-link active" id="tab1" data-toggle="tab" href="#rekening_${data.id}" role="tab" aria-controls="rekening_${data.id}" aria-selected="true">Rekening</a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" id="tab2" data-toggle="tab" href="#pajak_${data.id}" role="tab" aria-controls="pajak_${data.id}" aria-selected="false">Informasi</a>
-        </li>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link" id="tab2" data-toggle="tab" href="#potongan_${data.id}" role="tab" aria-controls="potongan_${data.id}" aria-selected="false">Potongan</a>
-        </li>
-    </ul>`+
+    var str='<tr><td></td><td colspan="'+ @if(in_array($user->role,['PKM'])) '12' @elseif(in_array($user->role,['KEU'])) '9' @else '8' @endif +'" style="bacground-color:#f9f9f9;">'+
     '<div class="tab-content" id="myTabContent">'+
         `<div class="tab-pane fade show active" id="rekening_${data.id}" role="tabpanel" aria-labelledby="rekening_${data.id}"><table class="table">
             <thead>
@@ -337,52 +414,13 @@ function format(data){
             </thead>
             <tbody>`+rekeningstr+
             `<tbody>  
-            </table>`+tombolubah+'</div>'+
-        `<div class="tab-pane fade" id="pajak_${data.id}" role="tabpanel" aria-labelledby="pajak_${data.id}">
-            <table class="table">
-                <thead>
-                    <tr><th><b>Kode</b></th><th><b>Nama</b></th><th><b>Kode Billing</b></th><th><b>Kadaluarsa</b></th><th><b>Nominal</b></th></tr>
-                </thead>
-                <tbody>
-                ${pajakstr}
-                </tbody>
-            </table>
-            ${tombolubahPajak}
-        </div>`+
-        `<div class="tab-pane fade" id="potongan_${data.id}" role="tabpanel" aria-labelledby="potongan_${data.id}">
-        <table class="table">
-                <thead>
-                    <tr><th><b>Kode</b></th><th><b>Nama Potongan</b></th><th><b>Nominal</b></th></tr>
-                </thead>
-                <tbody>
-                ${potonganstr}
-                </tbody>
-            </table>
-            ${tombolubahPotongan}
-        </div>`+
+            </table></div>`+
     '</div>'+
     '</td></tr>';
             
     var $view=$(str);
-
-    //assign data ke object oData
-    if(oData.hasOwnProperty(data['id'])===false){
-        oData[data['id']]=data;
-    }
+    console.log(data);
     
-    let max=data.riwayat.length;
-    let riwayatstr='<li>Request&nbsp'+data.tipe+
-        '<p>'+data.tanggalref+'</p>'+
-        (max===0?'':'<hr>')+
-        '</li>';
-    data.riwayat.forEach(function(e,i){
-        let msg=e[2];
-        riwayatstr+='<li>'+msg+
-            '<p>'+e[0]+'</p>'+
-            (max-1===i?'':'<hr>')+
-            '</li>';
-    });
-    $view.find('#riwayat ul').append(riwayatstr);
     return $view;
     return $view.prop("outerHTML");
 }
@@ -406,6 +444,7 @@ $(document).ready(function(){
             { data:'idunitkerja', visible: false, name:'idunitkerja'},
             { data:'idrekanan', visible: false, name:'idrekanan'},
             { data:'tanggal_raw', visible: false, name:'tanggal_raw'},
+            { data:'rekening', visible: false, name:'rekening'},
         ],
     }).yadcf([
         // {
