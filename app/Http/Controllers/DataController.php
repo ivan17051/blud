@@ -22,7 +22,14 @@ use Illuminate\Support\Facades\Hash;
 class DataController extends Controller
 {
     public function dashboard(){
-        return view('dashboard');
+        $user=Auth::user();
+        if(in_array($user->role,['PKM'])){
+            $subkegiatan=SubKegiatan::where('idunitkerja',$user->idunitkerja)->where('isactive',1)->select('id','kode','nama')->get();
+        }else{
+            $subkegiatan=SubKegiatan::where('isactive',1)->select('id','kode','nama')->get();
+        }
+        
+        return view('dashboard',['subkegiatan'=>$subkegiatan]);
     }
 
     public function unitKerja(){

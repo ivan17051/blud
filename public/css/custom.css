@@ -139,3 +139,19 @@ td.day.disabled{
     padding: 0px;
     border: 0;
 }
+
+/** Font Size  **/
+
+.fs-20{
+    font-size: 20px;
+}
+
+.o-f-edelivery:before {
+    content: url('../img/edelivery.ico');
+}
+
+/** END of Font Size  **/
+
+.border-1-gray-1{
+    border: 1px solid #cdcbcb!important;
+}

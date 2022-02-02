@@ -472,6 +472,56 @@ $role = Auth::user()->id;
     </div>
 </div>
 
+<!-- Modal Transaksi To BKU -->
+<div class="modal modal-danger fade" id="transaksiToBKU" tabindex="-1" role="dialog" aria-labelledby="Tambah Potongan" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="transaksiToBKULabel">Transaksi To BKU</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{route('bku.transaksi2bku')}}" method="POST" id="transaksiToBKUForm">
+            @csrf
+            <input type="hidden" name="idtransaksi">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label><b>Buku Pembantu</b></label>
+                    <div id="bukupembantu">
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" value="1" id="KT" name="KT" type="checkbox" >
+                            <label class="form-check-label" for="KT">Kas Tunai</label>
+                        </div>
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" value="1" id="SB" name="SB" type="checkbox" >
+                            <label class="form-check-label" for="SB">Simpanan Bank</label>
+                        </div>
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" value="1" id="PNJ" name="PNJ" type="checkbox" >
+                            <label class="form-check-label" for="PNJ">Panjar</label>
+                        </div>
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" value="1" id="RO" name="RO" type="checkbox" >
+                            <label class="form-check-label" for="RO">Rincian Objek</label>
+                        </div>
+                        <!-- <div class="form-check mb-2 mr-2 d-inline-block" hidden>
+                            <input class="form-check-input" id="PJK" name="PJK" type="checkbox" >
+                            <label class="form-check-label" for="PJK">Pajak</label>
+                        </div> -->
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="submit" class="btn btn-primary">Proses</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Form -->
 <form hidden action="{{route('transaksi.delete')}}" method="POST" id="delete">
     @csrf
@@ -635,6 +685,16 @@ $role = Auth::user()->id;
 
 const bendahara = @json($pejabat);
 const rekanan = @json($rekanan);
+
+const transaksi2bku = function(self){
+    var tr = $(self).closest('tr');
+    var data=oTable.fnGetData(tr); 
+    $modal = $('#transaksiToBKU');
+    $form = $('#transaksiToBKUForm');
+    $('#bukupembantu input[type=checkbox]').prop('checked', false);
+    $form.find('input[name=idtransaksi]').val(data['id']);
+    $modal.modal('show');
+}
 
 const filterFormulirOnChange = async function(e){
     var val = e.value;
@@ -1100,6 +1160,14 @@ $(document).ready(function(){
         minDate: curDate,
     });
 
+    function renderNomor(d,t,row){
+        if(row['isspj']==1){
+            return row['nomor'] + '<button class="btn btn-sm btn-light text-nowrap border-1-gray-1 rounded-pill" disabled=""><i class="o-f-edelivery" ></i> '+
+                row['kodetransaksi']+'</button>';
+        }
+        return row['nomor'];
+    }
+
     oTable = $("#transaksitable").dataTable({
         processing: true,
         serverSide: true,
@@ -1109,7 +1177,7 @@ $(document).ready(function(){
             { data:'tipe', orderable: false, width: 1 , title:'Tipe', name:'tipe'},
             { data:'tanggalref', title:'Tanggal', name:'tanggalref'},
             { data:'subkegiatan.nama',orderable: false, title:'Subkegiatan', name:'subkegiatan.nama'},
-            { data:'nomor', title:'Nomor', name:'nomor'},
+            { data:'nomor', title:'Nomor', name:'nomor', render:renderNomor},
             { data:'keterangan', orderable: false, width: '23rem', title:'Keperluan', name:'keterangan'},
             { data:'jumlah', title:'Jumlah', name:'jumlah'},
             @if(in_array($user->role,['PKM']))
@@ -1184,7 +1252,16 @@ $(document).ready(function(){
         //reset input
         $('#addpotongan input').val('');
         $('#addpotongan select').val('').change();
-    })
+    });
+    
+    $('#transaksiToBKUForm').submit(function(e){
+        let checkedLen=$('#bukupembantu input[type=checkbox]:checked').length
+        console.log(checkedLen);
+        if(checkedLen===0){
+            e.preventDefault();
+            alert('Pilih satu atau lebih Buku Pembantu');
+        }
+    });
 
     // START: Section of Filter 
     var tagContainer=$('#tagsinput');

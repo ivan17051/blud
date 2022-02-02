@@ -72,6 +72,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/spm/{id}', 'TransaksiController@spm');
     Route::get('/sp2d/{id}', 'TransaksiController@sp2d');
 
+    Route::get('/bku', 'BkuController@index')->name('bku');
+    Route::post('/bku/data', 'BkuController@data')->name('bku.data');
+    Route::put('/bku', 'BkuController@storeUpdateBKU')->name('bku.update');
+    Route::post('/bku/transaksi2bku', 'BkuController@transaksiToBKU')->name('bku.transaksi2bku');
+    Route::get('/bku/cetak/{idunitkerja}/{bulan}', 'BkuController@cetak')->name('bku.cetak');
+
     Route::get('/pejabat/byunitkerja/{idunitkerja}','DataController@getPejabatByUnitKerja')->name('pejabat.byunitkerja');
     Route::get('/spj', 'SPJController@spj');
     Route::post('/spj/data', 'SPJController@data')->name('spj.data');
