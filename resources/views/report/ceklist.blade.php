@@ -91,7 +91,7 @@
                                       <tr>
                                           @php
                                           $bulan = ['','I','II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
-                                          $mytime = Carbon\Carbon::now();
+                                          $mytime = Carbon\Carbon::make($transaksi->tanggal);
                                           @endphp
                                           <td class="headerFont fontCenter paddingfont" style="font-size:17px">PENELITIAN KELENGKAPAN DOKUMEN SPP</td>
                                       </tr>
@@ -104,22 +104,22 @@
                                                 <tbody><tr>
                                                     <td class="paddingfont paddingBawah" width="160">Nomor</td>
                                                     <td class="paddingfont paddingBawah" width="26">:</td>
-                                                    <td class="paddingfont paddingBawah" width="600"></td>
+                                                    <td class="paddingfont paddingBawah" width="600"> {{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/UP/F/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="paddingfont paddingBawah" width="160">Tanggal</td>
                                                     <td class="paddingfont paddingBawah" width="26">:</td>
-                                                    <td class="paddingfont paddingBawah" width="600">1 02 0100/</td>
+                                                    <td class="paddingfont paddingBawah" width="600"> {{Carbon\Carbon::make($transaksi->tanggal)->translatedFormat('d F Y')}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="paddingfont paddingBawah" width="160">Nama</td>
                                                     <td class="paddingfont paddingBawah" width="26">:</td>
-                                                    <td class="paddingfont paddingBawah" width="600"> 1.02.05.2.01</td>
+                                                    <td class="paddingfont paddingBawah" width="600"> {{$otorisator->nama}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="paddingfont paddingBawah" width="160">NIP</td>
                                                     <td class="paddingfont paddingBawah" width="26">:</td>
-                                                    <td class="paddingfont paddingBawah" width="600"></td>
+                                                    <td class="paddingfont paddingBawah" width="600"> {{$otorisator->nip}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="paddingfont paddingBawah" width="160"></td>

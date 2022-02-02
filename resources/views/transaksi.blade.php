@@ -412,6 +412,7 @@ $role = Auth::user()->id;
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
                 <button type="submit" class="btn btn-primary">SPP</button>
                 <button type="submit" id="cetaksppup" class="btn btn-info" formaction="">Rincian</button>
+                <button type="submit" id="cetakceklist" class="btn btn-success" formaction="">Ceklist</button>
             </div>
             </form>
         </div>
@@ -890,6 +891,7 @@ async function cetak(type, id, tipepembukuan=null){
         case 'spp':
             $('#cetakspp form').attr('action',"{{url('spp')}}/"+id);
             $('#cetaksppup').attr('formaction',"{{url('sppup')}}/"+id);
+            $('#cetakceklist').attr('formaction',"{{url('ceklist')}}/"+id);
             $('#cetakspp').modal('show');
             break;
         case 'spm':

@@ -533,7 +533,7 @@ class TransaksiController extends Controller
     }
     public function ceklist(Request $request, $id){
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
-        $otorisator = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'KPA')->first();
+        $otorisator = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'PPK UPTD')->first();
         return view('report.ceklist', ['transaksi' => $transaksi, 'otorisator' => $otorisator]);
     }
     public function spp(Request $request, $id){

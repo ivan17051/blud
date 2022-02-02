@@ -21,16 +21,27 @@ active
             @method('PUT')
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <div class="form-group">
                             <label><b>ID Pekerjaan</b></label>
                             <input type="text" id="kodepekerjaan" name="kodepekerjaan" class="form-control" placeholder="ID Pekerjaan" required minlength=8 maxlength=8>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <div class="form-group">
                             <label><b>ID Transaksi</b></label>
                             <input type="text" id="kodetransasi" name="kodetransaksi" class="form-control" placeholder="ID Transaksi" required minlength=7 maxlength=7>
+                        </div>  
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label><b>UPLS</b></label>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" name="tipe" required >
+                              <option value="" selected disabled>--Pilih--</option>
+                              <option>UP</option>
+                              <option>LS</option>
+                              <option>TU</option>
+                            </select>
                         </div>  
                     </div>
                 </div>
@@ -148,16 +159,27 @@ active
             <input type="hidden" name="id">
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <div class="form-group">
                             <label><b>ID Pekerjaan</b></label>
                             <input type="text" id="kodepekerjaan" name="kodepekerjaan" class="form-control" placeholder="ID Pekerjaan" required minlength=8 maxlength=8>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <div class="form-group">
                             <label><b>ID Transaksi</b></label>
                             <input type="text" id="kodetransasi" name="kodetransaksi" class="form-control" placeholder="ID Transaksi" required minlength=7 maxlength=7>
+                        </div>  
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label><b>UPLS</b></label>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" name="tipe" required >
+                              <option value="" selected disabled>--Pilih--</option>
+                              <option>UP</option>
+                              <option>LS</option>
+                              <option>TU</option>
+                            </select>
                         </div>  
                     </div>
                 </div>
@@ -288,6 +310,91 @@ active
             </div>
         </div>
         <div class="card-body">
+            <div class="mb-4">
+            <div class="mb-2" style="max-width: 10rem;">
+                    <select class="selectpicker" data-none-selected-text="Filter" data-live-search="true" multiple data-show-tick style="max-width: 10rem;" id="filterSelect">
+                        <optgroup label="Status" data-max-options="1">
+                            <option value="ACCEPTED">Accepted</option>
+                            <option value="SPM TERTOLAK">SPM Tertolak</option>
+                        </optgroup>
+                        <optgroup label="Tipe Transaksi" data-max-options="1">
+                            <option value="UP">UP</option>
+                            <option value="LS">LS</option>
+                            <option value="TU">TU</option>
+                        </optgroup>
+                        @if(in_array($user->role,['KEU','PIH','admin']))
+                        <optgroup label="PKM" data-max-options="1">
+                            <option value="TANJUNGSARI">PKM TANJUNGSARI</option>
+                            <option value="SIMOMULYO">PKM SIMOMULYO</option>
+                            <option value="MANUKANKULON">PKM MANUKAN KULON</option>
+                            <option value="BALONGSARI">PKM BALONGSARI</option>
+                            <option value="ASEMROWO">PKM ASEMROWO</option>
+                            <option value="SEMEMI">PKM SEMEMI</option>
+                            <option value="BENOWO">PKM BENOWO</option>
+                            <option value="JERUK">PKM JERUK</option>
+                            <option value="LIDAHKULON">PKM LIDAH KULON</option>
+                            <option value="LONTAR">PKM LONTAR</option>
+                            <option value="PENELEH">PKM PENELEH</option>
+                            <option value="KETABANG">PKM KETABANG</option>
+                            <option value="KEDUNGDORO">PKM KEDUNGDORO</option>
+                            <option value="DRSOETOMO">PKM DR. SOETOMO</option>
+                            <option value="TEMBOKDUKUH">PKM TEMBOK DUKUH</option>
+                            <option value="GUNDIH">PKM GUNDIH</option>
+                            <option value="TAMBAKREJO">PKM TAMBAKREJO</option>
+                            <option value="SIMOLAWANG">PKM SIMOLAWANG</option>
+                            <option value="PERAKTIMUR">PKM PERAK TIMUR</option>
+                            <option value="PEGIRIAN">PKM PEGIRIAN</option>
+                            <option value="SIDOTOPO">PKM SIDOTOPO</option>
+                            <option value="WONOKUSUMO">PKM WONOKUSUMO</option>
+                            <option value="KREMBANGANSELATAN">PKM KREMBANGAN SELATAN</option>
+                            <option value="DUPAK">PKM DUPAK</option>
+                            <option value="KENJERAN">PKM KENJERAN</option>
+                            <option value="TAKAL">PKM Tanah KALI KEDINDING</option>
+                            <option value="SIDOTOPOWETAN">PKM SIDOTOPO WETAN</option>
+                            <option value="RANGKAH">PKM RANGKAH</option>
+                            <option value="PACARKELING">PKM PACAR KELING</option>
+                            <option value="GADING">PKM GADING</option>
+                            <option value="PUCANGSEWU">PKM PUCANGSEWU</option>
+                            <option value="MOJO">PKM MOJO</option>
+                            <option value="KALIRUNGKUT">PKM KALIRUNGKUT</option>
+                            <option value="MEDOKANAYU">PKM MEDOKAN AYU</option>
+                            <option value="TENGGILIS">PKM TENGGILIS</option>
+                            <option value="GUNUNGANYAR">PKM GUNUNG ANYAR</option>
+                            <option value="MENUR">PKM MENUR</option>
+                            <option value="KLAMPISNGASEM">PKM KLAMPIS NGASEM</option>
+                            <option value="MULYOREJO">PKM MULYOREJO</option>
+                            <option value="SAWAHAN">PKM SAWAHAN</option>
+                            <option value="PUTATJAYA">PKM PUTAT JAYA</option>
+                            <option value="BANYUURIP">PKM BANYU URIP</option>
+                            <option value="PAKIS">PKM PAKIS</option>
+                            <option value="JAGIR">PKM JAGIR</option>
+                            <option value="WONOKROMO">PKM WONOKROMO</option>
+                            <option value="NGAGELREJO">PKM NGAGEL REJO</option>
+                            <option value="KEDURUS">PKM KEDURUS</option>
+                            <option value="DUKUHKUPANG">PKM DUKUH KUPANG</option>
+                            <option value="WIYUNG">PKM WIYUNG</option>
+                            <option value="GAYUNGAN">PKM GAYUNGAN</option>
+                            <option value="JEMURSARI">PKM JEMURSARI</option>
+                            <option value="SIDOSERMO">PKM SIDOSERMO</option>
+                            <option value="KEBONSARI">PKM KEBONSARI</option>
+                            <option value="BANGKINGAN">PKM BANGKINGAN</option>
+                            <option value="MADE">PKM MADE</option>
+                            <option value="MOROKREMBANGAN">PKM MORO KREMBANGAN </option>
+                            <option value="TAMBAKWEDI">PKM TAMBAK WEDI</option>
+                            <option value="BULAKBANTENG">PKM BULAK BANTENG</option>
+                            <option value="KEPUTIH">PKM KEPUTIH</option>
+                            <option value="KALIJUDAN">PKM KALIJUDAN</option>
+                            <option value="BALASKLUMPRIK">PKM BALAS KLUMPRIK</option>
+                            <option value="SIWALANKERTO">PKM SIWALANKERTO</option>
+                            <option value="SAWAHPULO">PKM SAWAH PULO</option>
+                        </optgroup>
+                        @endif
+                    </select>
+                </div>
+                <div class="h-100 d-inline-block">
+                    <input id="tagsinput" hidden type="text" value="" class="tagsinput" data-role="tagsinput" data-size="md" data-color="info" data-role="filter">
+                </div>
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered" id="transaksitable" width="100%" cellspacing="0">
                     <thead>
@@ -339,7 +446,7 @@ function edit(self){
     var data = oTable.fnGetData(tr);
     
     $modal.find('input[name=id]').val(data['id']);
-    $modal.find('select[name=tipe]').val(data['tipe_raw']).change();
+    $modal.find('select[name=tipe]').val(data['tipe']).change();
     $modal.find('input[name=tanggalref]').val(data['tanggal_raw']);
     $modal.find('input[name=kodetransaksi]').val(data['kodetransaksi']);
     $modal.find('input[name=kodepekerjaan]').val(data['kodepekerjaan']);
@@ -445,6 +552,7 @@ $(document).ready(function(){
             { data:'idrekanan', visible: false, name:'idrekanan'},
             { data:'tanggal_raw', visible: false, name:'tanggal_raw'},
             { data:'rekening', visible: false, name:'rekening'},
+            { data:'tipe', visible: false, name:'tipe'},
         ],
     }).yadcf([
         // {
