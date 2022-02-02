@@ -528,6 +528,11 @@ class TransaksiController extends Controller
         $otorisator = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'KPA')->first();
         return view('report.sptb', ['transaksi' => $transaksi, 'otorisator' => $otorisator]);
     }
+    public function ceklist(Request $request, $id){
+        $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
+        $otorisator = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'KPA')->first();
+        return view('report.ceklist', ['transaksi' => $transaksi, 'otorisator' => $otorisator]);
+    }
     public function spp(Request $request, $id){
         // $otorisator = Pejabat::select('id', 'nama', 'nip', 'jabatan')->findOrFail($request->idotorisator);
         // $bendahara = Pejabat::findOrFail($request->idbendahara);

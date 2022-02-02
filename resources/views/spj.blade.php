@@ -257,6 +257,20 @@ function hapus(self){
     })
 }
 
+function show(self){
+    var tr = $(self).closest('tr');
+    var row = oTable.api().row( tr );
+    var data=oTable.fnGetData(tr);
+
+    if ( row.child.isShown() ) {
+        // This row is already open - close it
+        row.child.hide();
+    }
+    else {
+        row.child( format(data)).show();
+    }
+}
+
 function format(data){
     console.log(data);
     //jika ada permintaan revisi, tampilkan pesan

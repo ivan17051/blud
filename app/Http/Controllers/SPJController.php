@@ -214,4 +214,22 @@ class SPJController extends Controller
             return back()->with('error','Tidak ada perubahan');
         }
     }
+
+    public function deleteSPJ(Request $request){
+        $user = Auth::user();
+        $userId = $user->id;
+        try {
+            $model=Transaksi::find($request->input('id'));
+            if($user->idunitkerja !== $model->idunitkerja
+                OR $model->status===3){
+                throw new \Exception("restricted");
+            }
+            $model->idm=$userId;
+            $model->isactive=0;
+            $model->save();
+            return back()->with('success','Berhasil menghapus');
+        } catch (\Throwable $th) {
+            return back()->with('error','Gagal menghapus');
+        }
+    }
 }
