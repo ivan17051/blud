@@ -17,7 +17,9 @@ class BKU extends Model
 
     protected $fillable = [
         "nomor",
+        "nomorsp2d",
         "tanggal",
+        "tanggalref",
         "idtransaksi",
         "idunitkerja",
         "idsubkegiatan",
@@ -30,6 +32,7 @@ class BKU extends Model
         "PJK",
         "RO",
         "uraian",
+        "keterangan",
         "nominal",
 	    "isactive",
         "idc",

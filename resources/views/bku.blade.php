@@ -11,7 +11,7 @@ $role = Auth::user()->id;
 @section('content')
 <!-- Modal Tambah BKU -->
 <div class="modal modal-danger fade" id="tambah" tabindex="-1" role="dialog" aria-labelledby="Tambah BKU" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="tambahLabel">Tambah BKU</h5>
@@ -23,7 +23,130 @@ $role = Auth::user()->id;
             @csrf
             @method('PUT')
             <div class="modal-body">
-                
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label><b>Tanggal BKU</b></label>
+                            <div class="input-group date datetimepicker" data-target-input="nearest" id="dtp1">
+                                <input readonly type="text" class="form-control datetimepicker-input" data-target="#dtp1" name="tanggal" required/>
+                                <div class="input-group-append" data-target="#dtp1" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><b>Jenis BKU</b></label>
+                    <div>
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" type="radio" name="jenis" id="jenisPenerimaan" checked value="1">
+                            <label class="form-check-label" for="jenisPenerimaan">
+                                Penerimaan
+                            </label>
+                        </div>
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" type="radio" name="jenis" id="jenisPengeluaran" value="0">
+                            <label class="form-check-label" for="jenisPengeluaran">
+                                Pengeluaran
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><b>Keterangan</b></label>
+                    <div >
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" type="radio" name="keterangan" id="ob" value="ob">
+                            <label class="form-check-label" for="ob">
+                                Over Booking(OB)
+                            </label>
+                        </div>
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" type="radio" name="keterangan" id="sts" value="sts">
+                            <label class="form-check-label" for="sts">
+                                STS
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><b>Buku Pembantu</b></label>
+                    <div class="bukupembantu">
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" value="1" id="KT" name="KT" type="checkbox" >
+                            <label class="form-check-label" for="KT">Kas Tunai</label>
+                        </div>
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" value="1" id="SB" name="SB" type="checkbox" >
+                            <label class="form-check-label" for="SB">Simpanan Bank</label>
+                        </div>
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" value="1" id="PNJ" name="PNJ" type="checkbox" >
+                            <label class="form-check-label" for="PNJ">Panjar</label>
+                        </div>
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" value="1" id="RO" name="RO" type="checkbox" >
+                            <label class="form-check-label" for="RO">Rincian Objek</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label><b>No. Bukti</b></label>
+                            <input type="text" pattern="[0-9]{1,5}" name="nomorsp2d" class="form-control" placeholder="No. Bukti" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label><b>Tanggal Bukti</b></label>
+                            <div class="input-group date datetimepicker2" id="dtp2" data-target-input="nearest">
+                                <input readonly type="text" class="form-control datetimepicker-input" data-target="#dtp2" name="tanggalref" required/>
+                                <div class="input-group-append" data-target="#dtp2" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label><b>UPLS</b></label>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" name="tipe" required >
+                                <option value="">--Pilih--</option>
+                                <option value="UP">UP</option>
+                                <option value="LS">LS</option>
+                                <option value="TU">TU</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><b>Subkegiatan</b></label>
+                    <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idsubkegiatan" required >
+                        <option value="">--Pilih--</option>
+                        @foreach($subkegiatan as $sk)
+                        <option value="{{$sk->id}}">{{$sk->kode.', '.$sk->nama}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><b>Rekening</b></label>
+                    <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idrekening" required >
+                        <option value="">--Pilih--</option>
+                        @foreach($rekening as $r)
+                        <option value="{{$r->id}}" data-saldo="{{ $r->saldo->isEmpty() ? 0 : $r->saldo[0]->saldo }}" >{{$r->kode.', '.$r->nama}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><b>Uraian</b></label>
+                    <textarea name="uraian" class="form-control" placeholder="Uraian" maxlength="250" rows="3" style="resize: none;" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label><b>Nominal</b></label>
+                    <input type="text" name="nominal" class="form-control" placeholder="Nominal" pattern="^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$" required>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
@@ -36,7 +159,7 @@ $role = Auth::user()->id;
 
 <!-- Modal Edit BKU -->
 <div class="modal modal-danger fade" id="sunting" tabindex="-1" role="dialog" aria-labelledby="Sunting BKU" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="tambahLabel">Sunting BKU</h5>
@@ -47,8 +170,132 @@ $role = Auth::user()->id;
             <form action="{{route('bku.update')}}" method="POST">
             @csrf
             @method('PUT')
+            <input type="hidden" name="id">
             <div class="modal-body">
-                
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label><b>Tanggal BKU</b></label>
+                            <div class="input-group date datetimepicker" data-target-input="nearest" id="dtp3">
+                                <input readonly type="text" class="form-control datetimepicker-input" data-target="#dtp3" name="tanggal" required/>
+                                <div class="input-group-append" data-target="#dtp3" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><b>Jenis BKU</b></label>
+                    <div>
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" type="radio" name="jenis" id="jenisPenerimaan2" value="1">
+                            <label class="form-check-label" for="jenisPenerimaan2">
+                                Penerimaan
+                            </label>
+                        </div>
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" type="radio" name="jenis" id="jenisPengeluaran2" value="0">
+                            <label class="form-check-label" for="jenisPengeluaran2">
+                                Pengeluaran
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><b>Keterangan</b></label>
+                    <div >
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" type="radio" name="keterangan" id="ob2" value="ob">
+                            <label class="form-check-label" for="ob2">
+                                Over Booking(OB)
+                            </label>
+                        </div>
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" type="radio" name="keterangan" id="sts2" value="sts">
+                            <label class="form-check-label" for="sts2">
+                                STS
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><b>Buku Pembantu</b></label>
+                    <div class="bukupembantu">
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" value="1"  name="KT" type="checkbox" >
+                            <label class="form-check-label" for="KT">Kas Tunai</label>
+                        </div>
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" value="1"  name="SB" type="checkbox" >
+                            <label class="form-check-label" for="SB">Simpanan Bank</label>
+                        </div>
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" value="1"  name="PNJ" type="checkbox" >
+                            <label class="form-check-label" for="PNJ">Panjar</label>
+                        </div>
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" value="1"  name="RO" type="checkbox" >
+                            <label class="form-check-label" for="RO">Rincian Objek</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label><b>No. Bukti</b></label>
+                            <input type="text" pattern="[0-9]{1,5}" name="nomorsp2d" class="form-control" placeholder="No. Bukti" required>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label><b>Tanggal Bukti</b></label>
+                            <div class="input-group date datetimepicker2" data-target-input="nearest" id="dtp4">
+                                <input readonly type="text" class="form-control datetimepicker-input" data-target="#dtp4" name="tanggal" required/>
+                                <div class="input-group-append" data-target="#dtp4" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label><b>UPLS</b></label>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" name="tipe" required >
+                                <option value="">--Pilih--</option>
+                                <option value="UP">UP</option>
+                                <option value="LS">LS</option>
+                                <option value="TU">TU</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><b>Subkegiatan</b></label>
+                    <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idsubkegiatan" required >
+                        <option value="">--Pilih--</option>
+                        @foreach($subkegiatan as $sk)
+                        <option value="{{$sk->id}}">{{$sk->kode.', '.$sk->nama}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><b>Rekening</b></label>
+                    <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idrekening" required >
+                        <option value="">--Pilih--</option>
+                        @foreach($rekening as $r)
+                        <option value="{{$r->id}}" data-saldo="{{ $r->saldo->isEmpty() ? 0 : $r->saldo[0]->saldo }}" >{{$r->kode.', '.$r->nama}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><b>Uraian</b></label>
+                    <textarea name="uraian" class="form-control" placeholder="Uraian" maxlength="250" rows="3" style="resize: none;" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label><b>Nominal</b></label>
+                    <input type="text" name="nominal" class="form-control" placeholder="Nominal" pattern="^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$" required>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
@@ -181,6 +428,13 @@ $role = Auth::user()->id;
     </div>
 </div>
 
+<!-- Form -->
+<form hidden action="{{route('bku.delete')}}" method="POST" id="delete">
+    @csrf
+    @method('delete')
+    <input type="hidden" name="id">
+</form>
+
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
@@ -199,14 +453,20 @@ $role = Auth::user()->id;
                 </div>
                 @if($user->role==='PKM')
                 <div class="col text-right dropdown">
-                    <div class="btn-group dropleft">
-                        <button class="btn btn-sm btn-primary dropdown-toggle dropleft" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <div class="btn-group dropleft" role="group">
+                            <button class="btn btn-sm btn-primary dropdown-toggle dropleft" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            </button>
+                            
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#">eSPJ</a>
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-primary " type="button" data-toggle="modal" data-target="#tambah" data-placement="top" title="Tambah BKU">
                             Tambah
                         </button>
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#">eSPJ</a>
-                        </div>
                     </div>
+                    
                     <button class="btn btn-sm btn-success ml-1" type="button"   data-toggle="modal" data-target="#cetak" data-placement="top" title="Cetak BKU">
                         Cetak
                     </button>
@@ -367,7 +627,97 @@ $(document).ready(function(){
         alink.href = "{{route('bku.cetak', ['',''])}}"+'/'+data['idunitkerja']+'/'+data['bulan'];
         alink.target = '_blank';
         alink.click();
+    });
+
+    @php
+    $date=Carbon\Carbon::now();
+    $maxDate=$date->format('Y-m-d');
+    $curDate=$date->format('Y-m-d');
+    $date->day=1;
+    $minDate=$date->format('Y-m-d');
+    @endphp
+    const curDate='{{$curDate}}';
+    const maxDate='{{$maxDate}}';
+    const minDate='{{$minDate}}';
+    $('.datetimepicker').datetimepicker({
+        locale: 'id',
+        format: 'L',
+        defaultDate: curDate,
+        maxDate: maxDate,
+        minDate: minDate,
+    });
+
+    $('.datetimepicker2').datetimepicker({
+        locale: 'id',
+        format: 'L',
+        defaultDate: curDate,
+        maxDate: maxDate,
+    });
+
+    $('select[name=idrekening]').change(function(e){
+
+    });
+
+    function onSubmit(e){
+        let checkedLen=$(e.target).find('.bukupembantu input[type=checkbox]:checked').length
+        if(checkedLen===0){
+            e.preventDefault();
+            alert('Pilih satu atau lebih Buku Pembantu');
+        }
+        return true;
+    }
+
+    $('#tambah form').submit(onSubmit);
+});
+
+function edit(self){
+    var $modal=$('#sunting');
+    var tr = $(self).closest('tr');
+    var data = oTable.fnGetData(tr);
+    console.log(data);
+    $modal.find('input[name=id]').val(data['id']);
+    $modal.find('input[name=tanggal]').val(data['tanggal']);
+    $modal.find('input[name=tanggalref]').val(data['tanggalref']);
+    $modal.find('select[name=tipe]').val(data['tipe']).change();
+    $modal.find('select[name=idsubkegiatan]').val(data['idsubkegiatan']).change();
+    $modal.find('select[name=idrekening]').val(data['idrekening']).change();
+    $modal.find('textarea[name=uraian]').val(data['uraian']);
+    $modal.find('input[name=nominal]').val( data['nominal'].replace('.','') );
+    $modal.find('input[name=nomorsp2d]').val(data['nomorsp2d']);
+
+    $modal.find('input[name=jenis]').prop('checked', false).filter('[value='+data['jenis_raw']+']').prop('checked', true);
+    $modal.find('input[name=keterangan]').prop('checked', false).filter('[value='+data['keterangan']+']').prop('checked', true);
+
+    $modal.find('input[name=KT]').prop('checked', false).filter('[value='+data['KT_raw']+']').prop('checked', true);
+    $modal.find('input[name=SB]').prop('checked', false).filter('[value='+data['SB_raw']+']').prop('checked', true);
+    $modal.find('input[name=PNJ]').prop('checked', false).filter('[value='+data['PNJ_raw']+']').prop('checked', true);
+    $modal.find('input[name=RO]').prop('checked', false).filter('[value='+data['RO_raw']+']').prop('checked', true);
+    $modal.find('input[name=PJK]').prop('checked', false).filter('[value='+data['PJK_raw']+']').prop('checked', true);
+
+    $modal.modal('show');
+}
+
+function hapus(self){
+    var tr = $(self).closest('tr');
+    var data=oTable.fnGetData(tr); 
+    $('#delete').find('input[name=id]').val(data['id']);
+    Swal.fire({
+        customClass: {
+            confirmButton: 'btn btn-primary mr-2',
+            cancelButton: 'btn btn-dark'
+        },
+        buttonsStyling: false,
+        icon: 'warning',
+        iconColor: '#f4b619',
+        title: 'Yakin ingin menghapus?',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $('#delete').submit();
+        }
     })
-})
+}
 </script>
 @endsection

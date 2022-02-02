@@ -76,6 +76,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/bku', 'BkuController@storeUpdateBKU')->name('bku.update');
     Route::post('/bku/transaksi2bku', 'BkuController@transaksiToBKU')->name('bku.transaksi2bku');
     Route::get('/bku/cetak/{idunitkerja}/{bulan}', 'BkuController@cetak')->name('bku.cetak');
+    Route::delete('/bku', 'BkuController@deleteBKU')->name('bku.delete');
 
     Route::get('/pejabat/byunitkerja/{idunitkerja}','DataController@getPejabatByUnitKerja')->name('pejabat.byunitkerja');
     Route::get('/spj', 'SPJController@spj');

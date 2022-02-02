@@ -25,7 +25,15 @@ class BkuController extends Controller
 {
     public function index(){
         $user = Auth::user();
-        return view('bku', [ 'user'=>$user ]);
+        $subkegiatan=[];
+        $rekening=[];
+        if (in_array($user->role, ['PKM'])) {
+            $subkegiatan=SubKegiatan::where('isactive', 1)->where('idunitkerja', Auth::user()->idunitkerja)->get();
+            $rekening=Rekening::where('isactive', 1)->with(['saldo'=>function($q){
+                $q->select('id','idunitkerja','idrekening','saldo')->orderBy('tanggal','DESC')->first();
+            }])->select('id','kode','nama')->get();
+        }
+        return view('bku', [ 'user'=>$user, 'subkegiatan'=>$subkegiatan, 'rekening'=>$rekening ]);
     }
 
     public function data(){
@@ -51,7 +59,29 @@ class BkuController extends Controller
         $datatable = Datatables::of($data);
         $datatable
             ->editColumn('nominal', function ($t){
-                return number_format($t->nominal,0,',','.');
+                if($t->nominal < 0){
+                    return '('.number_format($t->nominal*-1,0,',','.').')';
+                }else{
+                    return number_format($t->nominal,0,',','.');
+                }
+            })
+            ->addColumn('jenis_raw', function($t){
+                return $t->jenis;
+            })
+            ->addColumn('KT_raw', function($t){
+                return $t->KT;
+            })
+            ->addColumn('SB_raw', function($t){
+                return $t->SB;
+            })
+            ->addColumn('PNJ_raw', function($t){
+                return $t->PNJ;
+            })
+            ->addColumn('PJK_raw', function($t){
+                return $t->PJK;
+            })
+            ->addColumn('RO_raw', function($t){
+                return $t->RO;
             })
             ->editColumn('jenis', function($t){
                 if($t->jenis==1) return '<a href="javascript:void(0)" class="text-success fs-20"><i class="fas fa-level-down-alt"></i></a>';
@@ -78,6 +108,10 @@ class BkuController extends Controller
                 return '';
             })
             ->addColumn('action', function($t){
+                if(isset($t->idtransaksi)===FALSE){
+                    return '<button onclick="edit(this)" class="btn btn-sm btn-outline-warning border-0" style="width:2rem;" title="Sunting Transaksi" ><i class="fas fa-edit fa-sm"></i></button>'.
+                        '<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" style="width:2rem;" title="Hapus Transaksi"><i class="fas fa-trash fa-sm"></i></button>';
+                }
                 return '<button class="btn btn-outline-default border-0" disabled><i class="fas fa-lock"></i></a>';
             })
             ->rawColumns(['jenis','KT','SB','PNJ','PJK','RO','action']);
@@ -85,7 +119,81 @@ class BkuController extends Controller
     }
 
     public function storeUpdateBKU(Request $request){
+        $user = Auth::user();
+        $input = array_map('trim', $request->all());
+        $validator = Validator::make($input, [
+            'id' => 'nullable|exists:bku,id',
+            "KT" => 'required_without_all:SB,PNJ,RO,PJK|integer',
+            "SB" => 'required_without_all:KT,PNJ,RO,PJK|integer',
+            "PNJ" => 'required_without_all:KT,SB,RO,PJK|integer',
+            "RO" => 'required_without_all:KT,SB,PNJ,PJK|integer',
+            "PJK" => 'required_without_all:KT,SB,PNJ,RO|integer',
+            "keterangan" => "nullable|string",
+            "jenis" => "required_without:id|in:0,1",
+            "nomorsp2d" => "required_without:id|string",
+            "tanggal" => "required_without:id|string",
+            "tanggalref" => "required_without:id|string",
+            "tipe" => "required_without:id|string",
+            "idsubkegiatan" => "required_without:id",
+            "idrekening" => "required_without:id",
+            "uraian" => "required_without:id",
+            "nominal" => array('required_without:id','regex:/^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$/'), // allow float
+        ]);
+        if ($validator->fails()) return back()->with('error','Gagal menyimpan');
+        
+        $input = $validator->valid();
 
+        if(isset($input['nomorsp2d'])){
+            $nomor=intval($input['nomorsp2d']);
+            $input['nomorsp2d']=substr(str_repeat(0, 5).strval($nomor), - 5);
+        }
+        
+        if(isset($input['id'])){
+            $bku=BKU::find($input['id']);
+            $bku->fill([
+                'idm'=>$user->id,
+            ]);
+        }else{
+            $year=Carbon::parse($input['tanggal'])->year;
+            $bku_aktual=BKU::select('id','nomor')
+                ->where('isactive',1)
+                ->whereYear('tanggal',$year)
+                ->orderBy('id', 'DESC')
+                ->where('idunitkerja',$user->idunitkerja)->first();
+            if(isset($bku_aktual)){
+                $nomor=intval($bku_aktual->nomor)+1;
+            }else{
+                $nomor=1;
+            }
+            $bku = new BKU();
+            $bku->fill([
+                'nomor'=> substr(str_repeat(0, 5).strval($nomor), - 5),   //convert agar nomor ada leading zero
+                'idc'=>$user->id,
+                'idm'=>$user->id,
+                'idunitkerja'=>$user->idunitkerja,
+            ]);
+        }
+        $bku->fill($input);
+        $bku->save();
+        return back()->with('success','Berhasil Menyimpan.');
+    }
+
+    public function deleteBKU(Request $request){
+        $user = Auth::user();
+        $userId = $user->id;
+        try {
+            $model=BKU::find($request->input('id'));
+            if($user->idunitkerja !== $model->idunitkerja
+                OR isset($model->idtransaksi)){
+                throw new \Exception("restricted");
+            }
+            $model->idm=$userId;
+            $model->isactive=0;
+            $model->save();
+            return back()->with('success','Berhasil menghapus');
+        } catch (\Throwable $th) {
+            return back()->with('error','Gagal menghapus');
+        }
     }
 
     public function transaksiToBKU(Request $request){

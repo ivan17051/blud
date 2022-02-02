@@ -88,7 +88,15 @@
                                   <tbody>
                                     @php $saldo=0; @endphp
                                     @foreach($bku as $i=>$b)
-                                      @php $saldo+= (($b->jenis==1) ? 1 : -1)*$b->nominal; @endphp
+                                      @php 
+                                        $saldo+= (($b->jenis==1) ? 1 : -1)*$b->nominal; 
+                  
+                                        if($b->nominal < 0){
+                                          $nominal='('.number_format($b->nominal*-1,0,',','.').')';
+                                        }else{
+                                          $nominal=number_format($b->nominal,0,',','.');
+                                        }
+                                      @endphp
                                     <tr>
                                       <td class="paddingfont fontCenter" >{{$b->nomor}}</td>
                                       <td class="paddingfont fontCenter" >{{$i+1}}</td>
@@ -96,8 +104,8 @@
                                       <td class="paddingfont fontCenter" >{{$b->transaksi->nomor}}/1 02 0100/{{$unitkerja->kode}}/{{$b->tipe}}/F/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
                                       <td class="paddingfont fontCenter" >{{$b->tipe}}</td>
                                       <td class="paddingfont ">{{$b->uraian}}</td>
-                                      <td class="paddingfont fontKanan">{{$b->jenis==1 ? number_format($b->nominal,0,',','.') : ''}}</td>
-                                      <td class="paddingfont fontKanan">{{$b->jenis==0 ? number_format($b->nominal,0,',','.') : ''}}</td>
+                                      <td class="paddingfont fontKanan">{{$b->jenis==1 ? $nominal : ''}}</td>
+                                      <td class="paddingfont fontKanan">{{$b->jenis==0 ? $nominal : ''}}</td>
                                       <td class="paddingfont fontKanan">{{number_format($saldo,0,',','.')}}</td>
                                     </tr>
                                     @endforeach
