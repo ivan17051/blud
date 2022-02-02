@@ -39,7 +39,7 @@ class SPJController extends Controller
                 // status lebih dari 1 artinya sudah masuk pengajuan sp2d
         }else{
             $data = Transaksi::where('isactive',1)->where('isspj',1)->where('idunitkerja',$user->idunitkerja)
-                ->select('id','idunitkerja','kodetransaksi','kodepekerjaan','tanggal','keterangan','isactive','idkepada','rekening');
+                ->select('id','idunitkerja','kodetransaksi','kodepekerjaan','tanggal','keterangan','isactive','idkepada','rekening','tipe');
         }
         
         $datatable = Datatables::of($data);
@@ -65,6 +65,9 @@ class SPJController extends Controller
             })
             ->editColumn('rekening', function ($t) { 
                 return $t->rekening;
+            })
+            ->editColumn('tipe', function ($t) { 
+                return $t->tipe;
             })
             ->rawColumns(['tanggal','idunitkerja','kodetransaksi','kodepekerjaan','keterangan','action']);
         if(in_array($user->role,['PKM'])){
@@ -160,19 +163,6 @@ class SPJController extends Controller
             //cari transaksi teraktual di tahun ini untuk ambil nomor
             $year=Carbon::createFromFormat('Y-m-d', $input['tanggalref'])->year;
         
-            $transaksi_aktual=Transaksi::select('id','nomor')
-                ->where('isactive',1)
-                ->whereYear('tanggalref',$year)
-                ->orderBy('id', 'DESC')
-                ->where('idunitkerja',$input['idunitkerja'])->first();
-            if(isset($transaksi_aktual)){
-                $nomor=intval($transaksi_aktual->nomor)+1;
-            }else{
-                $nomor=1;
-            }
-            //convert agar nomor ada leading zero
-            $nomor = substr(str_repeat(0, 5).strval($nomor), - 5);
-
             $subkegiatan = SubKegiatan::where('idunitkerja',$input['idunitkerja'])->where('isactive',1)->select('id')->first();
             
             $t=new Transaksi();
@@ -183,7 +173,6 @@ class SPJController extends Controller
                 'tanggal'=>Carbon::now()->format('Y-m-d'),
                 'idc'=>$user->id,
                 'idm'=>$user->id,
-                'nomor'=>$nomor,
                 'saldo'=> 0,
                 'isspj'=>1,
                 'idsubkegiatan'=>$subkegiatan->id,
