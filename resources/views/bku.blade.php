@@ -508,20 +508,20 @@ $role = Auth::user()->role;
                     <label><b>Buku Pembantu</b></label>
                     <div class="bukupembantu">
                         <div class="form-check mb-2 mr-2 d-inline-block">
-                            <input class="form-check-input" value="1"  name="KT" type="checkbox" >
-                            <label class="form-check-label" for="KT">Kas Tunai</label>
+                            <input class="form-check-input" value="1"  name="KT" id="KT2" type="checkbox" >
+                            <label class="form-check-label" for="KT2">Kas Tunai</label>
                         </div>
                         <div class="form-check mb-2 mr-2 d-inline-block">
-                            <input class="form-check-input" value="1"  name="SB" type="checkbox" >
-                            <label class="form-check-label" for="SB">Simpanan Bank</label>
+                            <input class="form-check-input" value="1"  name="SB" id="SB2" type="checkbox" >
+                            <label class="form-check-label" for="SB2">Simpanan Bank</label>
                         </div>
                         <div class="form-check mb-2 mr-2 d-inline-block">
-                            <input class="form-check-input" value="1"  name="PNJ" type="checkbox" >
-                            <label class="form-check-label" for="PNJ">Panjar</label>
+                            <input class="form-check-input" value="1"  name="PNJ" id="PNJ2" type="checkbox" >
+                            <label class="form-check-label" for="PNJ2">Panjar</label>
                         </div>
                         <div class="form-check mb-2 mr-2 d-inline-block">
-                            <input class="form-check-input" value="1"  name="RO" type="checkbox" checked disabled>
-                            <label class="form-check-label" for="RO">Rincian Objek</label>
+                            <input class="form-check-input" value="1"  name="RO" id="RO2" type="checkbox" checked onclick="return false;">
+                            <label class="form-check-label" for="RO2">Rincian Objek</label>
                         </div>
                     </div>
                 </div>
@@ -892,9 +892,12 @@ var callbackPilihSpp;
 var sign=-99;
 function openPilihSPP(urlparams, sign_, callback){
     if(sign===sign_) return;
-    else if(sppTable){
-        sppTable.clear().fnDestroy();
-    }
+    if ($.fn.dataTable.isDataTable('#spptable')) {
+         $('#spptable').DataTable().clear();
+         $('#spptable').DataTable().destroy();
+         $('#spptable').empty();
+ 
+     }
     sign=sign_;
     callbackPilihSpp=callback;
     if(sign==1){    //SPP LS to BKU
@@ -902,7 +905,7 @@ function openPilihSPP(urlparams, sign_, callback){
         sppTable = $("#spptable").dataTable({
             processing: true,
             serverSide: true,
-            order: [[ 1, "desc" ]],
+            order: [[ 1, "asc" ]],
             ajax: {type: "POST", url: '{{route("bku.getspp")}}'+urlparams, data:{'_token':@json(csrf_token())}},
             columns: [
                 { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' , title:'No.', name:'no'},
@@ -953,7 +956,7 @@ function pilihSPP_LS(){
 }
 
 function submitSPP_LS(e){
-    if(my.getFormData($(e.target)).id===''){
+    if(my.getFormData($(e.target)).idtransaksi===''){
         e.preventDefault();
         alert('belum memilih spp');
     }
@@ -970,7 +973,7 @@ function pilih_espj(){
 }
 
 function submit_espj(e){
-    if(my.getFormData($(e.target)).id===''){
+    if(my.getFormData($(e.target)).idtransaksi===''){
         e.preventDefault();
         alert('belum memilih espj');
     }

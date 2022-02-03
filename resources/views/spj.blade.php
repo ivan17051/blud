@@ -30,7 +30,7 @@ active
                     <div class="col-md-5">
                         <div class="form-group">
                             <label><b>ID Transaksi</b></label>
-                            <input type="text" id="kodetransasi" name="kodetransaksi" class="form-control" placeholder="ID Transaksi" required minlength=7 maxlength=7>
+                            <input type="text" id="kodetransasi2" name="kodetransaksi" class="form-control" placeholder="ID Transaksi" required minlength=7 maxlength=7>
                         </div>  
                     </div>
                     <div class="col-md-2">
@@ -162,7 +162,7 @@ active
                     <div class="col-md-5">
                         <div class="form-group">
                             <label><b>ID Pekerjaan</b></label>
-                            <input type="text" id="kodepekerjaan" name="kodepekerjaan" class="form-control" placeholder="ID Pekerjaan" required minlength=8 maxlength=8>
+                            <input type="text" id="kodepekerjaan2" name="kodepekerjaan" class="form-control" placeholder="ID Pekerjaan" required minlength=8 maxlength=8>
                         </div>
                     </div>
                     <div class="col-md-5">
@@ -198,7 +198,7 @@ active
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><b>Tanggal Pengeluaran</b></label>
-                            <input type="date" id="tanggalref" name="tanggalref" class="form-control" onchange="fillBulanSPJ(this, '#sunting')">
+                            <input type="date" id="tanggalref2" name="tanggalref" class="form-control" onchange="fillBulanSPJ(this, '#sunting')">
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -226,25 +226,25 @@ active
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><b>Pimpinan</b></label>
-                            <input type="text" id="pimpinan" name="pimpinan" class="form-control" placeholder="Pimpinan" disabled>
+                            <input type="text" id="pimpinan2" name="pimpinan" class="form-control" placeholder="Pimpinan" disabled>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><b>NPWP</b></label>
-                            <input type="text" id="npwp" name="npwp" class="form-control" placeholder="NPWP" disabled>
+                            <input type="text" id="npwp2" name="npwp" class="form-control" placeholder="NPWP" disabled>
                         </div>  
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><b>Nama Bank</b></label>
-                            <input type="text" id="namabank" name="namabank" class="form-control" placeholder="Nama Bank" disabled>
+                            <input type="text" id="namabank2" name="namabank" class="form-control" placeholder="Nama Bank" disabled>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><b>No. Rekening</b></label>
-                            <input type="text" id="norek" name="norek" class="form-control" placeholder="No. Rekening" disabled>
+                            <input type="text" id="norek2" name="norek" class="form-control" placeholder="No. Rekening" disabled>
                         </div>  
                     </div>
                 </div>
@@ -263,13 +263,13 @@ active
                     <div class="col-md-6">
                         <div class="form-group">
                             <label><b>Jumlah</b></label>
-                            <input type="text" id="jumlah" name="jumlah" class="form-control" placeholder="Jumlah">
+                            <input type="text" id="jumlah2" name="jumlah" class="form-control" placeholder="Jumlah">
                         </div>  
                     </div>
                 </div>
                 <div class="form-group">
                     <label><b>Keperluan</b></label>
-                    <textarea id="keterangan" name="keterangan" class="form-control" placeholder="Keperluan" maxlength="250" rows="2" style="resize: none;" required></textarea>
+                    <textarea id="keterangan2" name="keterangan" class="form-control" placeholder="Keperluan" maxlength="250" rows="2" style="resize: none;" required></textarea>
                 </div>
             </div>
             <div class="modal-footer">

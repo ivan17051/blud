@@ -1199,8 +1199,10 @@ var callbackPilihSpp;
 var sign=-99;
 function openPilihSPP(urlparams, sign_, callback){
     if(sign===sign_) return;
-    else if(sppTable){
-        sppTable.clear().fnDestroy();
+    if ($.fn.dataTable.isDataTable('#spptable')) {
+        $('#spptable').DataTable().clear();
+        $('#spptable').DataTable().destroy();
+        $('#spptable').empty();
     }
     sign=sign_;
     callbackPilihSpp=callback;
@@ -1236,7 +1238,7 @@ function pilih_espj_ls(){
 }
 
 function submit_espj_ls(e){
-    if(my.getFormData($(e.target)).id===''){
+    if(my.getFormData($(e.target)).idtransaksi===''){
         e.preventDefault();
         alert('belum memilih espj');
     }
