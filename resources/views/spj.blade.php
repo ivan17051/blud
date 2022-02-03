@@ -313,10 +313,6 @@ active
             <div class="mb-4">
             <div class="mb-2" style="max-width: 10rem;">
                     <select class="selectpicker" data-none-selected-text="Filter" data-live-search="true" multiple data-show-tick style="max-width: 10rem;" id="filterSelect">
-                        <optgroup label="Status" data-max-options="1">
-                            <option value="ACCEPTED">Accepted</option>
-                            <option value="SPM TERTOLAK">SPM Tertolak</option>
-                        </optgroup>
                         <optgroup label="Tipe Transaksi" data-max-options="1">
                             <option value="UP">UP</option>
                             <option value="LS">LS</option>
@@ -446,7 +442,7 @@ function edit(self){
     var data = oTable.fnGetData(tr);
     
     $modal.find('input[name=id]').val(data['id']);
-    $modal.find('select[name=tipe]').val(data['tipe']).change();
+    $modal.find('select[name=tipe]').val(data['tipe_raw']).change();
     $modal.find('input[name=tanggalref]').val(data['tanggal_raw']);
     $modal.find('input[name=kodetransaksi]').val(data['kodetransaksi']);
     $modal.find('input[name=kodepekerjaan]').val(data['kodepekerjaan']);
@@ -541,6 +537,7 @@ $(document).ready(function(){
         ajax: {type: "POST", url: '{{route("spj.data")}}', data:{'_token':@json(csrf_token())}},
         columns: [
             { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' , title:'No.', name:'no'},
+            { data:'tipe', orderable: false, width: 1 , title:'Tipe', name:'tipe'},
             { data:'tanggal', title:'Tanggal', name:'tanggal'},
             { data:'kodetransaksi', title:'ID Transaksi', name:'kodetransaksi'},
             { data:'kodepekerjaan', title:'ID Pekerjaan', name:'kodepekerjaan'},
@@ -552,7 +549,7 @@ $(document).ready(function(){
             { data:'idrekanan', visible: false, name:'idrekanan'},
             { data:'tanggal_raw', visible: false, name:'tanggal_raw'},
             { data:'rekening', visible: false, name:'rekening'},
-            { data:'tipe', visible: false, name:'tipe'},
+            { data:'tipe_raw', visible: false, name:'tipe_raw'},
         ],
     }).yadcf([
         // {

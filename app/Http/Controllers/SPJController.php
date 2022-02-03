@@ -67,9 +67,22 @@ class SPJController extends Controller
                 return $t->rekening;
             })
             ->editColumn('tipe', function ($t) { 
+                switch ($t->tipe) {
+                    case 'TU':
+                        return "<span class=\"badge bg-success text-white\">TU</span>";
+                        break;
+                    case 'LS':
+                        return "<span class=\"badge bg-primary text-white\">LS</span>";
+                        break;
+                    case 'UP':
+                        return "<span class=\"badge bg-info text-white\">UP</span>";
+                        break;
+                }
+            })
+            ->addColumn('tipe_raw', function ($t) { 
                 return $t->tipe;
             })
-            ->rawColumns(['tanggal','idunitkerja','kodetransaksi','kodepekerjaan','keterangan','action']);
+            ->rawColumns(['tanggal','idunitkerja','kodetransaksi','kodepekerjaan','keterangan','action','tipe']);
         if(in_array($user->role,['PKM'])){
             $datatable
                 ->addColumn('action', function ($t) use($user){ 

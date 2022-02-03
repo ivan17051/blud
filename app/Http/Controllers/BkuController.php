@@ -25,6 +25,7 @@ class BkuController extends Controller
 {
     public function index(){
         $user = Auth::user();
+        $unitkerja=UnitKerja::where('id',$user->idunitkerja)->select('id','kode','nama','nama_alias')->first();
         $subkegiatan=[];
         $rekening=[];
         if (in_array($user->role, ['PKM'])) {
@@ -33,7 +34,7 @@ class BkuController extends Controller
                 $q->select('id','idunitkerja','idrekening','saldo')->orderBy('tanggal','DESC')->first();
             }])->select('id','kode','nama')->get();
         }
-        return view('bku', [ 'user'=>$user, 'subkegiatan'=>$subkegiatan, 'rekening'=>$rekening ]);
+        return view('bku', [ 'user'=>$user, 'subkegiatan'=>$subkegiatan, 'rekening'=>$rekening, 'unitkerja'=>$unitkerja ]);
     }
 
     public function data(){
@@ -292,7 +293,7 @@ class BkuController extends Controller
         $user = Auth::user();
         $upls = explode(',',$request->upls);
         $data = Transaksi::where('isactive',1)->with(['subkegiatan'])
-                ->select('id', 'nomor', 'tipe', 'idunitkerja', 'idsubkegiatan', 'tanggalref', 'keterangan', 'kodetransaksi')
+                ->select('id', 'nomor', 'tipe', 'idunitkerja', 'idsubkegiatan', 'tanggalref', 'keterangan', 'kodetransaksi', 'kodepekerjaan','jumlah')
                 ->where('idunitkerja',$user->idunitkerja)
                 ->where('isbku',0)
                 ->whereIn('tipe',$upls);

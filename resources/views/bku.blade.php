@@ -5,7 +5,7 @@ active
 @endsection
 
 @php
-$role = Auth::user()->id;
+$role = Auth::user()->role;
 @endphp
 
 @section('content')
@@ -325,10 +325,8 @@ $role = Auth::user()->id;
                             <label><b>Puskesmas</b></label>
                             <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idunitkerja" required>
                             @if( in_array($role,['PKM']) )
-                                @foreach($unitkerja as $uk)
                                 <option value="">--Pilih--</option>
-                                <option value="{{$uk->id}}">{{$uk->nama.', '.$uk->nama_alias}}</option>
-                                @endforeach
+                                <option value="{{$unitkerja->id}}">{{$unitkerja->nama.', '.$unitkerja->nama_alias}}</option>
                             @else
                                 <option value="">--Pilih--</option>
                                 <option value="38">Puskesmas Tanjungsari, TANJUNGSARI</option>
@@ -473,7 +471,7 @@ $role = Auth::user()->id;
                 <div class="form-group">
                     <label><b>No. SPP</b></label>
                     <div class="input-group">
-                        <input readonly type="text" pattern="[0-9]{1,5}" name="nomorsp2d" class="form-control" placeholder="No. Bukti" required>
+                        <input readonly type="text" pattern="[0-9]{1,5}" name="nomorsp2d" class="form-control" placeholder="No. Bukti" required onchange="fillAddLS(this)">
                         <div class="input-group-append">
                         <button class="btn btn-dark" type="button" onclick="pilihSPP_LS()">?</button>
                         </div>
@@ -487,7 +485,67 @@ $role = Auth::user()->id;
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                         </div>
                     </div>
-                </div>  
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>ID Transaksi</b></label>
+                            <div class="input-group">
+                                <input disabled type="text" name="kodetransaksi" class="form-control" placeholder="ID Transaksi">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>ID Pekerjaan</b></label>
+                            <div class="input-group">
+                                <input disabled type="text" name="kodepekerjaan" class="form-control" placeholder="ID Pekerjaan">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label><b>Buku Pembantu</b></label>
+                    <div class="bukupembantu">
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" value="1"  name="KT" type="checkbox" >
+                            <label class="form-check-label" for="KT">Kas Tunai</label>
+                        </div>
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" value="1"  name="SB" type="checkbox" >
+                            <label class="form-check-label" for="SB">Simpanan Bank</label>
+                        </div>
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" value="1"  name="PNJ" type="checkbox" >
+                            <label class="form-check-label" for="PNJ">Panjar</label>
+                        </div>
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" value="1"  name="RO" type="checkbox" checked disabled>
+                            <label class="form-check-label" for="RO">Rincian Objek</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label><b>UPLS</b></label>
+                            <select class="form-control" name="tipe" disabled>
+                              <option value="" selected disabled>--Pilih--</option>
+                              <option>UP</option>
+                              <option>LS</option>
+                              <option>TU</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="form-group">
+                            <label><b>Jumlah</b></label>
+                            <div class="input-group">
+                                <input disabled type="text" name="jumlah" class="form-control" placeholder="ID Transaksi">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
@@ -839,7 +897,6 @@ function openPilihSPP(urlparams, sign_, callback){
     }
     sign=sign_;
     callbackPilihSpp=callback;
-
     if(sign==1){    //SPP LS to BKU
         $('#pilihSppLabel').text('Pilih SPP');
         sppTable = $("#spptable").dataTable({
@@ -850,10 +907,11 @@ function openPilihSPP(urlparams, sign_, callback){
             columns: [
                 { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' , title:'No.', name:'no'},
                 { data:'nomor', title:'Nomor', name:'nomor',render: function(e,d,data){
-                    return '<button onclick="callbackPilihSpp(\''+data['nomor']+'\','+data['id']+')" class="btn btn-sm btn-light text-nowrap border-1-gray-1 rounded-pill" >'+data['nomor']+'</button>';
+                    return '<button onclick="callbackPilihSpp(\''+data['nomor']+'\','+data['id']+',\''+data['kodepekerjaan']+'\',\''+data['kodetransaksi']+'\',\''+data['tipe']+'\',\''+data['jumlah']+'\')" class="btn btn-sm btn-light text-nowrap border-1-gray-1 rounded-pill" >'+data['nomor']+'</button>';
                 }},
                 { data:'tanggalref', title:'Tanggal', name:'tanggalref', render: function(e,d,row){return moment(row['tanggalref']).format('L');}},
                 { data:'subkegiatan.kode', orderable: false, title:'Kode Subkegiatan', name:'subkegiatan.kode'},
+                { data:'keterangan', orderable: false, title:'Uraian', name:'keterangan'},
                 { data:'keterangan', orderable: false, title:'Uraian', name:'keterangan'},
             ],
         });
@@ -880,10 +938,15 @@ function openPilihSPP(urlparams, sign_, callback){
 }
 
 function pilihSPP_LS(){
-    openPilihSPP('?upls=LS&status=3',1, function(nomor,id){
+    openPilihSPP('?upls=LS&status=3',1, function(nomor,id,kodepekerjaan,kodetransaksi,tipe,jumlah){
+        
         $form = $('#importSPPLS form');
         $form.find('input[name=idtransaksi]').val(id);
         $form.find('input[name=nomorsp2d]').val(nomor);
+        $form.find('input[name=kodetransaksi]').val(kodetransaksi);
+        $form.find('input[name=kodepekerjaan]').val(kodepekerjaan);
+        $form.find('select[name=tipe]').val(tipe).change();
+        $form.find('input[name=jumlah]').val(jumlah);
         $('#pilihSpp').modal('hide');
     });
     $('#pilihSpp').modal({backdrop: 'static', keyboard: false}).modal('show');

@@ -101,7 +101,11 @@
                                       <td class="paddingfont fontCenter" >{{$b->nomor}}</td>
                                       <td class="paddingfont fontCenter" >{{$i+1}}</td>
                                       <td class="paddingfont fontCenter" >{{$b->tanggal}}</td>
+                                      @if(isset($b->idtransaksi))
                                       <td class="paddingfont fontCenter" >{{$b->transaksi->nomor}}/1 02 0100/{{$unitkerja->kode}}/{{$b->tipe}}/F/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
+                                      @else
+                                      <td class="paddingfont fontCenter" ></td>
+                                      @endif
                                       <td class="paddingfont fontCenter" >{{$b->tipe}}</td>
                                       <td class="paddingfont ">{{$b->uraian}}</td>
                                       <td class="paddingfont fontKanan">{{$b->jenis==1 ? $nominal : ''}}</td>
