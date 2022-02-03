@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Exception;
 use App\UnitKerja;
 use App\Kegiatan;
 use App\SubKegiatan;
@@ -60,7 +61,7 @@ class TransaksiController extends Controller
                     case 'LS':
                         return "<span class=\"badge bg-primary text-white\">LS</span>";
                         break;
-                    default:
+                    case 'UP':
                         return "<span class=\"badge bg-info text-white\">UP</span>";
                         break;
                 }
@@ -159,7 +160,7 @@ class TransaksiController extends Controller
                         // $toBKU_btn='<button class="btn btn-sm btn-warning " onclick="transaksi2bku(this)" title="to BKU">to BKU</button>';
                         // if($t->isbku===1) $toBKU_btn='<button class="btn btn-sm btn-warning " disabled title="to BKU"><i class="fas fa-lock fa-sm"> to BKU</button>';
                         return '<button disabled class="btn btn-sm btn-success d-block mb-2 text-nowrap"><i class="fas fa-lock fa-sm"></i> Diterima</button>'.
-                            '<button class="btn btn-sm btn-primary mb-2" onclick="cetak(\'sp2d\',\''.$t->id.'\',\''.$t->tipepembukuan.'\')" title="Cetak SP2D">Cetak</button>'.
+                            '<button class="btn btn-sm btn-primary mb-2" onclick="cetak(\'sp2d\',\''.$t->id.'\',\''.$t->tipepembukuan.'\',\''.$t->nocek.'\')" title="Cetak SP2D">Cetak</button>'.
                             $toBKU_btn;
                     }
                     else if($t->status===2){
@@ -526,6 +527,22 @@ class TransaksiController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error',$e->getMessage());
+        }
+    }
+
+    public function inputCek(Request $request){
+        $userId = Auth::id();
+        try {
+            $model=Transaksi::find($request->input('id'));
+            $model->fill([
+                'nocek'=>$request->input('inputCek'),
+                'tanggalcek'=>$request->input('inputTglCek'),
+            ]);
+            $model->idm=$userId;
+            $model->save();
+            return redirect('/sp2d/'.$request->id)->with('success','Berhasil mengisi No. Cek dan Tanggal Cek');
+        } catch (\Throwable $th) {
+            return back()->with('error','Gagal mengisi No. Cek dan Tanggal Cek');
         }
     }
         

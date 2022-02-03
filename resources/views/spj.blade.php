@@ -36,7 +36,7 @@ active
                     <div class="col-md-2">
                         <div class="form-group">
                             <label><b>UPLS</b></label>
-                            <select class="selectpicker" data-style-base="form-control" data-style="" name="tipe" required >
+                            <select class="selectpicker" data-style-base="form-control" data-style="" name="tipe" onchange="cekTipe(this, '#tambah')" required>
                               <option value="" selected disabled>--Pilih--</option>
                               <option>UP</option>
                               <option>LS</option>
@@ -49,7 +49,7 @@ active
                     <div class="col-md-6">
                         <div class="form-group">
                             <label><b>Rekanan</b></label>
-                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" data-size="5" name="idrekanan" required onchange="filterFormulirOnChange(this, '#tambah')">
+                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" data-size="5" name="idrekanan" onchange="filterFormulirOnChange(this, '#tambah')" required>
                               <option value="">--Pilih--</option>
                               @foreach($rekanan as $unit)
                               <option value="{{$unit->id}}">{{$unit->nama}}</option>
@@ -60,7 +60,7 @@ active
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><b>Tanggal Pengeluaran</b></label>
-                            <input type="date" id="tanggalref" name="tanggalref" class="form-control" onchange="fillBulanSPJ(this, '#tambah')">
+                            <input type="date" id="tanggalref" name="tanggalref" class="form-control" onchange="fillBulanSPJ(this, '#tambah')" required>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -125,7 +125,7 @@ active
                     <div class="col-md-6">
                         <div class="form-group">
                             <label><b>Jumlah</b></label>
-                            <input type="text" id="jumlah" name="jumlah" class="form-control" placeholder="Jumlah">
+                            <input type="text" id="jumlah" name="jumlah" class="form-control" placeholder="Jumlah" required>
                         </div>  
                     </div>
                 </div>
@@ -174,7 +174,7 @@ active
                     <div class="col-md-2">
                         <div class="form-group">
                             <label><b>UPLS</b></label>
-                            <select class="selectpicker" data-style-base="form-control" data-style="" name="tipe" required >
+                            <select class="selectpicker" data-style-base="form-control" data-style="" name="tipe" onchange="cekTipe(this, '#sunting')" required>
                               <option value="" selected disabled>--Pilih--</option>
                               <option>UP</option>
                               <option>LS</option>
@@ -198,7 +198,7 @@ active
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><b>Tanggal Pengeluaran</b></label>
-                            <input type="date" id="tanggalref2" name="tanggalref" class="form-control" onchange="fillBulanSPJ(this, '#sunting')">
+                            <input type="date" id="tanggalref2" name="tanggalref" class="form-control" onchange="fillBulanSPJ(this, '#sunting')" required>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -263,7 +263,7 @@ active
                     <div class="col-md-6">
                         <div class="form-group">
                             <label><b>Jumlah</b></label>
-                            <input type="text" id="jumlah2" name="jumlah" class="form-control" placeholder="Jumlah">
+                            <input type="text" id="jumlah2" name="jumlah" class="form-control" placeholder="Jumlah" required>
                         </div>  
                     </div>
                 </div>
@@ -427,6 +427,16 @@ const filterFormulirOnChange = async function(e, modal){
     $modal.find('input[name=norek]').val(rekanan[pos]['rekening']);
 }
 
+const cekTipe = async function(e,modal){
+    var $modal=$(modal);
+    if(e.value=='UP'){
+        $modal.find('select[name=idrekanan]').removeAttr('required').change();
+    }
+    else{
+        $modal.find('select[name=idrekanan]').attr('required', true);
+    }
+}
+
 const fillBulanSPJ = async function(e, modal){
     var $modal=$(modal);
     
@@ -522,7 +532,6 @@ function format(data){
     '</td></tr>';
             
     var $view=$(str);
-    console.log(data);
     
     return $view;
     return $view.prop("outerHTML");

@@ -138,12 +138,12 @@
                                                     <tr>
                                                         <td class="paddingfont">No. Cek Bank</td>
                                                         <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> {{$request->inputCek}}</td>
+                                                        <td class="paddingfont"> {{$transaksi->nocek}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="paddingfont">Tanggal</td>
                                                         <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> @if($request->inputTglCek){{Carbon\Carbon::make($request->inputTglCek)->translatedFormat('d-m-Y')}} @endif</td>
+                                                        <td class="paddingfont"> @if($transaksi->tanggalcek){{Carbon\Carbon::make($transaksi->tanggalcek)->translatedFormat('d-m-Y')}} @endif</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="paddingfont">Tahun Anggaran</td>
@@ -420,7 +420,9 @@
         </tbody>
     </table>
     <script>
+      @if(Auth::user()->role=='PKM')
         window.print();
+      @endif
     </script>
 </body>
 
