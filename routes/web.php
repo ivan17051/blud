@@ -62,6 +62,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/transaksi/acc', 'TransaksiController@accTransaksi')->name('transaksi.acc');
     Route::delete('/transaksi/tolak', 'TransaksiController@tolakTransaksi')->name('transaksi.tolak');
     Route::put('/transaksi/batal', 'TransaksiController@batalkanPengajuanSP2D')->name('transaksi.batal');
+    Route::put('/transaksi/inputCek', 'TransaksiController@inputCek')->name('transaksi.inputCek');
     Route::post('/transaksi/espj2transaksi', 'TransaksiController@espjToTransaksi')->name('transaksi.espj2transaksi');
 
     Route::put('/ubah-password', 'PasswordController@update');

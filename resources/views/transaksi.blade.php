@@ -603,7 +603,7 @@ $role = Auth::user()->id;
     @method('put')
     <input type="hidden" name="id">
 </form>
-<form hidden action="{{route('transaksi.update')}}" method="POST" id="update" target="_blank">
+<form hidden action="{{route('transaksi.inputCek')}}" method="POST" id="update" target="_blank">
     @csrf
     @method('put')
     <input type="hidden" name="id">
@@ -951,9 +951,10 @@ function batal(self){
 }
 
 var oData={};
-async function cetak(type, id, tipepembukuan=null){
+async function cetak(type, id, tipepembukuan=null, nocek){
     var pejabatPKM = await my.request.get('{{route('pejabat.byunitkerja',['idunitkerja'=>''])}}/'+id);
-    console.log(pejabatPKM);
+    var user = "{{Auth::user()->role}}";
+    
     switch (type) {
         case 'spp':
             $('#cetakspp form').attr('action',"{{url('spp')}}/"+id);
@@ -971,7 +972,7 @@ async function cetak(type, id, tipepembukuan=null){
             $('#cetakspd').modal('show');
             break;
         case 'sp2d':
-            if(tipepembukuan==='tunai'){
+            if(tipepembukuan==='tunai' && user=='PKM' && !nocek){
                 
                 var strhtml='<div class="form-group"><label>No. Cek Bank</label>'+
                         '<input id="inputCek" name="inputCek" type="text" class="form-control" placeholder="Masukkan No. Cek Bank" ></div>'+
@@ -992,6 +993,7 @@ async function cetak(type, id, tipepembukuan=null){
                     confirmButtonText: 'Cetak',
                     cancelButtonText: 'Batal',
                     preConfirm: () => {
+                        $('#update').find('input[name=id]').val(id);
                         var valCek = document.getElementById('inputCek').value;
                         var valTgl = document.getElementById('inputTglCek').value;
                         if(valCek==='' || valTgl==='') {
@@ -1005,6 +1007,7 @@ async function cetak(type, id, tipepembukuan=null){
                     if (result.isConfirmed) {
                         // $('#update').attr('action',"{{url('sp2d')}}/"+id).submit();
                         $('#update').submit();
+                        window.location.reload();
                     }
                 })
             }else{
