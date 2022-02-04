@@ -38,13 +38,13 @@ class TransaksiController extends Controller
             $data = Transaksi::where('transaksi.isactive',1)
                 ->where('status','>',1)->with(['unitkerja','subkegiatan'])
                 ->where('nomor','<>',null)
-                ->orderBy('id','DESC');;
+                ->orderBy('transaksi.id','DESC');
                 // status lebih dari 1 artinya sudah masuk pengajuan sp2d
         }else{
             $data = Transaksi::where('isactive',1)->with(['unitkerja','subkegiatan'])
                     ->where('idunitkerja',$user->idunitkerja)
                     ->where('nomor','<>',null)
-                    ->orderBy('id','DESC');
+                    ->orderBy('transaksi.id','DESC');
         }
         
         $datatable = Datatables::of($data);
