@@ -483,7 +483,6 @@ class TransaksiController extends Controller
 
             //setelah ada persetujuan sp2d dari keuangan
             if($model->status === 3){
-                $newSaldo=0;
                 $idunitkerja=$model->idunitkerja;
 
                 $transaksiDate = Carbon::parse($model->tanggalref);
@@ -510,7 +509,6 @@ class TransaksiController extends Controller
                     if($saldoValue < 0){   //cek kecukupan saldo
                         throw new Exception("Saldo tidak mencukupi");
                     }
-                    $newSaldo+=$saldoValue;
 
                     //save saldo yg diperbarui
                     if(isset($saldo_1)){
@@ -543,6 +541,19 @@ class TransaksiController extends Controller
                         $s->save();
                     }
                 }
+
+                //get saldo total dari subkegiatan
+                $subquery=\App\Saldo::select('idrekening', DB::raw('MAX(tanggal) AS tgl'))
+                    ->where('idunitkerja',$idunitkerja)
+                    ->groupBy('idrekening');
+
+                $newSaldo = \App\Saldo::select('id','saldo')
+                    ->rightJoinSub($subquery, 'sub', function($join){
+                        $join->on('msaldo.idrekening','=','sub.idrekening')
+                            ->whereColumn('sub.tgl','=','msaldo.tanggal');
+                    })
+                    ->where('idunitkerja',$idunitkerja)->sum('saldo');
+                
                 $model->saldo=$newSaldo;
             }
 
