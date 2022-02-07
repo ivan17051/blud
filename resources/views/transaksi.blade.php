@@ -186,6 +186,7 @@ $role = Auth::user()->id;
             </div>
             <div class="modal-body">
                 <form action="" method="GET" id="addrekening">
+                    <input type="hidden" name="saldo">
                     <div class="row">    
                         <div class="col-md-6">
                             <div class="form-group">
@@ -214,6 +215,7 @@ $role = Auth::user()->id;
                 </form>
                 <form action="{{route('transaksi.update')}}" method="POST" id="daftarrekening">
                     <input type="hidden" name="id">
+                    <input type="hidden" name="comment" value="daftarrekening">
                     @csrf
                     @method('PUT')
                     <table class="table" id="rekeningtable">
@@ -291,6 +293,7 @@ $role = Auth::user()->id;
                 </form>
                 <form action="{{route('transaksi.update')}}" method="POST" id="daftarpajak">
                     <input type="hidden" name="id">
+                    <input type="hidden" name="comment" value="daftarpajak">
                     @csrf
                     @method('PUT')
                     <table class="table" id="pajaktable">
@@ -352,6 +355,7 @@ $role = Auth::user()->id;
                 </form>
                 <form action="{{route('transaksi.update')}}" method="POST" id="daftarpotongan">
                     <input type="hidden" name="id">
+                    <input type="hidden" name="comment" value="daftarpotongan">
                     @csrf
                     @method('PUT')
                     <table class="table" id="potongantable">
@@ -1200,8 +1204,14 @@ function format(data){
 }
 
 function infoSaldo(self, target){
-    var val=$($(self)[0].selectedOptions[0]).data('saldo');
-    $(target).text("saldo : "+val);
+    let option = $(self)[0].selectedOptions[0];
+    if(option.value !==''){
+        var val=$(option).data('saldo');
+        $(self).closest("form").find('input[name=saldo]').val(val);
+        $(target).text("saldo : "+my.formatRupiah(val));
+    }else{
+        $(target).text("");
+    }
 }
 
 //START of FORM Pilih SPP
@@ -1342,6 +1352,11 @@ $(document).ready(function(){
     $('#addrekening').submit(function(e){
         e.preventDefault();
         var inputan= my.getFormData($(e.target));
+
+        if(parseFloat(inputan['saldo']) - parseFloat(inputan['jumlah']) < 0){
+            return alert('Saldo tidak mencukupi')
+        }
+
         var rekening=inputan['tipe'].split('_');
         var str=`<tr>
                 <td>${rekening[1]}<input type="hidden" name="rekening[]" value="${rekening[0]}" required></td>

@@ -221,6 +221,7 @@ class TransaksiController extends Controller
             // 'tipepembukuan' => 'nullable|string|in:pindahbuku,tunai',
             // 'jumlah' => array('required','regex:/^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$/'), // allow float
             'keterangan' => 'required_without:id|string|max:255',
+            'comment' => 'nullable',
         ]);
         if ($validator->fails()) return back()->with('error','Gagal menyimpan');
         
@@ -267,6 +268,10 @@ class TransaksiController extends Controller
             }
             $input['rekening']=$newRekeningArray;
             $input['jumlah']=$newJumlah;
+        }else if(isset($input['comment']) AND $input['comment']==='daftarrekening'){
+            //jika input rekening tidak ada sedang user melakukan simpan rekening serta nominal, maka rekening dikosongkan
+            $input['rekening']=$newRekeningArray;
+            $input['jumlah']=$newJumlah;
         }
 
         //membuat array pajak untuk db dng urutan [id, kode, nama pajak, nominal, kodebilling, tanggal kadaluarsa]
@@ -283,6 +288,10 @@ class TransaksiController extends Controller
                 array_push($newPajakArray,$pajak);
             }
         }
+        else if(isset($input['comment']) AND $input['comment']==='daftarpajak'){
+            //jika input pajak tidak ada sedang user melakukan simpan pajak serta nominal, maka pajak dikosongkan
+            $input['pajak']=$newPajakArray;
+        }
 
         //membuat array potongan untuk db dng urutan [kode, nama potongan, nominal ]
         $newPotonganArray=[];
@@ -294,6 +303,9 @@ class TransaksiController extends Controller
                     $input['nominalpotongan'][$i]
                 ]);
             }
+        }else if(isset($input['comment']) AND $input['comment']==='daftarpotongan'){
+            //jika input potongan tidak ada sedang user melakukan simpan potongan serta nominal, maka potongan dikosongkan
+            $input['potongan']=$newPotonganArray;
         }
 
         //jika edit transaksi old
