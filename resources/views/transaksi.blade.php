@@ -190,10 +190,10 @@ $role = Auth::user()->id;
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label><b>SubRekening</b></label>
-                                <select class="selectpicker" data-style-base="form-control" data-live-search="true" data-style="" name="tipe" required>
+                                <select class="selectpicker" data-style-base="form-control" data-live-search="true" data-style="" name="tipe" required onchange="infoSaldo(this, '#infosaldotarget')">
                                     <option value="">--Pilih--</option>
                                     @foreach($rekening as $unit)
-                                    <option value="{{$unit->id}}_{{$unit->nama}}">{{$unit->kode}} - {{$unit->nama}}</option>
+                                    <option value="{{$unit->id}}_{{$unit->nama}}" data-saldo="{{$unit->saldo->isEmpty() ? 0 : $unit->saldo->first()->saldo }}">{{$unit->kode}} - {{$unit->nama}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -205,7 +205,10 @@ $role = Auth::user()->id;
                             </div>
                         </div>
                         <div class="col-12 mb-2">
-                            <button type="submit" class="btn btn-primary float-right">Tambah</button>
+                            <div class="float-right text-right">
+                                <p id="infosaldotarget"></p>
+                                <button type="submit" class="btn btn-primary">Tambah</button>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -1194,6 +1197,11 @@ function format(data){
     $view.find('#riwayat ul').append(riwayatstr);
     return $view;
     return $view.prop("outerHTML");
+}
+
+function infoSaldo(self, target){
+    var val=$($(self)[0].selectedOptions[0]).data('saldo');
+    $(target).text("saldo : "+val);
 }
 
 //START of FORM Pilih SPP

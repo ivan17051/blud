@@ -30,8 +30,15 @@ class BkuController extends Controller
         $rekening=[];
         if (in_array($user->role, ['PKM'])) {
             $subkegiatan=SubKegiatan::where('isactive', 1)->where('idunitkerja', Auth::user()->idunitkerja)->get();
-            $rekening=Rekening::where('isactive', 1)->with(['saldo'=>function($q){
-                $q->select('id','idunitkerja','idrekening','saldo')->orderBy('tanggal','DESC')->first();
+            // $rekening=Rekening::where('isactive', 1)->with(['saldo'=>function($q){
+            //     $q->select('id','idunitkerja','idrekening','saldo')->orderBy('tanggal','DESC')->first();
+            // }])->select('id','kode','nama')->get();
+            $idunitkerja = $user->idunitkerja;
+            $year=Carbon::now()->year;
+            $rekening=Rekening::where('isactive', 1)->with(['saldo'=>function($q) use($idunitkerja, $year) {
+                $q->select('id','idunitkerja','idrekening','saldo')->orderBy('tanggal','DESC')
+                    ->where('idunitkerja', $idunitkerja)
+                    ->whereYear('tanggal',$year);
             }])->select('id','kode','nama')->get();
         }
         return view('bku', [ 'user'=>$user, 'subkegiatan'=>$subkegiatan, 'rekening'=>$rekening, 'unitkerja'=>$unitkerja ]);
