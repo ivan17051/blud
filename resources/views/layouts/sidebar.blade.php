@@ -73,7 +73,7 @@ $user = Auth::user()->role;
     <li class="nav-item @yield('transaksiStatus')">
         <a class="nav-link" href="{{url('/transaksi')}}">
             <i class="fas fa-fw fa-exchange-alt"></i>
-            <span>Transaksi</span></a>
+            <span>SPP-SPM</span></a>
     </li>
     <!-- Nav Item - BKU -->
     <li class="nav-item @yield('bkuStatus')">

@@ -1256,6 +1256,7 @@ $(document).ready(function(){
     $maxDate=$date->format('Y-m-d');
     $curDate=$date->format('Y-m-d');
     $date->day=1;
+    $date->month=1;
     $minDate=$date->format('Y-m-d');
     @endphp
     const curDate='{{$curDate}}';
@@ -1299,7 +1300,7 @@ $(document).ready(function(){
         columns: [
             { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' , title:'No.', name:'no'},
             { data:'tipe', orderable: false, width: 1 , title:'Tipe', name:'tipe'},
-            { data:'tanggalref', title:'Tanggal', name:'tanggalref'},
+            { data:'tanggalref', title:'Tanggal', name:'tanggalref', render: function(e,d,row){return moment(row['tanggalref']).format('L');} },
             { data:'subkegiatan.nama',orderable: false, title:'Subkegiatan', name:'subkegiatan.nama'},
             { data:'nomor', title:'Nomor', name:'nomor', render:renderNomor},
             { data:'keterangan', orderable: false, width: '23rem', title:'Keperluan', name:'keterangan'},

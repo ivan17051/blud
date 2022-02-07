@@ -50,7 +50,6 @@ class TransaksiController extends Controller
         
         $datatable = Datatables::of($data);
         $datatable->addColumn('tanggal_raw', function ($t) { return $t->tanggal; })
-            ->editColumn('tanggalref', function ($t) { return Carbon::parse($t->tanggal)->translatedFormat('d M Y');})
             ->addIndexColumn()
             ->addColumn('tipe_raw', function ($t) { return $t->tipe; })
             ->editColumn('tipe', function ($t) { 
@@ -486,37 +485,63 @@ class TransaksiController extends Controller
             if($model->status === 3){
                 $newSaldo=0;
                 $idunitkerja=$model->idunitkerja;
+
+                $transaksiDate = Carbon::parse($model->tanggalref);
                 
                 foreach ($model->rekening as $i=>$rekeningArr) {
-                    $saldo=Saldo::select('id','idunitkerja','idrekening','saldo','tanggal','tipe')->where('idrekening',$rekeningArr[0])->where('idunitkerja', $idunitkerja)->orderBy('tanggal','DESC')->first();
+                    // $saldo=Saldo::select('id','idunitkerja','idrekening','saldo','tanggal','tipe')->where('idrekening',$rekeningArr[0])->where('idunitkerja', $idunitkerja)->orderBy('tanggal','DESC')->first();
+                    $saldo_1 = Saldo::select('id','idunitkerja','idrekening','saldo','tanggal','tipe')->where('idrekening',$rekeningArr[0])->where('idunitkerja', $idunitkerja)
+                        ->orderBy('tanggal','DESC')
+                        ->whereMonth('tanggal','<=',$transaksiDate->month )
+                        ->whereYear('tanggal',$transaksiDate->year )->first();
+                    $saldo_lainnya=Saldo::select('id','idunitkerja','idrekening','saldo','tanggal','tipe')->where('idrekening',$rekeningArr[0])->where('idunitkerja', $idunitkerja)
+                        ->whereMonth('tanggal','>',$transaksiDate->month )
+                        ->whereYear('tanggal',$transaksiDate->year )
+                        ->orderBy('tanggal','ASC')->get();
 
-                    if(isset($saldo)===FALSE){   //cek row saldo ada atau tidak
+                    if(isset($saldo_1)===FALSE and $saldo_lainnya->isEmpty()){   //cek row saldo ada atau tidak
                         throw new Exception("Saldo tidak mencukupi");
                     }
 
-                    $saldoValue=$saldo['saldo']-floatval($rekeningArr[3]);  //index 3 adalah jumlah yg digunakan
+                    //saldo teraktual
+                    $saldo_aktual= $saldo_lainnya->isEmpty() ? $saldo_1 : $saldo_lainnya->last();
+
+                    $saldoValue=$saldo_aktual['saldo']-floatval($rekeningArr[3]);  //index 3 adalah jumlah yg digunakan
                     if($saldoValue < 0){   //cek kecukupan saldo
                         throw new Exception("Saldo tidak mencukupi");
                     }
                     $newSaldo+=$saldoValue;
 
-                    if (in_array($saldo->tipe, ['saldo awal','revisi'])) {
-                        $saldo= $saldo->replicate();
-                        $saldo->fill([
-                            'saldo'=>$saldoValue,
-                            'tanggal'=>Carbon::now()->format('Y-m-d'),
-                            'idm'=>$userId,
-                            'idc'=>$userId,
-                            'tipe'=>null,
-                        ]);
-                    }else{
-                        $saldo->fill([
-                            'saldo'=>$saldoValue,
-                            'tanggal'=>Carbon::now()->format('Y-m-d'),
-                            'idm'=>$userId,
-                        ]);
+                    //save saldo yg diperbarui
+                    if(isset($saldo_1)){
+                        if (in_array($saldo_1->tipe, ['saldo awal','revisi']) OR $transaksiDate->isSameMonth($saldo_1->tanggal)===FALSE ) {
+                            $saldo_1= $saldo_1->replicate();
+
+                            $saldo_1->fill([
+                                'saldo'=>$saldoValue,
+                                'tanggal'=>($transaksiDate->lessThan($saldo_1->tanggal)) ? $saldo_1->tanggal : $model->tanggalref,
+                                'idm'=>$userId,
+                                'idc'=>$userId,
+                                'tipe'=>null,
+                            ]);
+                        }else{
+                            $saldo_1->fill([
+                                'saldo'=>$saldo_1->saldo - floatval($rekeningArr[3]),
+                                'tanggal'=> ($transaksiDate->lessThan($saldo_1->tanggal)) ? $saldo_1->tanggal : $model->tanggalref,
+                                'idm'=>$userId,
+                            ]);
+                        }
                     }
-                    $saldo->save();
+                    $saldo_1->save();
+
+                    //update ke saldo di bulan di atasnya tapi tetap dalam tahun yg sama
+                    foreach ($saldo_lainnya as $i => $s) {
+                        $s->fill([
+                            'saldo'=>$s->saldo - floatval($rekeningArr[3]),
+                            'idm'=>$userId,
+                        ]);
+                        $s->save();
+                    }
                 }
                 $model->saldo=$newSaldo;
             }
