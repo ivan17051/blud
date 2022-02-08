@@ -40,46 +40,187 @@
                                 <table width="100%" cellspacing="0" cellpadding="0" border="0">
                                     <tbody>
                                       <tr>
-                                          <td class="paddingfont headerFont" style="font-size:15px">SPP-UP </td>
+                                          <td class="paddingfont headerFont" style="font-size:15px">SPP-{{$transaksi->tipe}} </td>
                                       </tr>
                                       <tr>
                                           <table width="100%">
+                                          @if($transaksi->tipe=='LS')
                                           <tr>
-                                              <td width="5%"><i class="far fa-square fa-fw"></i></td>
-                                              <td>
+                                              <td width="5%" class="paddingfont paddingBawah"><i class="far fa-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
                                                   Surat Pengantar SPP
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td><i class="far fa-check-square fa-fw"></i></td>
-                                              <td>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
                                                   Ringkasan SPP
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td><i class="far fa-check-square fa-fw"></i></td>
-                                              <td>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
                                                   Rincian SPP
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td><i class="far fa-check-square fa-fw"></i></td>
-                                              <td>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
                                                   Salinan SPD
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td><i class="far fa-check-square fa-fw"></i></td>
-                                              <td>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                              Salinan Surat Rekomendasi dari SKPD teknis terkait.
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                              SSP disertai faktur pajak (PPN dan PPh) yang telah ditandatangani wajib pajak dan wajib pungut.
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                              Surat perjanjian kerjasama/kontrak antara pengguna anggaran/kuasa pengguna anggaran dengan pihak ketiga serta mencantumkan nomor rekening bank (dibuktikan dengan referensi bank yang diterbitkan pada Tahun Anggaran berkenaan, untuk kepentingan mengikuti pekerjaan di Pemerintah Kota Surabaya) pihak ketiga
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                              Berita Acara penyelesaian pekerjaan.
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                              Berita Acara serah terima barang dan jasa.
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                              Berita Acara Pembayaran.
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                              Kwitansi bermaterai, nota/faktur yang ditandatangani pihak ketiga dan PPTK serta disetujui oleh pengguna anggaran/kuasa pengguna anggaran.
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                              Surat jaminan bank atau yang dipersamakan yang dikeluarkan oleh bank atau lembaga keuangan non bank.
+                                              </td>
+                                        </tr>
+                                        <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                              Dokumen lain yang dipersyaratkan untuk kontrak-kontrak yang dananya sebagian atau seluruhnya bersumber dari penerusan pinjaman/hibah luar negeri.
+                                              </td>
+                                        </tr>
+                                        <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                              Berita Acara pemeriksaan yang ditandatangani oleh pihak ketiga/rekanan serta unsur panitia pemeriksaan barang berikut lampiran daftar barang yang diperiksa.
+                                              </td>
+                                        </tr>
+                                        <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                              Surat angkutan atau konosemen apabila pengadaan barang dilaksanakan diluar wilayah kerja Surat pemberitahuan potongan denda keterlambatan pekerjaan dari PPTK apabila pekerjaan mengalami keterlambatan.
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                              Foto/Buku/Dokumentasi tingkat kemajuan/penyelesaian pekerjaan.
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                              Potongan jamsostek (potongan sesuai dengan ketentuan yang berlaku/surat pemberitahuan jamsostek).
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                              Khusus untuk pekerjaan konsultan yang perhitungan harganya menggunakan biaya personil (billing rate), Berita Acara prestasi kemajuan pekerjaan dilampiri dengan bukti kehadiran dari tenaga konsultan sesual pentahapan waktu pekerjaan dan bukti penyewaan/pembelian alat penunjang serta bukti pengeluaran lainnya berdasarkan rincian dalam surat penawaran.
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                              Surat Ijin Usaha Perdagangan (SIUP) atau dokumen sejenisnya.
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                              Ijin Usaha Jasa Konstruksi (IUJK) atau dokumen sejenisnya.
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                              Surat Setoran Bukan Pajak (SSBP).
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                              Daftar Pembayaran.
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                              Lampiran lain yang diperlukan
+                                              </td>
+                                          </tr>
+                                            @elseif($transaksi->tipe=='UP')
+                                          <tr>
+                                              <td width="5%" class="paddingfont paddingBawah"><i class="far fa-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  Surat Pengantar SPP
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  Ringkasan SPP
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  Rincian SPP
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  Salinan SPD
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
                                                   Draft Surat Pernyataan untuk ditandatangani oleh Pengguna Anggaran/Kuasa Pengguna Anggaran yang menyatakan bahwa uang yang diminta tidak dipergunakan untuk keperluan selain uang persediaan saat pengejuan SP2D kepada Kuasa BUD.
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td width="5%"><i class="far fa-square fa-fw"></i></td>
-                                              <td>
+                                              <td width="5%" class="paddingfont paddingBawah"><i class="far fa-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
                                                   Lampiran Lainnya
                                               </td>
                                           </tr>
+                                          @endif
                                           </table>
                                       </tr>
                                       <tr>
@@ -104,7 +245,7 @@
                                                 <tbody><tr>
                                                     <td class="paddingfont paddingBawah" width="160">Nomor</td>
                                                     <td class="paddingfont paddingBawah" width="26">:</td>
-                                                    <td class="paddingfont paddingBawah" width="600"> {{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/UP/F/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
+                                                    <td class="paddingfont paddingBawah" width="600"> {{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/{{$transaksi->tipe}}/F/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="paddingfont paddingBawah" width="160">Tanggal</td>
