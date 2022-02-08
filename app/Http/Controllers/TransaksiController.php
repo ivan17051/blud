@@ -255,7 +255,6 @@ class TransaksiController extends Controller
                     if($saldoValue < 0){   //cek kecukupan saldo
                         throw new Exception("Saldo tidak mencukupi");
                     }
-                    $newSaldo+=$saldoValue;
                 } catch (\Throwable $th) {
                     return back()->with('error','Saldo tidak mencukupi');
                 }
@@ -268,6 +267,19 @@ class TransaksiController extends Controller
             }
             $input['rekening']=$newRekeningArray;
             $input['jumlah']=$newJumlah;
+
+            //get saldo total dari subkegiatan
+            $subquery=\App\Saldo::select('idrekening', DB::raw('MAX(tanggal) AS tgl'))
+            ->where('idunitkerja',$idunitkerja)
+            ->groupBy('idrekening');
+
+            $newSaldo = \App\Saldo::select('id','saldo')
+                ->rightJoinSub($subquery, 'sub', function($join){
+                    $join->on('msaldo.idrekening','=','sub.idrekening')
+                        ->whereColumn('sub.tgl','=','msaldo.tanggal');
+                })
+                ->where('idunitkerja',$idunitkerja)->sum('saldo');
+
         }else if(isset($input['comment']) AND $input['comment']==='daftarrekening'){
             //jika input rekening tidak ada sedang user melakukan simpan rekening serta nominal, maka rekening dikosongkan
             $input['rekening']=$newRekeningArray;
@@ -658,6 +670,19 @@ class TransaksiController extends Controller
             return back()->with('error','Tidak berhak.');
         }
 
+        //get saldo total dari subkegiatan
+        $idunitkerja=$model->idunitkerja;
+        $subquery=\App\Saldo::select('idrekening', DB::raw('MAX(tanggal) AS tgl'))
+        ->where('idunitkerja',$idunitkerja)
+        ->groupBy('idrekening');
+
+        $newSaldo = \App\Saldo::select('id','saldo')
+            ->rightJoinSub($subquery, 'sub', function($join){
+                $join->on('msaldo.idrekening','=','sub.idrekening')
+                    ->whereColumn('sub.tgl','=','msaldo.tanggal');
+            })
+            ->where('idunitkerja',$idunitkerja)->sum('saldo');
+
         try {
             DB::beginTransaction();
             $year=Carbon::parse($model->tanggalref)->year;
@@ -677,6 +702,7 @@ class TransaksiController extends Controller
             $model->fill([
                 'idm' => $user->id,
                 'nomor'=> substr(str_repeat(0, 5).strval($nomor), - 5),   //convert agar nomor ada leading zero
+                'saldo'=>$newSaldo,
             ]);
             $model->save();
             DB::commit();
