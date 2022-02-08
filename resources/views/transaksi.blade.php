@@ -1208,7 +1208,7 @@ function infoSaldo(self, target){
     if(option.value !==''){
         var val=$(option).data('saldo');
         $(self).closest("form").find('input[name=saldo]').val(val);
-        $(target).text("saldo : "+my.formatRupiah(val));
+        $(target).text("saldo : "+my.formatRupiah(parseFloat(val)));
     }else{
         $(target).text("");
     }
