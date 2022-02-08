@@ -35,13 +35,13 @@ active
                     <div class="col-md-6">
                         <div class="form-group">
                             <label><b>Nama Pimpinan</b></label>
-                            <input type="text" name="pimpinan" class="form-control" placeholder="Nama Pimpinan" required>
+                            <input type="text" name="pimpinan" class="form-control" placeholder="Nama Pimpinan" >
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label><b>NPWP</b></label>
-                            <input type="text" name="npwp" maxlength="15" class="form-control" placeholder="NPWP" required>
+                            <input type="text" name="npwp" maxlength="15" class="form-control" placeholder="NPWP" >
                         </div>
                     </div>
                 </div>
@@ -58,6 +58,10 @@ active
                             <input type="text" name="rekening" class="form-control" placeholder="Rekening" required>
                         </div>
                     </div>
+                </div>
+                <div class="form-group">
+                    <label><b>a.n.</b></label>
+                    <input type="text" name="atasnama" class="form-control" placeholder="Atas Nama" required>
                 </div>
             </div>
             <div class="modal-footer">
@@ -96,13 +100,13 @@ active
                     <div class="col-md-6">
                         <div class="form-group">
                             <label><b>Nama Pimpinan</b></label>
-                            <input type="text" name="pimpinan" class="form-control" placeholder="Nama Pimpinan" required>
+                            <input type="text" name="pimpinan" class="form-control" placeholder="Nama Pimpinan" >
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label><b>NPWP</b></label>
-                            <input type="text" name="npwp" maxlength="15" class="form-control" placeholder="NPWP" required>
+                            <input type="text" name="npwp" maxlength="15" class="form-control" placeholder="NPWP" >
                         </div>
                     </div>
                 </div>
@@ -119,6 +123,10 @@ active
                             <input type="text" name="rekening" class="form-control" placeholder="Rekening" required>
                         </div>
                     </div>
+                </div>
+                <div class="form-group">
+                    <label><b>a.n.</b></label>
+                    <input type="text" name="atasnama" class="form-control" placeholder="Atas Nama" required>
                 </div>
             </div>
             <div class="modal-footer">
@@ -168,6 +176,7 @@ active
                             <th>Alamat</th>
                             <th>Pimpinan</th>
                             <th hidden>Nama Bank</th>
+                            <th hidden>Atas Nama</th>
                             <th>Rekening</th>
                             <th>NPWP</th>
                             <th>Aksi</th>
@@ -180,6 +189,7 @@ active
                             <th>Alamat</th>
                             <th>Pimpinan</th>
                             <th hidden>Nama Bank</th>
+                            <th hidden>Atas Nama</th>
                             <th>Rekening</th>
                             <th>NPWP</th>
                             <th>Aksi</th>
@@ -193,6 +203,7 @@ active
                             <td>{{$unit->alamat}}</td>
                             <td>{{$unit->pimpinan}}</td>
                             <td hidden>{{$unit->namabank}}</td>
+                            <td hidden>{{$unit->atasnama}}</td>
                             <td>{{$unit->rekening}}</td>
                             <td>{{$unit->npwp}}</td>
                             <td>
@@ -228,6 +239,7 @@ function edit(self){
     $modal.find('input[name=namabank]').val(data['Nama Bank']);
     $modal.find('input[name=pimpinan]').val(data['Pimpinan']);
     $modal.find('input[name=rekening]').val(data['Rekening']);
+    $modal.find('input[name=atasnama]').val(data['Atas Nama']);
     $modal.find('input[name=npwp]').val(data['NPWP']);
 }
 

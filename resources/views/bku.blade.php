@@ -56,6 +56,7 @@ $role = Auth::user()->role;
                 <div class="form-group">
                     <label><b>Keterangan</b></label>
                     <div >
+                        <input class="form-check-input" type="radio" name="keterangan" id="reset" value="" hidden>
                         <div class="form-check mb-2 mr-2 d-inline-block">
                             <input class="form-check-input" type="radio" name="keterangan" id="ob" value="ob">
                             <label class="form-check-label" for="ob">
@@ -67,6 +68,9 @@ $role = Auth::user()->role;
                             <label class="form-check-label" for="sts">
                                 STS
                             </label>
+                        </div>
+                        <div class="d-inline-block">
+                            <a href="javascript:void(0)" onclick="$('input[name=keterangan]').prop('checked', false).filter('#reset').prop('checked', true);" >reset?</a>
                         </div>
                     </div>
                 </div>
@@ -95,7 +99,7 @@ $role = Auth::user()->role;
                     <div class="col-md-4">
                         <div class="form-group">
                             <label><b>No. Bukti</b></label>
-                            <input type="text" pattern="[0-9]{1,5}" name="nomorsp2d" class="form-control" placeholder="No. Bukti" required>
+                            <input type="text" pattern="[0-9]{1,5}" maxlength="5" name="nomorsp2d" class="form-control" placeholder="00000" required>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -205,6 +209,7 @@ $role = Auth::user()->role;
                 <div class="form-group">
                     <label><b>Keterangan</b></label>
                     <div >
+                        <input class="form-check-input" type="radio" name="keterangan" id="reset2" value="" hidden>
                         <div class="form-check mb-2 mr-2 d-inline-block">
                             <input class="form-check-input" type="radio" name="keterangan" id="ob2" value="ob">
                             <label class="form-check-label" for="ob2">
@@ -216,6 +221,9 @@ $role = Auth::user()->role;
                             <label class="form-check-label" for="sts2">
                                 STS
                             </label>
+                        </div>
+                        <div class="d-inline-block">
+                            <a href="javascript:void(0)" onclick="$('input[name=keterangan]').prop('checked', false).filter('#reset2').prop('checked', true);" >reset?</a>
                         </div>
                     </div>
                 </div>
@@ -244,14 +252,14 @@ $role = Auth::user()->role;
                     <div class="col-md-4">
                         <div class="form-group">
                             <label><b>No. Bukti</b></label>
-                            <input type="text" pattern="[0-9]{1,5}" name="nomorsp2d" class="form-control" placeholder="No. Bukti" required>
+                            <input type="text" pattern="[0-9]{1,5}" maxlength="5" name="nomorsp2d" class="form-control" placeholder="No. Bukti" required>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label><b>Tanggal Bukti</b></label>
                             <div class="input-group date datetimepicker2" data-target-input="nearest" id="dtp4">
-                                <input readonly type="text" class="form-control datetimepicker-input" data-target="#dtp4" name="tanggal" required/>
+                                <input readonly type="text" class="form-control datetimepicker-input" data-target="#dtp4" name="tanggalref" required/>
                                 <div class="input-group-append" data-target="#dtp4" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
@@ -471,7 +479,7 @@ $role = Auth::user()->role;
                 <div class="form-group">
                     <label><b>No. SPP</b></label>
                     <div class="input-group">
-                        <input readonly type="text" pattern="[0-9]{1,5}" name="nomorsp2d" class="form-control" placeholder="No. Bukti" required onchange="fillAddLS(this)">
+                        <input readonly type="text" pattern="[0-9]{1,5}" name="nomorsp2d" class="form-control" placeholder="00000" required onchange="fillAddLS(this)">
                         <div class="input-group-append">
                         <button class="btn btn-dark" type="button" onclick="pilihSPP_LS()">?</button>
                         </div>
@@ -588,6 +596,10 @@ $role = Auth::user()->role;
                         </div>
                     </div>
                 </div>  
+                <div class="form-group">
+                    <label><b>No. Bukti</b></label>
+                    <input type="text" pattern="[0-9]{1,5}" maxlength="5" name="nomorsp2d" class="form-control" placeholder="00000" required>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
@@ -796,9 +808,12 @@ $(document).ready(function(){
 
     @php
     $date=Carbon\Carbon::now();
-    $maxDate=$date->format('Y-m-d');
     $curDate=$date->format('Y-m-d');
+    $date->day=31;
+    $date->month=12;
+    $maxDate=$date->format('Y-m-d');
     $date->day=1;
+    $date->month=1;
     $minDate=$date->format('Y-m-d');
     @endphp
     const curDate='{{$curDate}}';
@@ -817,6 +832,7 @@ $(document).ready(function(){
         format: 'L',
         defaultDate: curDate,
         maxDate: maxDate,
+        minDate: minDate,
     });
 
     $('select[name=idrekening]').change(function(e){
@@ -839,10 +855,10 @@ function edit(self){
     var $modal=$('#sunting');
     var tr = $(self).closest('tr');
     var data = oTable.fnGetData(tr);
-    
+
     $modal.find('input[name=id]').val(data['id']);
-    $modal.find('input[name=tanggal]').val(data['tanggal']);
-    $modal.find('input[name=tanggalref]').val(data['tanggalref']);
+    $modal.find('input[name=tanggal]').val(moment(data['tanggal'], 'YYYY-MM-DD').format('L'));
+    $modal.find('input[name=tanggalref]').val(moment(data['tanggalref'], 'YYYY-MM-DD').format('L'));
     $modal.find('select[name=tipe]').val(data['tipe']).change();
     $modal.find('select[name=idsubkegiatan]').val(data['idsubkegiatan']).change();
     $modal.find('select[name=idrekening]').val(data['idrekening']).change();
@@ -851,7 +867,12 @@ function edit(self){
     $modal.find('input[name=nomorsp2d]').val(data['nomorsp2d']);
 
     $modal.find('input[name=jenis]').prop('checked', false).filter('[value='+data['jenis_raw']+']').prop('checked', true);
-    $modal.find('input[name=keterangan]').prop('checked', false).filter('[value='+data['keterangan']+']').prop('checked', true);
+
+    if(data['keterangan']){
+        $modal.find('input[name=keterangan]').prop('checked', false).filter('[value='+data['keterangan']+']').prop('checked', true);
+    }else{
+        $modal.find('input[name=keterangan]').prop('checked', false).filter('[value=""]').prop('checked', true);
+    }
 
     $modal.find('input[name=KT]').prop('checked', false).filter('[value='+data['KT_raw']+']').prop('checked', true);
     $modal.find('input[name=SB]').prop('checked', false).filter('[value='+data['SB_raw']+']').prop('checked', true);

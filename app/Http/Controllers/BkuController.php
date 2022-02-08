@@ -30,8 +30,15 @@ class BkuController extends Controller
         $rekening=[];
         if (in_array($user->role, ['PKM'])) {
             $subkegiatan=SubKegiatan::where('isactive', 1)->where('idunitkerja', Auth::user()->idunitkerja)->get();
-            $rekening=Rekening::where('isactive', 1)->with(['saldo'=>function($q){
-                $q->select('id','idunitkerja','idrekening','saldo')->orderBy('tanggal','DESC')->first();
+            // $rekening=Rekening::where('isactive', 1)->with(['saldo'=>function($q){
+            //     $q->select('id','idunitkerja','idrekening','saldo')->orderBy('tanggal','DESC')->first();
+            // }])->select('id','kode','nama')->get();
+            $idunitkerja = $user->idunitkerja;
+            $year=Carbon::now()->year;
+            $rekening=Rekening::where('isactive', 1)->with(['saldo'=>function($q) use($idunitkerja, $year) {
+                $q->select('id','idunitkerja','idrekening','saldo')->orderBy('tanggal','DESC')
+                    ->where('idunitkerja', $idunitkerja)
+                    ->whereYear('tanggal',$year);
             }])->select('id','kode','nama')->get();
         }
         return view('bku', [ 'user'=>$user, 'subkegiatan'=>$subkegiatan, 'rekening'=>$rekening, 'unitkerja'=>$unitkerja ]);
@@ -108,8 +115,8 @@ class BkuController extends Controller
                 if($t->RO==1) return '<a href="javascript:void(0)" class="text-success fs-20"><i class="fas fa-check"></i></a>';
                 return '';
             })
-            ->addColumn('action', function($t){
-                if(isset($t->transaksi->nomor)===FALSE){
+            ->addColumn('action', function($t) use($user){
+                if(in_array($user->role, ['PKM']) AND isset($t->transaksi->nomor)===FALSE){
                     return '<button onclick="edit(this)" class="btn btn-sm btn-outline-warning border-0" style="width:2rem;" title="Sunting Transaksi" ><i class="fas fa-edit fa-sm"></i></button>'.
                         '<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" style="width:2rem;" title="Hapus Transaksi"><i class="fas fa-trash fa-sm"></i></button>';
                 }
@@ -144,6 +151,10 @@ class BkuController extends Controller
         
         $input = $validator->valid();
 
+        if(isset($input['keterangan']) and $input['keterangan']=''){
+            $input['keterangan']=NULL;
+        }
+
         if(isset($input['nomorsp2d'])){
             $nomor=intval($input['nomorsp2d']);
             $input['nomorsp2d']=substr(str_repeat(0, 5).strval($nomor), - 5);
@@ -155,7 +166,7 @@ class BkuController extends Controller
                 'idm'=>$user->id,
             ]);
         }else{
-            $year=Carbon::parse($input['tanggal'])->year;
+            $year=Carbon::createFromFormat('d/m/Y',$input['tanggal'])->year;
             $bku_aktual=BKU::select('id','nomor')
                 ->where('isactive',1)
                 ->whereYear('tanggal',$year)

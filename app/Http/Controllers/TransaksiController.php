@@ -24,8 +24,14 @@ class TransaksiController extends Controller
 {
     public function index(){
         $user = Auth::user();
+        $idunitkerja = $user->idunitkerja;
+        $year=Carbon::now()->year;
         $subkegiatan=SubKegiatan::where('isactive', 1)->where('idunitkerja', Auth::user()->idunitkerja)->get();
-        $rekening=Rekening::where('isactive', 1)->select('id','kode','nama')->get();
+        $rekening=Rekening::where('isactive', 1)->with(['saldo'=>function($q) use($idunitkerja, $year) {
+            $q->select('id','idunitkerja','idrekening','saldo')->orderBy('tanggal','DESC')
+                ->where('idunitkerja', $idunitkerja)
+                ->whereYear('tanggal',$year);
+        }])->select('id','kode','nama')->get();
         $rekanan=Rekanan::where('isactive', 1)->select('id','nama')->get();
         $pejabat=Pejabat::where('isactive', 1)->select('id','idunitkerja','nama','nip','jabatan','rekening')->where('idunitkerja',$user->idunitkerja)->get();
         $pajakParent=Pajak::where('isactive', 1)->select('parent')->distinct()->where('parent','<>',null)->pluck('parent')->toArray();
@@ -50,7 +56,6 @@ class TransaksiController extends Controller
         
         $datatable = Datatables::of($data);
         $datatable->addColumn('tanggal_raw', function ($t) { return $t->tanggal; })
-            ->editColumn('tanggalref', function ($t) { return Carbon::parse($t->tanggal)->translatedFormat('d M Y');})
             ->addIndexColumn()
             ->addColumn('tipe_raw', function ($t) { return $t->tipe; })
             ->editColumn('tipe', function ($t) { 
@@ -216,6 +221,7 @@ class TransaksiController extends Controller
             // 'tipepembukuan' => 'nullable|string|in:pindahbuku,tunai',
             // 'jumlah' => array('required','regex:/^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$/'), // allow float
             'keterangan' => 'required_without:id|string|max:255',
+            'comment' => 'nullable',
         ]);
         if ($validator->fails()) return back()->with('error','Gagal menyimpan');
         
@@ -262,6 +268,10 @@ class TransaksiController extends Controller
             }
             $input['rekening']=$newRekeningArray;
             $input['jumlah']=$newJumlah;
+        }else if(isset($input['comment']) AND $input['comment']==='daftarrekening'){
+            //jika input rekening tidak ada sedang user melakukan simpan rekening serta nominal, maka rekening dikosongkan
+            $input['rekening']=$newRekeningArray;
+            $input['jumlah']=$newJumlah;
         }
 
         //membuat array pajak untuk db dng urutan [id, kode, nama pajak, nominal, kodebilling, tanggal kadaluarsa]
@@ -278,6 +288,10 @@ class TransaksiController extends Controller
                 array_push($newPajakArray,$pajak);
             }
         }
+        else if(isset($input['comment']) AND $input['comment']==='daftarpajak'){
+            //jika input pajak tidak ada sedang user melakukan simpan pajak serta nominal, maka pajak dikosongkan
+            $input['pajak']=$newPajakArray;
+        }
 
         //membuat array potongan untuk db dng urutan [kode, nama potongan, nominal ]
         $newPotonganArray=[];
@@ -289,6 +303,9 @@ class TransaksiController extends Controller
                     $input['nominalpotongan'][$i]
                 ]);
             }
+        }else if(isset($input['comment']) AND $input['comment']==='daftarpotongan'){
+            //jika input potongan tidak ada sedang user melakukan simpan potongan serta nominal, maka potongan dikosongkan
+            $input['potongan']=$newPotonganArray;
         }
 
         //jika edit transaksi old
@@ -484,41 +501,79 @@ class TransaksiController extends Controller
 
             //setelah ada persetujuan sp2d dari keuangan
             if($model->status === 3){
-                $newSaldo=0;
                 $idunitkerja=$model->idunitkerja;
+
+                $transaksiDate = Carbon::parse($model->tanggalref);
                 
                 foreach ($model->rekening as $i=>$rekeningArr) {
-                    $saldo=Saldo::select('id','idunitkerja','idrekening','saldo','tanggal','tipe')->where('idrekening',$rekeningArr[0])->where('idunitkerja', $idunitkerja)->orderBy('tanggal','DESC')->first();
+                    // $saldo=Saldo::select('id','idunitkerja','idrekening','saldo','tanggal','tipe')->where('idrekening',$rekeningArr[0])->where('idunitkerja', $idunitkerja)->orderBy('tanggal','DESC')->first();
+                    $saldo_1 = Saldo::select('id','idunitkerja','idrekening','saldo','tanggal','tipe')->where('idrekening',$rekeningArr[0])->where('idunitkerja', $idunitkerja)
+                        ->orderBy('tanggal','DESC')
+                        ->whereMonth('tanggal','<=',$transaksiDate->month )
+                        ->whereYear('tanggal',$transaksiDate->year )->first();
+                    $saldo_lainnya=Saldo::select('id','idunitkerja','idrekening','saldo','tanggal','tipe')->where('idrekening',$rekeningArr[0])->where('idunitkerja', $idunitkerja)
+                        ->whereMonth('tanggal','>',$transaksiDate->month )
+                        ->whereYear('tanggal',$transaksiDate->year )
+                        ->orderBy('tanggal','ASC')->get();
 
-                    if(isset($saldo)===FALSE){   //cek row saldo ada atau tidak
+                    if(isset($saldo_1)===FALSE and $saldo_lainnya->isEmpty()){   //cek row saldo ada atau tidak
                         throw new Exception("Saldo tidak mencukupi");
                     }
 
-                    $saldoValue=$saldo['saldo']-floatval($rekeningArr[3]);  //index 3 adalah jumlah yg digunakan
+                    //saldo teraktual
+                    $saldo_aktual= $saldo_lainnya->isEmpty() ? $saldo_1 : $saldo_lainnya->last();
+
+                    $saldoValue=$saldo_aktual['saldo']-floatval($rekeningArr[3]);  //index 3 adalah jumlah yg digunakan
                     if($saldoValue < 0){   //cek kecukupan saldo
                         throw new Exception("Saldo tidak mencukupi");
                     }
-                    $newSaldo+=$saldoValue;
 
-                    if (in_array($saldo->tipe, ['saldo awal','revisi'])) {
-                        $saldo= $saldo->replicate();
-                        $saldo->fill([
-                            'saldo'=>$saldoValue,
-                            'tanggal'=>Carbon::now()->format('Y-m-d'),
-                            'idm'=>$userId,
-                            'idc'=>$userId,
-                            'tipe'=>null,
-                        ]);
-                    }else{
-                        $saldo->fill([
-                            'saldo'=>$saldoValue,
-                            'tanggal'=>Carbon::now()->format('Y-m-d'),
-                            'idm'=>$userId,
-                        ]);
+                    //save saldo yg diperbarui
+                    if(isset($saldo_1)){
+                        if (in_array($saldo_1->tipe, ['saldo awal','revisi']) OR $transaksiDate->isSameMonth($saldo_1->tanggal)===FALSE ) {
+                            $saldo_1= $saldo_1->replicate();
+
+                            $saldo_1->fill([
+                                'saldo'=>$saldoValue,
+                                'tanggal'=>($transaksiDate->lessThan($saldo_1->tanggal)) ? $saldo_1->tanggal : $model->tanggalref,
+                                'idm'=>$userId,
+                                'idc'=>$userId,
+                                'tipe'=>null,
+                            ]);
+                        }else{
+                            $saldo_1->fill([
+                                'saldo'=>$saldo_1->saldo - floatval($rekeningArr[3]),
+                                'tanggal'=> ($transaksiDate->lessThan($saldo_1->tanggal)) ? $saldo_1->tanggal : $model->tanggalref,
+                                'idm'=>$userId,
+                            ]);
+                        }
                     }
-                    $saldo->save();
+                    $saldo_1->save();
+
+                    //update ke saldo di bulan di atasnya tapi tetap dalam tahun yg sama
+                    foreach ($saldo_lainnya as $i => $s) {
+                        $s->fill([
+                            'saldo'=>$s->saldo - floatval($rekeningArr[3]),
+                            'idm'=>$userId,
+                        ]);
+                        $s->save();
+                    }
                 }
+
+                //get saldo total dari subkegiatan
+                $subquery=\App\Saldo::select('idrekening', DB::raw('MAX(tanggal) AS tgl'))
+                    ->where('idunitkerja',$idunitkerja)
+                    ->groupBy('idrekening');
+
+                $newSaldo = \App\Saldo::select('id','saldo')
+                    ->rightJoinSub($subquery, 'sub', function($join){
+                        $join->on('msaldo.idrekening','=','sub.idrekening')
+                            ->whereColumn('sub.tgl','=','msaldo.tanggal');
+                    })
+                    ->where('idunitkerja',$idunitkerja)->sum('saldo');
+                
                 $model->saldo=$newSaldo;
+                $model->tanggalsp2d=Carbon::now()->format('Y-m-d');
             }
 
             $model->save();

@@ -186,14 +186,15 @@ $role = Auth::user()->id;
             </div>
             <div class="modal-body">
                 <form action="" method="GET" id="addrekening">
+                    <input type="hidden" name="saldo">
                     <div class="row">    
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label><b>SubRekening</b></label>
-                                <select class="selectpicker" data-style-base="form-control" data-live-search="true" data-style="" name="tipe" required>
+                                <select class="selectpicker" data-style-base="form-control" data-live-search="true" data-style="" name="tipe" required onchange="infoSaldo(this, '#infosaldotarget')">
                                     <option value="">--Pilih--</option>
                                     @foreach($rekening as $unit)
-                                    <option value="{{$unit->id}}_{{$unit->nama}}">{{$unit->kode}} - {{$unit->nama}}</option>
+                                    <option value="{{$unit->id}}_{{$unit->nama}}" data-saldo="{{$unit->saldo->isEmpty() ? 0 : $unit->saldo->first()->saldo }}">{{$unit->kode}} - {{$unit->nama}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -205,12 +206,16 @@ $role = Auth::user()->id;
                             </div>
                         </div>
                         <div class="col-12 mb-2">
-                            <button type="submit" class="btn btn-primary float-right">Tambah</button>
+                            <div class="float-right text-right">
+                                <p id="infosaldotarget"></p>
+                                <button type="submit" class="btn btn-primary">Tambah</button>
+                            </div>
                         </div>
                     </div>
                 </form>
                 <form action="{{route('transaksi.update')}}" method="POST" id="daftarrekening">
                     <input type="hidden" name="id">
+                    <input type="hidden" name="comment" value="daftarrekening">
                     @csrf
                     @method('PUT')
                     <table class="table" id="rekeningtable">
@@ -288,6 +293,7 @@ $role = Auth::user()->id;
                 </form>
                 <form action="{{route('transaksi.update')}}" method="POST" id="daftarpajak">
                     <input type="hidden" name="id">
+                    <input type="hidden" name="comment" value="daftarpajak">
                     @csrf
                     @method('PUT')
                     <table class="table" id="pajaktable">
@@ -349,6 +355,7 @@ $role = Auth::user()->id;
                 </form>
                 <form action="{{route('transaksi.update')}}" method="POST" id="daftarpotongan">
                     <input type="hidden" name="id">
+                    <input type="hidden" name="comment" value="daftarpotongan">
                     @csrf
                     @method('PUT')
                     <table class="table" id="potongantable">
@@ -654,6 +661,7 @@ $role = Auth::user()->id;
                         <optgroup label="Status" data-max-options="1">
                             <option value="ACCEPTED">Accepted</option>
                             <option value="SPM TERTOLAK">SPM Tertolak</option>
+                            <option value="NEED ACC">Belum Disetujui</option>
                         </optgroup>
                         <optgroup label="Tipe Transaksi" data-max-options="1">
                             <option value="UP">UP</option>
@@ -1024,7 +1032,7 @@ function edit(self){
     console.log(data);
     $modal.find('input[name=id]').val(data['id']);
     $modal.find('select[name=tipe]').val(data['tipe_raw']).change();
-    $modal.find('input[name=tanggalref]').val(data['tanggal_raw']);
+    $modal.find('input[name=tanggalref]').val(moment(data['tanggal_raw'], 'YYYY-MM-DD').format('L'));
     $modal.find('select[name=idsubkegiatan]').val(data['idsubkegiatan']).change();
     $modal.find('select[name=dibayarkan]').val(data['flagkepada']).change();
     $modal.find('select[name=idrekanan]').val(data['idkepada']).change();
@@ -1196,6 +1204,17 @@ function format(data){
     return $view.prop("outerHTML");
 }
 
+function infoSaldo(self, target){
+    let option = $(self)[0].selectedOptions[0];
+    if(option.value !==''){
+        var val=$(option).data('saldo');
+        $(self).closest("form").find('input[name=saldo]').val(val);
+        $(target).text("saldo : "+my.formatRupiah(parseFloat(val)));
+    }else{
+        $(target).text("");
+    }
+}
+
 //START of FORM Pilih SPP
 var sppTable;
 var callbackPilihSpp;
@@ -1253,9 +1272,12 @@ $(document).ready(function(){
 
     @php
     $date=Carbon\Carbon::now();
-    $maxDate=$date->format('Y-m-d');
     $curDate=$date->format('Y-m-d');
+    $date->day=31;
+    $date->month=12;
+    $maxDate=$date->format('Y-m-d');
     $date->day=1;
+    $date->month=1;
     $minDate=$date->format('Y-m-d');
     @endphp
     const curDate='{{$curDate}}';
@@ -1264,7 +1286,7 @@ $(document).ready(function(){
     $('#datetimepicker').datetimepicker({
         locale: 'id',
         format: 'L',
-        defaultDate: maxDate,
+        defaultDate: curDate,
         maxDate: maxDate,
         minDate: minDate,
     });
@@ -1272,7 +1294,7 @@ $(document).ready(function(){
     $('#datetimepicker2').datetimepicker({
         locale: 'id',
         format: 'L',
-        defaultDate: maxDate,
+        defaultDate: curDate,
         maxDate: maxDate,
         minDate: minDate,
     });
@@ -1299,7 +1321,7 @@ $(document).ready(function(){
         columns: [
             { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' , title:'No.', name:'no'},
             { data:'tipe', orderable: false, width: 1 , title:'Tipe', name:'tipe'},
-            { data:'tanggalref', title:'Tanggal', name:'tanggalref'},
+            { data:'tanggalref', title:'Tanggal', name:'tanggalref', render: function(e,d,row){return moment(row['tanggalref']).format('L');} },
             { data:'subkegiatan.nama',orderable: false, title:'Subkegiatan', name:'subkegiatan.nama'},
             { data:'nomor', title:'Nomor', name:'nomor', render:renderNomor},
             { data:'keterangan', orderable: false, width: '23rem', title:'Keperluan', name:'keterangan'},
@@ -1333,6 +1355,11 @@ $(document).ready(function(){
     $('#addrekening').submit(function(e){
         e.preventDefault();
         var inputan= my.getFormData($(e.target));
+
+        if(parseFloat(inputan['saldo']) - parseFloat(inputan['jumlah']) < 0){
+            return alert('Saldo tidak mencukupi')
+        }
+
         var rekening=inputan['tipe'].split('_');
         var str=`<tr>
                 <td>${rekening[1]}<input type="hidden" name="rekening[]" value="${rekening[0]}" required></td>
@@ -1408,16 +1435,18 @@ $(document).ready(function(){
             switch (label) {
                 case "Status":
                     if(s==="ACCEPTED"){
-                        oTable.api().column('status:name').search( 3 , true, false)
+                        oTable.api().column('status:name').search( 3 , true, false);
                     }else if(s==="SPM TERTOLAK"){
-                        oTable.api().column('status:name').search( 4 , true, false)
+                        oTable.api().column('status:name').search( 4 , true, false);
+                    }else if(s==="NEED ACC"){
+                        oTable.api().column('status:name').search( 2 , true, false);
                     }
                     break;
                 case "Tipe Transaksi":
-                    oTable.api().column('tipe:name').search( s , true, false)
+                    oTable.api().column('tipe:name').search( s , true, false);
                     break;
                 case "PKM":
-                    oTable.api().column('unitkerja.nama:name').search( s , true, false)
+                    oTable.api().column('unitkerja.nama:name').search( s , true, false);
                     break;
             }
         });
