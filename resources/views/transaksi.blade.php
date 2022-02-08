@@ -566,6 +566,7 @@ $role = Auth::user()->id;
             </div>
             <form action="{{route('transaksi.espj2transaksi')}}" method="post" onsubmit="return submit_espj_ls(event);">
                 @csrf
+                <input type="hidden" name="currentIdTransaksi">
                 <input type="hidden" name="idtransaksi">
             <div class="modal-body">
                 <div class="form-group">
@@ -573,7 +574,7 @@ $role = Auth::user()->id;
                     <div class="input-group">
                         <input readonly type="text" pattern="[0-9]{1,7}" name="kodetransaksi" class="form-control" placeholder="ID Transaksi" required>
                         <div class="input-group-append">
-                        <button class="btn btn-dark" type="button" onclick="pilih_espj_ls()">?</button>
+                        <button class="btn btn-dark" type="button" onclick="$('#pilihSpp').modal({backdrop: 'static', keyboard: false}).modal('show');">?</button>
                         </div>
                     </div>
                 </div>
@@ -645,7 +646,7 @@ $role = Auth::user()->id;
                             </button>
                             
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#tarik_eSPJ_LS" data-placement="top" title="Tambah SPP LS">SPP LS</a>
+                                <a class="dropdown-item" href="#" onclick="pilih_espj_ls()" title="Tambah SPP LS">SPP LS</a>
                                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#tarikSPP_GU" data-placement="top" title="Tambah SPP GU">SPP GU</a>
                             </div>
                         </div>
@@ -1132,9 +1133,9 @@ function format(data){
         tombolubahPotongan='';
     }
 
-    //jika merupakan transaksi spp tarikan dari e-spj, maka dilarang edit
+    //jika merupakan transaksi spp tarikan dari e-spj, berikan tombol edit daftar espjnya
     if(data['kodetransaksi'] !== null){
-        tombolubah='';
+        var tombolubah='<button class="btn btn-sm btn-primary float-right" onclick="edit_pilihan_espj_ls('+data.id+')" title="Tambah Rekening"><i class="fas fa-plus fa-sm"></i> Tambah</button>';
     }
 
     @if($user->role !== 'PKM')
@@ -1227,9 +1228,9 @@ function infoSaldo(self, target){
 var sppTable;
 var callbackPilihSpp;
 var sign=-99;
-function openPilihSPP(urlparams, sign_, callback){
-    if(sign===sign_) return;
-    if ($.fn.dataTable.isDataTable('#spptable')) {
+function openPilihSPP(urlparams, sign_, callback, FORCE_REFRESH=false){
+    if(sign===sign_ && FORCE_REFRESH==false) return;
+    if ($.fn.dataTable.isDataTable('#spptable') ) {
         $('#spptable').DataTable().clear();
         $('#spptable').DataTable().destroy();
         $('#spptable').empty();
@@ -1237,7 +1238,7 @@ function openPilihSPP(urlparams, sign_, callback){
     sign=sign_;
     callbackPilihSpp=callback;
 
-    if(sign==3){   // e-SPJ LS ditarik menjadi SPP LS
+    if(sign==3 || sign==4){   // e-SPJ LS ditarik menjadi SPP LS
         $('#pilihSppLabel').text('Pilih e-SPJ');
         sppTable = $("#spptable").dataTable({
             processing: true,
@@ -1262,13 +1263,17 @@ function openPilihSPP(urlparams, sign_, callback){
 }
 
 function pilih_espj_ls(){
+    $form = $('#tarik_eSPJ_LS form');
+    $form.find('input[name=currentIdTransaksi]').val('');
+    $form.find('input[name=idtransaksi]').val('');
+    $form.find('input[name=kodetransaksi]').val('');
     openPilihSPP('?upls=LS&isspj=1&nomor=NULL&parent=NULL',3, function(kodetransaksi,id){
         $form = $('#tarik_eSPJ_LS form');
         $form.find('input[name=idtransaksi]').val(id);
         $form.find('input[name=kodetransaksi]').val(kodetransaksi);
         $('#pilihSpp').modal('hide');
     });
-    $('#pilihSpp').modal({backdrop: 'static', keyboard: false}).modal('show');
+    $('#tarik_eSPJ_LS').modal('show');
 }
 
 //fungsi untuk milih espj apa aja yg dicentang dari tabel sppTable
@@ -1293,6 +1298,33 @@ function submit_espj_ls(e){
         e.preventDefault();
         alert('belum memilih espj');
     }
+}
+
+function edit_pilihan_espj_ls(idtransaksi){
+    let dataSelected = oData[idtransaksi]['children'];
+    $form = $('#tarik_eSPJ_LS form');
+    $form.find('input[name=currentIdTransaksi]').val(idtransaksi);
+
+    var kodetransaksis='', ids='';
+    for (let i = 0; i < dataSelected.length; i++) {
+        if(i!=0){
+            kodetransaksis+=','+dataSelected[i].kodetransaksi.toString();
+            ids+=','+dataSelected[i].id.toString();
+        }else{
+            kodetransaksis+=dataSelected[i].kodetransaksi.toString();
+            ids+=dataSelected[i].id.toString();
+        }
+    }
+
+    $form.find('input[name=idtransaksi]').val(ids);
+    $form.find('input[name=kodetransaksi]').val(kodetransaksis);
+    openPilihSPP('?upls=LS&isspj=1&nomor=NULL&parent='+idtransaksi,4, function(kodetransaksi,id){ 
+        $form = $('#tarik_eSPJ_LS form');
+        $form.find('input[name=idtransaksi]').val(id);
+        $form.find('input[name=kodetransaksi]').val(kodetransaksi);
+        $('#pilihSpp').modal('hide');
+    }, true);   //force refresh tabel true
+    $('#tarik_eSPJ_LS').modal('show');
 }
 //END of FORM Pilih SPP
 

@@ -324,8 +324,16 @@ class BkuController extends Controller
         }
 
         if(isset($request->parent)){
-            $parent = $request->parent=='NULL'? null : $request->parent;
-            $data->where('parent',$parent);     //parent
+            if($request->parent=='NULL'){
+                $data->where('parent',null);     //parent
+            }else{
+                $parent = $request->parent;
+                $data->where(function($q) use($parent){
+                    $q->where('parent',null)
+                        ->orWhere('parent',$parent);
+                });     
+            }
+            
         }
 
         $datatable = Datatables::of($data);

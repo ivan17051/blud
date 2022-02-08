@@ -60,4 +60,8 @@ class Transaksi extends Model
     public function subkegiatan(){
         return $this->belongsTo(SubKegiatan::class, 'idsubkegiatan');
     }
+
+    public function children(){
+        return $this->hasMany(Transaksi::class, 'parent')->select('id','kodetransaksi','parent');
+    }
 }
