@@ -99,7 +99,7 @@ $role = Auth::user()->role;
                     <div class="col-md-4">
                         <div class="form-group">
                             <label><b>No. Bukti</b></label>
-                            <input type="text" pattern="[0-9]{1,5}" maxlength="5" name="nomorsp2d" class="form-control" placeholder="No. Bukti" required>
+                            <input type="text" pattern="[0-9]{1,5}" maxlength="5" name="nomorsp2d" class="form-control" placeholder="00000" required>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -479,7 +479,7 @@ $role = Auth::user()->role;
                 <div class="form-group">
                     <label><b>No. SPP</b></label>
                     <div class="input-group">
-                        <input readonly type="text" pattern="[0-9]{1,5}" name="nomorsp2d" class="form-control" placeholder="No. Bukti" required onchange="fillAddLS(this)">
+                        <input readonly type="text" pattern="[0-9]{1,5}" name="nomorsp2d" class="form-control" placeholder="00000" required onchange="fillAddLS(this)">
                         <div class="input-group-append">
                         <button class="btn btn-dark" type="button" onclick="pilihSPP_LS()">?</button>
                         </div>
@@ -596,6 +596,10 @@ $role = Auth::user()->role;
                         </div>
                     </div>
                 </div>  
+                <div class="form-group">
+                    <label><b>No. Bukti</b></label>
+                    <input type="text" pattern="[0-9]{1,5}" maxlength="5" name="nomorsp2d" class="form-control" placeholder="00000" required>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
