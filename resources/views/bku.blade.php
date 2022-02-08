@@ -251,7 +251,7 @@ $role = Auth::user()->role;
                         <div class="form-group">
                             <label><b>Tanggal Bukti</b></label>
                             <div class="input-group date datetimepicker2" data-target-input="nearest" id="dtp4">
-                                <input readonly type="text" class="form-control datetimepicker-input" data-target="#dtp4" name="tanggal" required/>
+                                <input readonly type="text" class="form-control datetimepicker-input" data-target="#dtp4" name="tanggalref" required/>
                                 <div class="input-group-append" data-target="#dtp4" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
@@ -799,6 +799,7 @@ $(document).ready(function(){
     $maxDate=$date->format('Y-m-d');
     $curDate=$date->format('Y-m-d');
     $date->day=1;
+    $date->month=1;
     $minDate=$date->format('Y-m-d');
     @endphp
     const curDate='{{$curDate}}';
@@ -817,6 +818,7 @@ $(document).ready(function(){
         format: 'L',
         defaultDate: curDate,
         maxDate: maxDate,
+        minDate: minDate,
     });
 
     $('select[name=idrekening]').change(function(e){
@@ -839,10 +841,10 @@ function edit(self){
     var $modal=$('#sunting');
     var tr = $(self).closest('tr');
     var data = oTable.fnGetData(tr);
-    
+
     $modal.find('input[name=id]').val(data['id']);
-    $modal.find('input[name=tanggal]').val(data['tanggal']);
-    $modal.find('input[name=tanggalref]').val(data['tanggalref']);
+    $modal.find('input[name=tanggal]').val(moment(data['tanggal'], 'YYYY-MM-DD').format('L'));
+    $modal.find('input[name=tanggalref]').val(moment(data['tanggalref'], 'YYYY-MM-DD').format('L'));
     $modal.find('select[name=tipe]').val(data['tipe']).change();
     $modal.find('select[name=idsubkegiatan]').val(data['idsubkegiatan']).change();
     $modal.find('select[name=idrekening]').val(data['idrekening']).change();

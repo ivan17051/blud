@@ -162,7 +162,7 @@ class BkuController extends Controller
                 'idm'=>$user->id,
             ]);
         }else{
-            $year=Carbon::parse($input['tanggal'])->year;
+            $year=Carbon::createFromFormat('d/m/Y',$input['tanggal'])->year;
             $bku_aktual=BKU::select('id','nomor')
                 ->where('isactive',1)
                 ->whereYear('tanggal',$year)

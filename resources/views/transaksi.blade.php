@@ -1031,7 +1031,7 @@ function edit(self){
     console.log(data);
     $modal.find('input[name=id]').val(data['id']);
     $modal.find('select[name=tipe]').val(data['tipe_raw']).change();
-    $modal.find('input[name=tanggalref]').val(data['tanggal_raw']);
+    $modal.find('input[name=tanggalref]').val(moment(data['tanggal_raw'], 'YYYY-MM-DD').format('L'));
     $modal.find('select[name=idsubkegiatan]').val(data['idsubkegiatan']).change();
     $modal.find('select[name=dibayarkan]').val(data['flagkepada']).change();
     $modal.find('select[name=idrekanan]').val(data['idkepada']).change();
