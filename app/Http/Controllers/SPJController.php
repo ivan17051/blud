@@ -20,7 +20,7 @@ class SPJController extends Controller
     public function spj(){
         $user = Auth::user();
         $unitKerja=UnitKerja::where('id',$user->idunitkerja)->select('id','nama','nama_alias')->get();
-        $rekanan=Rekanan::where('isactive', 1)->get();
+        $rekanan=Rekanan::where('isactive', 1)->where('idc',$user->id)->get();
         $rekening=Rekening::where('isactive', 1)->get();
         if(in_array($user->role,['admin','PIH'])){
             $spj = Transaksi::where('isspj', 1)->where('isactive', 1)->get();

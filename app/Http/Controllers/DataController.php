@@ -62,12 +62,18 @@ class DataController extends Controller
             $pejabat = Pejabat::where('isactive', 1)->get();
         }else{
             $pejabat = Pejabat::where('isactive', 1)->where('idunitkerja',$user->idunitkerja)->get();
-        }        
+        }
         return view('masterData.pejabat', ['pejabat' => $pejabat, 'role' =>$user->role, 'unitkerja'=>$unitKerja]);
     }
 
     public function rekanan(){
-        $rekanan = Rekanan::where('isactive', 1)->get();
+        $user = Auth::user();
+        if(in_array($user->role,['admin','PIH', 'KEU'])){
+            $rekanan = Rekanan::where('isactive', 1)->get();
+        }else{
+            $rekanan = Rekanan::where('isactive', 1)->where('idc',$user->id)->get();
+        }        
+        // $rekanan = Rekanan::where('isactive', 1)->get();
         return view('masterData.rekanan', ['rekanan' => $rekanan]);
     }
 
@@ -257,7 +263,7 @@ class DataController extends Controller
             'namabank' => 'required|string|max:20',
             'pimpinan' => 'nullable|string|max:255',
             'rekening' => 'required|string|max:100',
-            'atasnama' => 'required|string|max:100',
+            'atasnama' => 'string|max:100',
             'npwp' => 'nullable|string|max:15',
         ]);
         if ($validator->fails()) return back()->with('error','Gagal menyimpan');

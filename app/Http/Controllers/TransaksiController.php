@@ -32,7 +32,8 @@ class TransaksiController extends Controller
                 ->where('idunitkerja', $idunitkerja)
                 ->whereYear('tanggal',$year);
         }])->select('id','kode','nama')->get();
-        $rekanan=Rekanan::where('isactive', 1)->select('id','nama')->get();
+        $rekanan = Rekanan::where('isactive', 1)->where('idc',$user->id)->select('id','nama')->get();
+        // $rekanan=Rekanan::where('isactive', 1)->select('id','nama')->get();
         $pejabat=Pejabat::where('isactive', 1)->select('id','idunitkerja','nama','nip','jabatan','rekening')->where('idunitkerja',$user->idunitkerja)->get();
         $pajakParent=Pajak::where('isactive', 1)->select('parent')->distinct()->where('parent','<>',null)->pluck('parent')->toArray();
         $pajak=Pajak::where('isactive', 1)->whereNotIn('id',$pajakParent)->select('id','kode','nama','parent')->get();

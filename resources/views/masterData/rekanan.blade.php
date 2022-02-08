@@ -61,7 +61,7 @@ active
                 </div>
                 <div class="form-group">
                     <label><b>a.n.</b></label>
-                    <input type="text" name="atasnama" class="form-control" placeholder="Atas Nama" required>
+                    <input type="text" name="atasnama" class="form-control" placeholder="Atas Nama">
                 </div>
             </div>
             <div class="modal-footer">
