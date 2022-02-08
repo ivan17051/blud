@@ -1133,7 +1133,7 @@ function format(data){
     }
 
     //jika merupakan transaksi spp tarikan dari e-spj, maka dilarang edit
-    if(data['kodetransaksi'] !== undefined){
+    if(data['kodetransaksi'] !== null){
         tombolubah='';
     }
 
