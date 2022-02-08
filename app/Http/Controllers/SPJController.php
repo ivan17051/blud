@@ -34,9 +34,10 @@ class SPJController extends Controller
     public function data(Request $request){
         $user = Auth::user();
         if(in_array($user->role,['admin','PIH','KEU'])){
-            $data = Transaksi::where('transaksi.isactive',1)
-                ->where('status','>',1)->with(['unitkerja','subkegiatan']);
+            $data = Transaksi::where('transaksi.isactive',1)->where('isspj',1)
+                ->with(['unitkerja','subkegiatan']);
                 // status lebih dari 1 artinya sudah masuk pengajuan sp2d
+            // dd($data);
         }else{
             $data = Transaksi::where('isactive',1)->where('isspj',1)->where('idunitkerja',$user->idunitkerja)
                 ->select('id','idunitkerja','kodetransaksi','kodepekerjaan','tanggal','keterangan','isactive','idkepada','rekening','tipe');
@@ -48,8 +49,8 @@ class SPJController extends Controller
                 return $t->tanggal;
             })
             ->addIndexColumn()
-            ->addColumn('idunitkerja', function ($t) {
-                return $t->idunitkerja;
+            ->editColumn('unitkerja', function ($t){
+                return $t->unitkerja->nama_alias;
             })
             ->editColumn('kodetransaksi', function ($t){
                 return $t->kodetransaksi;
@@ -82,7 +83,7 @@ class SPJController extends Controller
             ->addColumn('tipe_raw', function ($t) { 
                 return $t->tipe;
             })
-            ->rawColumns(['tanggal','idunitkerja','kodetransaksi','kodepekerjaan','keterangan','action','tipe']);
+            ->rawColumns(['tanggal','kodetransaksi','kodepekerjaan','keterangan','action','tipe']);
         if(in_array($user->role,['PKM'])){
             $datatable
                 ->addColumn('action', function ($t) use($user){ 

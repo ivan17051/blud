@@ -554,7 +554,7 @@ $(document).ready(function(){
             @if(in_array($user->role,['PKM']))
             { data:'action', orderable: false, searchable: false, className: "text-right", width: '3rem', title:'Aksi', name:'aksi'},
             @endif
-            { data:'idunitkerja', visible: false, name:'idunitkerja'},
+            { data:'unitkerja', visible: false, name:'unitkerja.nama_alias'},
             { data:'idrekanan', visible: false, name:'idrekanan'},
             { data:'tanggal_raw', visible: false, name:'tanggal_raw'},
             { data:'rekening', visible: false, name:'rekening'},
@@ -640,6 +640,7 @@ $(document).ready(function(){
         values.forEach(function(s, i){
             var label=$(selectContainer[0].selectedOptions[i]).closest('optgroup').prop('label');            
             tagContainer.tagsinput('add', s);
+            console.log(s);
             switch (label) {
                 case "Status":
                     if(s==="ACCEPTED"){
@@ -652,7 +653,7 @@ $(document).ready(function(){
                     oTable.api().column('tipe:name').search( s , true, false)
                     break;
                 case "PKM":
-                    oTable.api().column('unitkerja.nama:name').search( s , true, false)
+                    oTable.api().column('unitkerja.nama_alias:name').search( s , true, false)
                     break;
             }
         });

@@ -16,7 +16,7 @@ Auth::routes();
 Route::middleware(['auth'])->group(function () {
     Route::get('/','DataController@dashboard');
 
-    Route::middleware(['role:PIH,admin'])->group(function(){
+    Route::middleware(['role:PIH,admin,KEU'])->group(function(){
         Route::get('/kegiatan', 'DataController@kegiatan');
         Route::put('/kegiatan', 'DataController@storeUpdateKegiatan')->name('kegiatan.update');
         Route::delete('/kegiatan', 'DataController@deleteKegiatan')->name('kegiatan.delete');
@@ -44,7 +44,7 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/pajak', 'DataController@deletePajak')->name('pajak.delete');
     });
 
-    Route::middleware(['role:PIH,admin,PKM'])->group(function(){
+    Route::middleware(['role:PIH,admin,KEU,PKM'])->group(function(){
         
         Route::get('/pejabat', 'DataController@pejabat');
         Route::put('/pejabat', 'DataController@storeUpdatePejabat')->name('pejabat.update');

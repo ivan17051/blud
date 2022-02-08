@@ -39,7 +39,14 @@
                                 <td class="headerFont fontCenter paddingfont" style="font-size:18px">SURAT PERINTAH MEMBAYAR (SPM)</td>
                             </tr>
                             <tr>
-                                <td class="headerFont fontCenter paddingfont" style="font-size:16px">Uang Persediaan (UP)</td>
+                                <td class="headerFont fontCenter paddingfont" style="font-size:16px">
+                                @if($transaksi->tipe == 'UP')
+                                Uang Persediaan (UP)</td>
+                                @elseif($transaksi->tipe == 'LS')
+                                Langsung (LS)</td>
+                                @elseif($transaksi->tipe == 'TU')
+                                Tambah Uang (TU)</td>
+                                @endif
                             </tr>
                             
                             <tr>
@@ -55,7 +62,7 @@
                                                 $mytime = Carbon\Carbon::make($transaksi->tanggal);
                                                 @endphp
                                               <td class="paddingfont fontBold" style="font-size:13px;" width="50%">Tahun Anggaran : {{$mytime->format('Y')}}</td>
-                                              <td class="paddingfont fontBold" style="font-size:13px" width="50%">No. SPM :{{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/UP/F/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
+                                              <td class="paddingfont fontBold" style="font-size:13px" width="50%">No. SPM :{{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/{{$transaksi->tipe}}/F/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
                                             </tr>
                                             <tr>
                                               <td colspan=2>
@@ -80,27 +87,27 @@
                                                     <tr>
                                                         <td class="paddingfont">Bendahara/Pihak Lain</td>
                                                         <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> {{$bendahara->nama}}</td>
+                                                        <td class="paddingfont"> {{$pihaklain->nama}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="paddingfont">No. Rekening Bank</td>
                                                         <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> {{$bendahara->rekening}}</td>
+                                                        <td class="paddingfont"> {{$pihaklain->rekening}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="paddingfont">Nama Bank</td>
                                                         <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> BANK JATIM </td>
+                                                        <td class="paddingfont"> {{$pihaklain->namabank}} </td>
                                                     </tr>
                                                     <tr>
                                                         <td class="paddingfont">NPWP</td>
                                                         <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> 00.137.508.8-609.000 </td>
+                                                        <td class="paddingfont"> {{$pihaklain->npwp}}</td>
                                                     </tr>
                                                     <tr>
                                                         <td class="paddingfont">Dasar Pembayaran</td>
                                                         <td class="paddingfont">:</td>
-                                                        <td class="paddingfont"> SPD Nomor:  Tanggal:  </td>
+                                                        <td class="paddingfont"> SPD Nomor: 00009 Tanggal: 03 Januari 2022 </td>
                                                     </tr>
                                                   </tbody>
                                                 </table>
@@ -117,13 +124,13 @@
                         <tbody>
                           <tr>
                               <td colspan=4>
-                                <table>
+                                <table style="margin:0;">
                                   <tbody>
                                     <tr>
                                       <td class="paddingfont" colspan=3>Untuk Keperluan :</td>
                                     </tr>
                                     <tr>
-                                      <td class="paddingfont" style="font-size:13px;" colspan=3> Pengisian Uang Persediaan di Bendahara Pengeluaran Dinas Kesehatan Tahun Anggaran 2022 sesuai SK Walikota Nomor 188.45/8/436.1.2/2022 Tanggal: 03 Januari 2022 Tentang Besaran Uang Persediaan Tahun Anggaran 2022</td>
+                                      <td class="paddingfont" style="font-size:13px;" colspan=3> {{$transaksi->keterangan}}</td>
                                     </tr>
                                   </tbody>
                                 </table>
@@ -243,7 +250,7 @@
                                           <td class="paddingfont fontBold">Nomor dan Tanggal SPP :</td>
                                       </tr>
                                       <tr>
-                                          <td class="paddingfont">{{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/UP/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
+                                          <td class="paddingfont">{{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/{{$transaksi->tipe}}/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
                                       </tr>
                                       <tr>
                                           <td class="paddingfont">{{$mytime->translatedFormat('d-m-Y')}}</td>

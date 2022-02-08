@@ -43,7 +43,7 @@
                                 $bulan = ['','I','II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
                                 $mytime = Carbon\Carbon::make($transaksi->tanggal);
                                 @endphp
-                                <td class="fontCenter paddingfont" style="font-size:15px">NOMOR :{{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/UP/F/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
+                                <td class="fontCenter paddingfont" style="font-size:15px">NOMOR :{{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/{{$transaksi->tipe}}/F/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
                             </tr>
                             <tr>
                                 <td>&nbsp;</td>
@@ -53,10 +53,16 @@
                                     <table width="100%" height="168" cellspacing="0" cellpadding="0" border="1">
                                         <tbody>
                                             <tr>
+                                                @if($transaksi->tipe == 'UP')
                                                 <td class="paddingfont fontBold fontCenter" style="font-size:15px;" colspan=3>UANG PERSEDIAAN</td>
+                                                @elseif($transaksi->tipe == 'LS')
+                                                <td class="paddingfont fontBold fontCenter" style="font-size:15px;" colspan=3>LANGSUNG BARANG DAN JASA</td>
+                                                @elseif($transaksi->tipe == 'TU')
+                                                <td class="paddingfont fontBold fontCenter" style="font-size:15px;" colspan=3>TAMBAH UANG</td>
+                                                @endif
                                             </tr>
                                             <tr>
-                                                <td class="paddingfont fontBold fontCenter" style="font-size:15px;" colspan=3>SPP-UP</td>
+                                                <td class="paddingfont fontBold fontCenter" style="font-size:15px;" colspan=3>SPP-{{$transaksi->tipe}}</td>
                                             </tr>
                                             
                                             <tr>
@@ -79,22 +85,22 @@
                                             <tr>
                                                 <td class="paddingfont">3. Nama Bendahara Pengeluaran / Pihak Lain</td>
                                                 <td class="paddingfont">:</td>
-                                                <td class="paddingfont"> {{$bendahara->nama}}</td>
+                                                <td class="paddingfont"> {{$pihaklain->nama}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="paddingfont">4. NPWP Bendahara Pengeluaran / Pihak Lain</td>
                                                 <td class="paddingfont">:</td>
-                                                <td class="paddingfont"> 00.137.508.8-609.000 </td>
+                                                <td class="paddingfont"> {{$pihaklain->npwp}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="paddingfont">5. Nama Bank</td>
                                                 <td class="paddingfont">:</td>
-                                                <td class="paddingfont"> BANK JATIM </td>
+                                                <td class="paddingfont"> {{$pihaklain->namabank}} </td>
                                             </tr>
                                             <tr>
                                                 <td class="paddingfont">6. Nomor Rekening Bank</td>
                                                 <td class="paddingfont">:</td>
-                                                <td class="paddingfont"> {{$bendahara->rekening}}</td>
+                                                <td class="paddingfont"> {{$pihaklain->rekening}}</td>
                                             </tr>
                                             <tr>
                                                 <td class="paddingfont">7. Untuk Keperluan</td>
