@@ -33,17 +33,24 @@
                                 <td class="fontCenter"><img src="{{asset('/public/img/logo.gif')}}" width="39" height="50"></td>
                             </tr>
                             <tr>
-                                <td class="headerFont fontCenter paddingfont" style="font-size:16px">PEMERINTAH KOTA SURABAYA</td>
+                                <td class="headerFont fontCenter paddingfont" style="font-size:15px">PEMERINTAH KOTA SURABAYA</td>
                             </tr>
                             <tr>
-                                <td class="headerFont fontCenter paddingfont" style="font-size:18px">SURAT PERMINTAAN PEMBAYARAN UANG PERSEDIAAN (SPP-UP)</td>
+                                <td class="headerFont fontCenter paddingfont" style="font-size:16px">SURAT PERMINTAAN PEMBAYARAN 
+                                @if($transaksi->tipe == 'UP')
+                                UANG PERSEDIAAN (SPP-UP)</td>
+                                @elseif($transaksi->tipe == 'LS')
+                                LANGSUNG (SPP-LS) BARANG DAN JASA</td>
+                                @elseif($transaksi->tipe == 'TU')
+                                UANG TAMBAH UANG (SPP-TU)</td>
+                                @endif
                             </tr>
                             <tr style="margin-bottom:30px;">
                                 @php
                                 $bulan = ['','I','II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
                                 $mytime = Carbon\Carbon::make($transaksi->tanggal);
                                 @endphp
-                                <td class="fontCenter paddingfont" style="font-size:15px">NOMOR :{{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/UP/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
+                                <td class="fontCenter paddingfont" style="font-size:15px">NOMOR :{{$transaksi->nomor}}/1 02 0100/{{$transaksi->unitkerja->kode}}/{{$transaksi->tipe}}/{{$bulan[ltrim($mytime->format('m'),'0')]}}/{{$mytime->format('Y')}}</td>
                             </tr>
                             <tr>
                               <td class="fontCenter paddingfont" style="font-size:15px">Tahun Anggaran : {{$mytime->format('Y')}}</td>

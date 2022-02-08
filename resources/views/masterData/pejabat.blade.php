@@ -28,7 +28,7 @@ active
                         <div class="form-group">
                             <label class="d-block"><b>Unit Kerja</b></label>
                             <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idunitkerja" required>
-                            @if( in_array($role,['admin','PIH']) )
+                            @if( in_array($role,['admin','PIH','KEU']) )
                                 <option value="">--Pilih--</option>
                                 <option value="1">Dinas Kesehatan Kota Surabaya, DKK</option>
                                 <option value="2">Bagian Sekretariat, SEKRETARIAT</option>
@@ -129,8 +129,8 @@ active
                                 <option value="151">Puskesmas Siwalankerto, SIWALANKERTO</option>
                                 <option value="984">Puskesmas Sawah Pulo, SAWAHPULO</option>
                             @else
-                                @foreach($unitkerja as $uk)
                                 <option value="">--Pilih--</option>
+                                @foreach($unitkerja as $uk)
                                 <option value="{{$uk->id}}">{{$uk->nama.', '.$uk->nama_alias}}</option>
                                 @endforeach
                             @endif
@@ -174,7 +174,13 @@ active
                     <div class="col-md-6">
                         <div class="form-group">
                             <label><b>Jabatan</b></label>
-                            <input type="text" id="jabatan" name="jabatan" class="form-control" placeholder="Jabatan" >
+                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="jabatan" required>
+                                <option value="">--Pilih--</option>
+                                <option>Bendahara Pengeluaran</option>
+                                <option>PPK UPTD</option>
+                                <option>KPA</option>
+                                <option>PPTK</option>
+                            </select>
                         </div>
                     </div>
                 </div>                
@@ -208,7 +214,7 @@ active
                     <div class="form-group">
                         <label class="d-block"><b>Unit Kerja</b></label>
                         <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="idunitkerja" required>
-                        @if( in_array($role,['admin','PIH']) )
+                        @if( in_array($role,['admin','PIH','KEU']) )
                             <option value="">--Pilih--</option>
                             <option value="1">Dinas Kesehatan Kota Surabaya, DKK</option>
                             <option value="2">Bagian Sekretariat, SEKRETARIAT</option>
@@ -355,7 +361,13 @@ active
                     <div class="col-md-6">
                         <div class="form-group">
                             <label><b>Jabatan</b></label>
-                            <input type="text" name="jabatan" class="form-control" placeholder="Jabatan" >
+                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" name="jabatan" required>
+                                <option value="">--Pilih--</option>
+                                <option>Bendahara Pengeluaran</option>
+                                <option>PPK UPTD</option>
+                                <option>KPA</option>
+                                <option>PPTK</option>
+                            </select>
                         </div>
                     </div>
                 </div>                
@@ -464,14 +476,13 @@ function edit(self){
         res[oTable.cols[i]]=val;
         return res;
     },{});
-    
     $modal.find('select[name=idunitkerja]').val(data['idunitkerja']).change();
     $modal.find('input[name=id]').val(data['ID']);
     $modal.find('input[name=nama]').val(data['Nama']);
     $modal.find('input[name=nip]').val(data['NIP']);
     $modal.find('input[name=nik]').val(data['nik']);
     $modal.find('input[name=golongan]').val(data['golongan']);
-    $modal.find('input[name=jabatan]').val(data['Jabatan']);
+    $modal.find('select[name=jabatan]').val(data['Jabatan']).change();
     $modal.find('input[name=rekening]').val(data['rekening']);
 }
 

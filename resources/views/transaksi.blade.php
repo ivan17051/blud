@@ -412,7 +412,7 @@ $role = Auth::user()->id;
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
                 <button type="submit" class="btn btn-primary">SPP</button>
                 <button type="submit" id="cetaksppup" class="btn btn-info" formaction="">Rincian</button>
-                <button type="submit" id="cetakceklist" class="btn btn-success" formaction="">Ceklist</button>
+                <button type="submit" id="cetakceklist" class="btn btn-success" formaction="" disabled>Ceklist</button>
             </div>
             </form>
         </div>

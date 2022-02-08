@@ -561,9 +561,15 @@ class TransaksiController extends Controller
         // $otorisator = Pejabat::select('id', 'nama', 'nip', 'jabatan')->findOrFail($request->idotorisator);
         // $bendahara = Pejabat::findOrFail($request->idbendahara);
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
+        if($transaksi->flagkepada == 1){
+            $pihaklain = Pejabat::where('idunitkerja', $transaksi->idkepada)->first();
+        }
+        else if($transaksi->flagkepada == 2){
+            $pihaklain = Rekanan::where('id', $transaksi->idkepada)->first();
+        }
         $bendahara = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'Bendahara Pengeluaran')->first();
         $otorisator = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'KPA')->first();
-        return view('report.spp', ['transaksi' => $transaksi, 'otorisator' => $otorisator, 'bendahara' => $bendahara ]);
+        return view('report.spp', ['transaksi' => $transaksi, 'otorisator' => $otorisator, 'bendahara' => $bendahara, 'pihaklain' => $pihaklain ]);
     }
     public function sppup(Request $request, $id){
         // $otorisator = Pejabat::select('id', 'nama', 'nip', 'jabatan')->findOrFail($request->idotorisator);
@@ -575,9 +581,16 @@ class TransaksiController extends Controller
     }
     public function spm(Request $request, $id){
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
+        $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
+        if($transaksi->flagkepada == 1){
+            $pihaklain = Pejabat::where('idunitkerja', $transaksi->idkepada)->first();
+        }
+        else if($transaksi->flagkepada == 2){
+            $pihaklain = Rekanan::where('id', $transaksi->idkepada)->first();
+        }
         $bendahara = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'Bendahara Pengeluaran')->first();
         $otorisator = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'KPA')->first();
-        return view('report.spm', ['transaksi' => $transaksi, 'bendahara' => $bendahara, 'otorisator' => $otorisator]);
+        return view('report.spm', ['transaksi' => $transaksi, 'bendahara' => $bendahara, 'otorisator' => $otorisator, 'pihaklain' => $pihaklain]);
     }
     public function sp2d(Request $request, $id){
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);

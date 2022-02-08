@@ -43,7 +43,7 @@ $user = Auth::user()->role;
                 <a class="collapse-item @yield('rekeningStatus')" href="{{url('rekening')}}">Rekening</a>
                 <a class="collapse-item @yield('pajakStatus')" href="{{url('pajak')}}">Pajak</a>
                 @endif
-                @if(in_array($user, array('admin', 'PKM')))
+                @if(in_array($user, array('admin', 'PKM', 'KEU')))
                 <a class="collapse-item @yield('rekananStatus')" href="{{url('rekanan')}}">Rekanan</a>
                 <a class="collapse-item @yield('pejabatStatus')" href="{{url('pejabat')}}">Pejabat</a>
                 @endif
