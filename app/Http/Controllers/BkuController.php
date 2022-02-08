@@ -151,6 +151,10 @@ class BkuController extends Controller
         
         $input = $validator->valid();
 
+        if(isset($input['keterangan']) and $input['keterangan']=''){
+            $input['keterangan']=NULL;
+        }
+
         if(isset($input['nomorsp2d'])){
             $nomor=intval($input['nomorsp2d']);
             $input['nomorsp2d']=substr(str_repeat(0, 5).strval($nomor), - 5);
