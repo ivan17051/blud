@@ -573,6 +573,7 @@ class TransaksiController extends Controller
                     ->where('idunitkerja',$idunitkerja)->sum('saldo');
                 
                 $model->saldo=$newSaldo;
+                $model->tanggalsp2d=Carbon::now()->format('Y-m-d');
             }
 
             $model->save();

@@ -115,8 +115,8 @@ class BkuController extends Controller
                 if($t->RO==1) return '<a href="javascript:void(0)" class="text-success fs-20"><i class="fas fa-check"></i></a>';
                 return '';
             })
-            ->addColumn('action', function($t){
-                if(isset($t->transaksi->nomor)===FALSE){
+            ->addColumn('action', function($t) use($user){
+                if(in_array($user->role, ['PKM']) AND isset($t->transaksi->nomor)===FALSE){
                     return '<button onclick="edit(this)" class="btn btn-sm btn-outline-warning border-0" style="width:2rem;" title="Sunting Transaksi" ><i class="fas fa-edit fa-sm"></i></button>'.
                         '<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" style="width:2rem;" title="Hapus Transaksi"><i class="fas fa-trash fa-sm"></i></button>';
                 }

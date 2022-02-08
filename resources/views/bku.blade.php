@@ -796,8 +796,10 @@ $(document).ready(function(){
 
     @php
     $date=Carbon\Carbon::now();
-    $maxDate=$date->format('Y-m-d');
     $curDate=$date->format('Y-m-d');
+    $date->day=31;
+    $date->month=12;
+    $maxDate=$date->format('Y-m-d');
     $date->day=1;
     $date->month=1;
     $minDate=$date->format('Y-m-d');

@@ -661,6 +661,7 @@ $role = Auth::user()->id;
                         <optgroup label="Status" data-max-options="1">
                             <option value="ACCEPTED">Accepted</option>
                             <option value="SPM TERTOLAK">SPM Tertolak</option>
+                            <option value="NEED ACC">Belum Disetujui</option>
                         </optgroup>
                         <optgroup label="Tipe Transaksi" data-max-options="1">
                             <option value="UP">UP</option>
@@ -1271,8 +1272,10 @@ $(document).ready(function(){
 
     @php
     $date=Carbon\Carbon::now();
-    $maxDate=$date->format('Y-m-d');
     $curDate=$date->format('Y-m-d');
+    $date->day=31;
+    $date->month=12;
+    $maxDate=$date->format('Y-m-d');
     $date->day=1;
     $date->month=1;
     $minDate=$date->format('Y-m-d');
@@ -1283,7 +1286,7 @@ $(document).ready(function(){
     $('#datetimepicker').datetimepicker({
         locale: 'id',
         format: 'L',
-        defaultDate: maxDate,
+        defaultDate: curDate,
         maxDate: maxDate,
         minDate: minDate,
     });
@@ -1291,7 +1294,7 @@ $(document).ready(function(){
     $('#datetimepicker2').datetimepicker({
         locale: 'id',
         format: 'L',
-        defaultDate: maxDate,
+        defaultDate: curDate,
         maxDate: maxDate,
         minDate: minDate,
     });
@@ -1432,16 +1435,18 @@ $(document).ready(function(){
             switch (label) {
                 case "Status":
                     if(s==="ACCEPTED"){
-                        oTable.api().column('status:name').search( 3 , true, false)
+                        oTable.api().column('status:name').search( 3 , true, false);
                     }else if(s==="SPM TERTOLAK"){
-                        oTable.api().column('status:name').search( 4 , true, false)
+                        oTable.api().column('status:name').search( 4 , true, false);
+                    }else if(s==="NEED ACC"){
+                        oTable.api().column('status:name').search( 2 , true, false);
                     }
                     break;
                 case "Tipe Transaksi":
-                    oTable.api().column('tipe:name').search( s , true, false)
+                    oTable.api().column('tipe:name').search( s , true, false);
                     break;
                 case "PKM":
-                    oTable.api().column('unitkerja.nama:name').search( s , true, false)
+                    oTable.api().column('unitkerja.nama:name').search( s , true, false);
                     break;
             }
         });
