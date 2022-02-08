@@ -617,7 +617,7 @@ class TransaksiController extends Controller
         // $bendahara = Pejabat::findOrFail($request->idbendahara);
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
         if($transaksi->flagkepada == 1){
-            $pihaklain = Pejabat::where('idunitkerja', $transaksi->idkepada)->first();
+            $pihaklain = Pejabat::where('id', $transaksi->idkepada)->first();
         }
         else if($transaksi->flagkepada == 2){
             $pihaklain = Rekanan::where('id', $transaksi->idkepada)->first();
@@ -638,7 +638,7 @@ class TransaksiController extends Controller
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
         if($transaksi->flagkepada == 1){
-            $pihaklain = Pejabat::where('idunitkerja', $transaksi->idkepada)->first();
+            $pihaklain = Pejabat::where('id', $transaksi->idkepada)->first();
         }
         else if($transaksi->flagkepada == 2){
             $pihaklain = Rekanan::where('id', $transaksi->idkepada)->first();
