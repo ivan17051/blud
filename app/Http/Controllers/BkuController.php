@@ -307,6 +307,7 @@ class BkuController extends Controller
                 ->select('id', 'nomor', 'tipe', 'idunitkerja', 'idsubkegiatan', 'tanggalref', 'keterangan', 'kodetransaksi', 'kodepekerjaan','jumlah')
                 ->where('idunitkerja',$user->idunitkerja)
                 ->where('isbku',0)
+                ->where('isactive',1)
                 ->whereIn('tipe',$upls);
 
         if(isset($request->status)){
@@ -320,6 +321,11 @@ class BkuController extends Controller
         if(isset($request->nomor)){
             $nomor = $request->nomor=='NULL'? null : $request->nomor;
             $data->where('nomor',$nomor);     //nomor
+        }
+
+        if(isset($request->parent)){
+            $parent = $request->parent=='NULL'? null : $request->parent;
+            $data->where('parent',$parent);     //parent
         }
 
         $datatable = Datatables::of($data);

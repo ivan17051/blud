@@ -398,6 +398,7 @@ class TransaksiController extends Controller
         $user = Auth::user();
         $userId = $user->id;
         try {
+            DB::beginTransaction();
             $model=Transaksi::find($request->input('id'));
             if($user->idunitkerja !== $model->idunitkerja
                 OR $model->status===3){
@@ -406,8 +407,17 @@ class TransaksiController extends Controller
             $model->idm=$userId;
             $model->isactive=0;
             $model->save();
+
+            //cek apakah row transaksi ini berasal dari multi spj sebelumnya
+            Transaksi::where('parent',$model->id)
+                ->where('isbku',0)
+                ->where('isactive',1)
+                ->update(['parent' => NULL]);
+
+            DB::commit();
             return back()->with('success','Berhasil menghapus');
         } catch (\Throwable $th) {
+            DB::rollback();
             return back()->with('error','Gagal menghapus');
         }
     }
@@ -671,20 +681,21 @@ class TransaksiController extends Controller
         $user = Auth::user();
         $input = $request->all();
         
-        $idtransaksi=$input['idtransaksi'];
+        $idtransaksis=explode(',',$input['idtransaksi']);
         
-        $model=Transaksi::where('id',$idtransaksi)
+        $models=Transaksi::whereIn('id',$idtransaksis)
             ->where('isbku',0)
-            ->select('id','tanggalref', 'idunitkerja', 'idsubkegiatan', 'tipe', 'jenis', 'keterangan', 'rekening')->first();
+            ->where('isactive',1)
+            ->get();
 
-        if(isset($model)===FALSE){
+        if($models->isEmpty()){
             return back()->with('error','ID transaksi tidak ditemukan.');
-        }elseif ($model->idunitkerja !== $user->idunitkerja) {
+        }elseif ($models->first()->idunitkerja !== $user->idunitkerja) {
             return back()->with('error','Tidak berhak.');
         }
 
         //get saldo total dari subkegiatan
-        $idunitkerja=$model->idunitkerja;
+        $idunitkerja=$user->idunitkerja;
         $subquery=\App\Saldo::select('idrekening', DB::raw('MAX(tanggal) AS tgl'))
         ->where('idunitkerja',$idunitkerja)
         ->groupBy('idrekening');
@@ -698,7 +709,7 @@ class TransaksiController extends Controller
 
         try {
             DB::beginTransaction();
-            $year=Carbon::parse($model->tanggalref)->year;
+            $year=Carbon::parse($models->first()->tanggalref)->year;
             $transaksi_aktual=Transaksi::select('id','nomor')
                 ->where('isactive',1)
                 ->where('nomor','<>',NULL)
@@ -711,13 +722,28 @@ class TransaksiController extends Controller
                 $nomor=1;
             }
 
-            // Update Properti Transaksi
-            $model->fill([
+            //ambil semua array rekenings dari models
+            $rekenings = [];
+            foreach ($models as $m) {
+                $rekenings = array_merge($rekenings, $m->rekening);
+            }
+
+            // membuar row Transaksi baru sebagai PARENT
+            $newModel=$models->first()->replicate();
+            $newModel->fill([
                 'idm' => $user->id,
+                'idc' => $user->id,
                 'nomor'=> substr(str_repeat(0, 5).strval($nomor), - 5),   //convert agar nomor ada leading zero
                 'saldo'=>$newSaldo,
+                'rekening'=>$rekenings,
             ]);
-            $model->save();
+            $newModel->save();
+
+            //row transaksi yg sudah dipilih menjadi CHILDREN dari transaksi yg baru
+            foreach ($models as $m) {
+                $m->parent=$newModel->id;
+                $m->save();
+            }
             DB::commit();
             return back()->with('success','Berhasil menarik e-SPJ.');
         } catch (\Throwable $e) {

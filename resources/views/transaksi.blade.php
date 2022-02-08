@@ -547,6 +547,9 @@ $role = Auth::user()->id;
                     <tbody></tbody>
                 </table>
             </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary" onclick="pilih_multi_espj()">Pilih</button>
+            </div>
         </div>
     </div>
 </div>
@@ -1129,6 +1132,11 @@ function format(data){
         tombolubahPotongan='';
     }
 
+    //jika merupakan transaksi spp tarikan dari e-spj, maka dilarang edit
+    if(data['kodetransaksi'] !== undefined){
+        tombolubah='';
+    }
+
     @if($user->role !== 'PKM')
     tombolubah='';
     tombolubahPajak='';
@@ -1233,11 +1241,15 @@ function openPilihSPP(urlparams, sign_, callback){
         $('#pilihSppLabel').text('Pilih e-SPJ');
         sppTable = $("#spptable").dataTable({
             processing: true,
-            serverSide: true,
+            // serverSide: true,
             order: [[ 1, "desc" ]],
+            select: {
+                style:    'multi',
+                selector: 'td:first-child input'
+            },
             ajax: {type: "POST", url: '{{route("bku.getspp")}}'+urlparams, data:{'_token':@json(csrf_token())}},
             columns: [
-                { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' , title:'No.', name:'no'},
+                { data:'DT_RowIndex', orderable: false, searchable: false,  className: 'select-checkbox', render: function(){return '<input class="scale-1-5" type="checkbox" >';}} ,
                 { data:'kodetransaksi', title:'ID Transaksi', name:'kodetransaksi',render: function(e,d,data){
                     return '<button onclick="callbackPilihSpp(\''+data['kodetransaksi']+'\','+data['id']+')" class="btn btn-sm btn-light text-nowrap border-1-gray-1 rounded-pill" ><i class="o-f-edelivery" ></i> '+data['kodetransaksi']+'</button>';
                 }},
@@ -1250,13 +1262,30 @@ function openPilihSPP(urlparams, sign_, callback){
 }
 
 function pilih_espj_ls(){
-    openPilihSPP('?upls=LS&isspj=1&nomor=NULL',3, function(kodetransaksi,id){
+    openPilihSPP('?upls=LS&isspj=1&nomor=NULL&parent=NULL',3, function(kodetransaksi,id){
         $form = $('#tarik_eSPJ_LS form');
         $form.find('input[name=idtransaksi]').val(id);
         $form.find('input[name=kodetransaksi]').val(kodetransaksi);
         $('#pilihSpp').modal('hide');
     });
     $('#pilihSpp').modal({backdrop: 'static', keyboard: false}).modal('show');
+}
+
+//fungsi untuk milih espj apa aja yg dicentang dari tabel sppTable
+function pilih_multi_espj(){
+    let indexes = sppTable.api().rows({ selected: true })[0];
+    let dataSelected = sppTable.api().rows({ selected: true }).data();
+    var kodetransaksis='', ids='';
+    for (let i = 0; i < indexes.length; i++) {
+        if(i!=0){
+            kodetransaksis+=','+dataSelected[i].kodetransaksi.toString();
+            ids+=','+dataSelected[i].id.toString();
+        }else{
+            kodetransaksis+=dataSelected[i].kodetransaksi.toString();
+            ids+=dataSelected[i].id.toString();
+        }
+    }
+    callbackPilihSpp(kodetransaksis, ids);
 }
 
 function submit_espj_ls(e){
