@@ -22,6 +22,7 @@ class Rekanan extends Model
         "namabank",
         "rekening",
         "npwp",
+        "atasnama",
 	    "isactive",
         "idc",
         "idm"

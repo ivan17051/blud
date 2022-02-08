@@ -255,9 +255,10 @@ class DataController extends Controller
             'nama' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
             'namabank' => 'required|string|max:20',
-            'pimpinan' => 'required|string|max:255',
+            'pimpinan' => 'nullable|string|max:255',
             'rekening' => 'required|string|max:100',
-            'npwp' => 'required|string|max:15',
+            'atasnama' => 'required|string|max:100',
+            'npwp' => 'nullable|string|max:15',
         ]);
         if ($validator->fails()) return back()->with('error','Gagal menyimpan');
 
