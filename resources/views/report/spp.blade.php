@@ -90,12 +90,18 @@
                                             <tr>
                                                 <td class="paddingfont">4. NPWP Bendahara Pengeluaran / Pihak Lain</td>
                                                 <td class="paddingfont">:</td>
-                                                <td class="paddingfont"> {{$pihaklain->npwp}}</td>
+                                                <td class="paddingfont"> 
+                                                    @if($pihaklain->nip) 00.137.508.8-609.000</td>
+                                                    @else {{$pihaklain->npwp}}</td>
+                                                    @endif
                                             </tr>
                                             <tr>
                                                 <td class="paddingfont">5. Nama Bank</td>
                                                 <td class="paddingfont">:</td>
-                                                <td class="paddingfont"> {{$pihaklain->namabank}} </td>
+                                                <td class="paddingfont">
+                                                    @if($pihaklain->nip) BANK JATIM </td>
+                                                    @else {{$pihaklain->namabank}} </td>
+                                                    @endif
                                             </tr>
                                             <tr>
                                                 <td class="paddingfont">6. Nomor Rekening Bank</td>
