@@ -121,7 +121,7 @@
                                             <tr>
                                                 <td>&nbsp;</td>
                                                 <td>&nbsp;</td>
-                                                <td class="paddingfont">Sebesar: Rp. {{number_format($transaksi->saldo,0,',','.')}} <br>({{ucwords(Terbilang::make($transaksi->saldo))}} Rupiah)</td>
+                                                <td class="paddingfont">Sebesar: Rp. {{number_format($transaksi->saldo,0,',','.')}} <br>({{ucwords($terbilang)}} Rupiah)</td>
                                             </tr>
                                             <tr>
                                                 <td class="paddingfont">&nbsp;</td>
