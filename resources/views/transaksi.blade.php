@@ -1093,7 +1093,6 @@ function ubahPotongan(idtransaksi){
 }
 
 function format(data){
-    console.log(data);
     //jika ada permintaan revisi, tampilkan pesan
     var pesanerror='';
     if(data.pesanpenolakan && data['status_raw']==="4"){
@@ -1132,9 +1131,7 @@ function format(data){
         tombolubahPajak='';
         tombolubahPotongan='';
     }
-
-    //jika merupakan transaksi spp tarikan dari e-spj, berikan tombol edit daftar espjnya
-    if(data['kodetransaksi'] !== null){
+    else if(data['kodetransaksi'] !== null){ //jika merupakan transaksi spp tarikan dari e-spj, berikan tombol edit daftar espjnya
         var tombolubah='<button class="btn btn-sm btn-primary float-right" onclick="edit_pilihan_espj_ls('+data.id+')" title="Tambah Rekening"><i class="fas fa-plus fa-sm"></i> Tambah</button>';
     }
 
@@ -1228,7 +1225,7 @@ function infoSaldo(self, target){
 var sppTable;
 var callbackPilihSpp;
 var sign=-99;
-function openPilihSPP(urlparams, sign_, callback, FORCE_REFRESH=false){
+function openPilihSPP(urlparams, sign_, callback, FORCE_REFRESH=false, onComplete=function(settings, json){return ''} ){
     if(sign===sign_ && FORCE_REFRESH==false) return;
     if ($.fn.dataTable.isDataTable('#spptable') ) {
         $('#spptable').DataTable().clear();
@@ -1258,6 +1255,7 @@ function openPilihSPP(urlparams, sign_, callback, FORCE_REFRESH=false){
                 { data:'subkegiatan.kode', orderable: false, title:'Kode Subkegiatan', name:'subkegiatan.kode'},
                 { data:'keterangan', orderable: false, title:'Uraian', name:'keterangan'},
             ],
+            initComplete: onComplete,
         });
     }
 }
@@ -1300,12 +1298,23 @@ function submit_espj_ls(e){
     }
 }
 
+function select_espj_terpilih(setting, json, idsObject){
+    sppTable.api().rows().every (function (rowIdx, tableLoop, rowLoop) {
+        if (this.data().id in idsObject) {
+            $(this.node()).find('td:first-child input[type=checkbox]').prop('checked', true);
+            this.select ();
+        }
+    });
+}
+
 function edit_pilihan_espj_ls(idtransaksi){
     let dataSelected = oData[idtransaksi]['children'];
+    console.log(dataSelected);
     $form = $('#tarik_eSPJ_LS form');
     $form.find('input[name=currentIdTransaksi]').val(idtransaksi);
 
     var kodetransaksis='', ids='';
+    let idsObject={};
     for (let i = 0; i < dataSelected.length; i++) {
         if(i!=0){
             kodetransaksis+=','+dataSelected[i].kodetransaksi.toString();
@@ -1314,6 +1323,7 @@ function edit_pilihan_espj_ls(idtransaksi){
             kodetransaksis+=dataSelected[i].kodetransaksi.toString();
             ids+=dataSelected[i].id.toString();
         }
+        idsObject[dataSelected[i].id] = dataSelected[i].id;
     }
 
     $form.find('input[name=idtransaksi]').val(ids);
@@ -1323,7 +1333,8 @@ function edit_pilihan_espj_ls(idtransaksi){
         $form.find('input[name=idtransaksi]').val(id);
         $form.find('input[name=kodetransaksi]').val(kodetransaksi);
         $('#pilihSpp').modal('hide');
-    }, true);   //force refresh tabel true
+    }, true, 
+        function(s,j){select_espj_terpilih(s,j,idsObject);});   //force refresh tabel true
     $('#tarik_eSPJ_LS').modal('show');
 }
 //END of FORM Pilih SPP

@@ -688,6 +688,7 @@ class TransaksiController extends Controller
             ->where('isbku',0)
             ->where('isactive',1)
             ->get();
+        $ids=$models->pluck('id')->toArray();
 
         if($models->isEmpty()){
             return back()->with('error','ID transaksi tidak ditemukan.');
@@ -723,6 +724,7 @@ class TransaksiController extends Controller
             if(isset($input['currentIdTransaksi'])){
                 // remove old children
                 Transaksi::where('parent',$input['currentIdTransaksi'])
+                    ->whereNotIn('id',$ids)
                     ->where('isbku',0)
                     ->where('isactive',1)
                     ->update(['parent' => NULL]);
@@ -738,6 +740,7 @@ class TransaksiController extends Controller
                     'saldo'=>$newSaldo,
                     'jumlah'=>$newJumlah,
                     'rekening'=>$rekenings,
+                    'kodetransaksi'=>$models->first()->kodetransaksi,
                 ]);
             }else{
                 // create Baru
@@ -753,7 +756,7 @@ class TransaksiController extends Controller
                     $nomor=1;
                 }
 
-                // membuar row Transaksi baru sebagai PARENT
+                // membuat row Transaksi baru sebagai PARENT
                 $newModel=$models->first()->replicate();
                 $newModel->fill([
                     'idm' => $user->id,
