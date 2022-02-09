@@ -88,7 +88,7 @@ class SPJController extends Controller
             $datatable
                 ->addColumn('action', function ($t) use($user){ 
                     $html='';
-                    if ($t->status<2 || $t->status==4) {
+                    if ($t->parent == NULL) {
                         $html.='<button onclick="edit(this)" class="btn btn-sm btn-outline-warning border-0" style="width:2rem;" title="Sunting Transaksi" data-toggle="modal" data-target="#sunting"><i class="fas fa-edit fa-sm"></i></button>';
                         $html.='<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" style="width:2rem;" title="Hapus Transaksi"><i class="fas fa-trash fa-sm"></i></button>';
                     }

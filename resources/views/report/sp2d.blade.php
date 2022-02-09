@@ -222,7 +222,7 @@
                                   <tr>
                                       <td class="paddingfont">Bank Penerima</td>
                                       <td class="paddingfont">:</td>
-                                      <td class="paddingfont fontBold"> - </td>
+                                      <td class="paddingfont fontBold">BANK JATIM</td>
                                   </tr>
                                   <tr>
                                       <td class="paddingfont">Keperluan Untuk</td>

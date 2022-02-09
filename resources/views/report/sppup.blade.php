@@ -80,7 +80,7 @@
                                 <td class="paddingfont fontBold" style="font-size:14px;" width="30%">Nilai Rupiah</td>
                             </tr>
                             <tr>
-                                <td class="paddingfont" colspan=4>1.02.00.0.10.00/-{{$transaksi->subkegiatan->kode}} {{$transaksi->subkegiatan->nama}}</td>
+                                <td class="paddingfont" colspan=4>1.02.00.0.10.00/{{$transaksi->subkegiatan->kode}} {{$transaksi->subkegiatan->nama}}</td>
                             </tr>
                             @php
                             $jumlah=0;
