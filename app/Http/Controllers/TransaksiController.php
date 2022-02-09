@@ -49,7 +49,7 @@ class TransaksiController extends Controller
                 ->orderBy('transaksi.id','DESC');
                 // status lebih dari 1 artinya sudah masuk pengajuan sp2d
         }else{
-            $data = Transaksi::where('isactive',1)->with(['unitkerja','subkegiatan'])
+            $data = Transaksi::where('isactive',1)->with(['unitkerja','subkegiatan','children'])
                     ->where('idunitkerja',$user->idunitkerja)
                     ->where('nomor','<>',null)
                     ->orderBy('transaksi.id','DESC');
@@ -688,6 +688,7 @@ class TransaksiController extends Controller
             ->where('isbku',0)
             ->where('isactive',1)
             ->get();
+        $ids=$models->pluck('id')->toArray();
 
         if($models->isEmpty()){
             return back()->with('error','ID transaksi tidak ditemukan.');
@@ -711,33 +712,61 @@ class TransaksiController extends Controller
         try {
             DB::beginTransaction();
             $year=Carbon::parse($models->first()->tanggalref)->year;
-            $transaksi_aktual=Transaksi::select('id','nomor')
-                ->where('isactive',1)
-                ->where('nomor','<>',NULL)
-                ->whereYear('tanggalref',$year)
-                ->orderBy('id', 'DESC')
-                ->where('idunitkerja', $user->idunitkerja)->first();
-            if(isset($transaksi_aktual)){
-                $nomor=intval($transaksi_aktual->nomor)+1;
-            }else{
-                $nomor=1;
-            }
 
             //ambil semua array rekenings dari models
             $rekenings = [];
+            $newJumlah=0;
             foreach ($models as $m) {
                 $rekenings = array_merge($rekenings, $m->rekening);
+                $newJumlah+=$m->rekening[0][3];
             }
 
-            // membuar row Transaksi baru sebagai PARENT
-            $newModel=$models->first()->replicate();
-            $newModel->fill([
-                'idm' => $user->id,
-                'idc' => $user->id,
-                'nomor'=> substr(str_repeat(0, 5).strval($nomor), - 5),   //convert agar nomor ada leading zero
-                'saldo'=>$newSaldo,
-                'rekening'=>$rekenings,
-            ]);
+            if(isset($input['currentIdTransaksi'])){
+                // remove old children
+                Transaksi::where('parent',$input['currentIdTransaksi'])
+                    ->whereNotIn('id',$ids)
+                    ->where('isbku',0)
+                    ->where('isactive',1)
+                    ->update(['parent' => NULL]);
+             
+                // Edit Existing
+                $newModel=Transaksi::select('id','nomor')
+                    ->whereYear('tanggalref',$year)
+                    ->where('id',$input['currentIdTransaksi'])
+                    ->where('idunitkerja', $user->idunitkerja)->first();
+                $newModel->fill([
+                    'idm' => $user->id,
+                    'idc' => $user->id,
+                    'saldo'=>$newSaldo,
+                    'jumlah'=>$newJumlah,
+                    'rekening'=>$rekenings,
+                    'kodetransaksi'=>$models->first()->kodetransaksi,
+                ]);
+            }else{
+                // create Baru
+                $transaksi_aktual=Transaksi::select('id','nomor')
+                    ->where('isactive',1)
+                    ->where('nomor','<>',NULL)
+                    ->whereYear('tanggalref',$year)
+                    ->orderBy('id', 'DESC')
+                    ->where('idunitkerja', $user->idunitkerja)->first();
+                if(isset($transaksi_aktual)){
+                    $nomor=intval($transaksi_aktual->nomor)+1;
+                }else{
+                    $nomor=1;
+                }
+
+                // membuat row Transaksi baru sebagai PARENT
+                $newModel=$models->first()->replicate();
+                $newModel->fill([
+                    'idm' => $user->id,
+                    'idc' => $user->id,
+                    'nomor'=> substr(str_repeat(0, 5).strval($nomor), - 5),   //convert agar nomor ada leading zero
+                    'saldo'=>$newSaldo,
+                    'jumlah'=>$newJumlah,
+                    'rekening'=>$rekenings,
+                ]);
+            }
             $newModel->save();
 
             //row transaksi yg sudah dipilih menjadi CHILDREN dari transaksi yg baru
