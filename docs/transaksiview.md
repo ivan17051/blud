@@ -4,6 +4,8 @@
 
 :memo: last updated\: 10-02-2022
 
+:house: [to home](https://github.com/ivan17051/blud/blob/master/README.md)
+
 #### Contents
 
 - [transaksi2bku](#transaksi2bku)
@@ -27,15 +29,15 @@
 - [submit_espj_ls](#submit_espj_ls)
 - [select_espj_terpilih](#select_espj_terpilih)
 - [edit_pilihan_espj_ls](#edit_pilihan_espj_ls)
-- [datetimepicker.datetimepicker](#datetimepicker.datetimepicker)
-- [datetimepicker2.datetimepicker](#datetimepicker2.datetimepicker)
-- [tanggalkadaluarsa.datetimepicker](#tanggalkadaluarsa.datetimepicker)
+- [datetimepicker.datetimepicker](#datetimepickerdatetimepicker)
+- [datetimepicker2.datetimepicker](#datetimepicker2datetimepicker)
+- [tanggalkadaluarsa.datetimepicker](#tanggalkadaluarsadatetimepicker)
 - [renderNomor](#rendernomor)
-- [transaksitable.dataTable](#transaksitable.datatable)
-- [addrekening.submit](#addrekening.submit)
-- [addpajak.submit](#addpajak.submit)
-- [addpotongan.submit](#addpotongan.submit)
-- [transaksiToBKUForm.submit](#transaksitobkuform.submit)
+- [transaksitable.dataTable](#transaksitabledatatable)
+- [addrekening.submit](#addrekeningsubmit)
+- [addpajak.submit](#addpajaksubmit)
+- [addpotongan.submit](#addpotongansubmit)
+- [transaksiToBKUForm.submit](#transaksitobkuformsubmit)
 
 ## transaksi2bku
 

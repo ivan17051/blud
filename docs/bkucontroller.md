@@ -4,6 +4,8 @@
 
 :memo: last updated\: 10-02-2022
 
+:house: [to home](https://github.com/ivan17051/blud/blob/master/README.md)
+
 #### Contents
 
 - [index](#index)

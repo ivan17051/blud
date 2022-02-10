@@ -4,6 +4,8 @@
 
 :memo: last updated\: 10-02-2022
 
+:house: [to home](https://github.com/ivan17051/blud/blob/master/README.md)
+
 #### Contents
 
 - [renderTanggal](#rendertanggal)
@@ -15,12 +17,12 @@
 - [submitSPP_LS](#submitspp_ls)
 - [pilih_espj](#pilih_espj)
 - [submit_espj](#submit_espj)
-- [bkutable.dataTable](#bkutable.datatable)
-- [cetakForm.submit](#cetakform.submit)
-- [datetimepicker.datetimepicker](#datetimepicker.datetimepicker)
-- [datetimepicker2.datetimepicker](#datetimepicker2.datetimepicker)
-- [select[name=idrekening].change](#select[name=idrekening].change)
-- [tambah.form.submit](#tambah.form.submit)
+- [bkutable.dataTable](#bkutabledatatable)
+- [cetakForm.submit](#cetakformsubmit)
+- [datetimepicker.datetimepicker](#datetimepickerdatetimepicker)
+- [datetimepicker2.datetimepicker](#datetimepicker2datetimepicker)
+- [select[name=idrekening].change](#selectnameidrekeningchange)
+- [tambah.form.submit](#tambahformsubmit)
 
 ## renderTanggal
 
