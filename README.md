@@ -8,7 +8,8 @@
   - [TransaksiController.php](https://github.com/ivan17051/blud/blob/master/docs/transaksicontroller.md)
   - [BkuController.php](https://github.com/ivan17051/blud/blob/master/docs/bkucontroller.md)
 - Views
-  - [transaksi.blade.php](#transaksi.blade.php)
+  - [transaksi.blade.php](https://github.com/ivan17051/blud/blob/master/docs/transaksiview.md)
+  - [bku.blade.php](https://github.com/ivan17051/blud/blob/master/docs/bkuview.md)
 
 
 ## License
