@@ -46,176 +46,265 @@
                                           <table width="100%">
                                           @if($transaksi->tipe=='LS')
                                           <tr>
-                                              <td width="5%" class="paddingfont paddingBawah"><i class="far fa-square fa-fw"></i></td>
+                                              <td width="5%" class="paddingfont paddingBawah"> 
+                                                  @if(in_array("0", $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif
+                                                </td>
                                               <td class="paddingfont paddingBawah">
                                                   Surat Pengantar SPP
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(1, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif
+                                              </td>
                                               <td class="paddingfont paddingBawah">
                                                   Ringkasan SPP
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(2, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                                   Rincian SPP
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(3, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                                   Salinan SPD
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(4, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                               Salinan Surat Rekomendasi dari SKPD teknis terkait.
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(5, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                               SSP disertai faktur pajak (PPN dan PPh) yang telah ditandatangani wajib pajak dan wajib pungut.
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(6, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                               Surat perjanjian kerjasama/kontrak antara pengguna anggaran/kuasa pengguna anggaran dengan pihak ketiga serta mencantumkan nomor rekening bank (dibuktikan dengan referensi bank yang diterbitkan pada Tahun Anggaran berkenaan, untuk kepentingan mengikuti pekerjaan di Pemerintah Kota Surabaya) pihak ketiga
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(7, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                               Berita Acara penyelesaian pekerjaan.
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(8, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                               Berita Acara serah terima barang dan jasa.
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(9, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                               Berita Acara Pembayaran.
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(10, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                               Kwitansi bermaterai, nota/faktur yang ditandatangani pihak ketiga dan PPTK serta disetujui oleh pengguna anggaran/kuasa pengguna anggaran.
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(11, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                               Surat jaminan bank atau yang dipersamakan yang dikeluarkan oleh bank atau lembaga keuangan non bank.
                                               </td>
                                         </tr>
                                         <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(12, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                               Dokumen lain yang dipersyaratkan untuk kontrak-kontrak yang dananya sebagian atau seluruhnya bersumber dari penerusan pinjaman/hibah luar negeri.
                                               </td>
                                         </tr>
                                         <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(13, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                               Berita Acara pemeriksaan yang ditandatangani oleh pihak ketiga/rekanan serta unsur panitia pemeriksaan barang berikut lampiran daftar barang yang diperiksa.
                                               </td>
                                         </tr>
                                         <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(14, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                               Surat angkutan atau konosemen apabila pengadaan barang dilaksanakan diluar wilayah kerja Surat pemberitahuan potongan denda keterlambatan pekerjaan dari PPTK apabila pekerjaan mengalami keterlambatan.
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(15, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                               Foto/Buku/Dokumentasi tingkat kemajuan/penyelesaian pekerjaan.
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(16, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                               Potongan jamsostek (potongan sesuai dengan ketentuan yang berlaku/surat pemberitahuan jamsostek).
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(17, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                               Khusus untuk pekerjaan konsultan yang perhitungan harganya menggunakan biaya personil (billing rate), Berita Acara prestasi kemajuan pekerjaan dilampiri dengan bukti kehadiran dari tenaga konsultan sesual pentahapan waktu pekerjaan dan bukti penyewaan/pembelian alat penunjang serta bukti pengeluaran lainnya berdasarkan rincian dalam surat penawaran.
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(18, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                               Surat Ijin Usaha Perdagangan (SIUP) atau dokumen sejenisnya.
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(19, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                               Ijin Usaha Jasa Konstruksi (IUJK) atau dokumen sejenisnya.
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(20, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                               Surat Setoran Bukan Pajak (SSBP).
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(21, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                               Daftar Pembayaran.
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(22, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                               Lampiran lain yang diperlukan
                                               </td>
                                           </tr>
-                                            @elseif($transaksi->tipe=='UP')
+                                            @elseif($transaksi->tipe=='UP' || $transaksi->tipe=='TU')
                                           <tr>
-                                              <td width="5%" class="paddingfont paddingBawah"><i class="far fa-square fa-fw"></i></td>
+                                              <td width="5%" class="paddingfont paddingBawah">
+                                                  @if(in_array("0", $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                                   Surat Pengantar SPP
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(1, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                                   Ringkasan SPP
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(2, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                                   Rincian SPP
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(3, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                                   Salinan SPD
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td class="paddingfont paddingBawah"><i class="far fa-check-square fa-fw"></i></td>
+                                              <td class="paddingfont paddingBawah">
+                                                  @if(in_array(23, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                                   Draft Surat Pernyataan untuk ditandatangani oleh Pengguna Anggaran/Kuasa Pengguna Anggaran yang menyatakan bahwa uang yang diminta tidak dipergunakan untuk keperluan selain uang persediaan saat pengejuan SP2D kepada Kuasa BUD.
                                               </td>
                                           </tr>
                                           <tr>
-                                              <td width="5%" class="paddingfont paddingBawah"><i class="far fa-square fa-fw"></i></td>
+                                              <td width="5%" class="paddingfont">
+                                                  @if(in_array(24, $transaksi->ceklist))<i class="far fa-check-square fa-fw"></i>
+                                                  @else <i class="far fa-square fa-fw"></i>
+                                                  @endif</td>
                                               <td class="paddingfont paddingBawah">
                                                   Lampiran Lainnya
                                               </td>

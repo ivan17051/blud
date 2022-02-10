@@ -20,6 +20,7 @@ class Transaksi extends Model
         'rekening' => 'array',
         'pajak' => 'array',
         'potongan' => 'array',
+        'ceklist' => 'array',
    ];
 
     protected $fillable = [

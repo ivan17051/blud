@@ -69,7 +69,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/sptb/{id}', 'TransaksiController@sptb');
     Route::get('/spp/{id}', 'TransaksiController@spp');
-    Route::get('/ceklist/{id}', 'TransaksiController@ceklist');
+    Route::put('/ceklist/{id}', 'TransaksiController@ceklist');
     Route::get('/sppup/{id}', 'TransaksiController@sppup');
     Route::get('/spm/{id}', 'TransaksiController@spm');
     Route::get('/sp2d/{id}', 'TransaksiController@sp2d');
@@ -87,7 +87,4 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/spj/data', 'SPJController@data')->name('spj.data');
     Route::put('/spj', 'SPJController@storeUpdateSPJ')->name('spj.update');
     Route::delete('/spj', 'SPJController@deleteSPJ')->name('spj.delete');
-});
-Route::get('/cobaceklist', function(){
-    return view('report.ceklist');
 });
