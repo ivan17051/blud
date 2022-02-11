@@ -28,13 +28,13 @@
 Menampilkan halaman SPP-SPM kosong.
 
 #### Return Value
-[Transaksi View](#4)<br>
+[Transaksi View](https://github.com/ivan17051/blud/blob/master/resources/views/transaksi.blade.php)<br>
 with:<br>
-&emsp;&emsp;[SubKegiatan](#3): Collections<br>
-&emsp;&emsp;[Rekening](#3): Collections<br>
-&emsp;&emsp;[User](#4): Collections<br>
-&emsp;&emsp;[Pejabat](#5): Collections<br>
-&emsp;&emsp;[Pajak](#6): Collections
+&emsp;&emsp;[SubKegiatan](https://github.com/ivan17051/blud/blob/master/app/SubKegiatan.php): Collections<br>
+&emsp;&emsp;[Rekening](https://github.com/ivan17051/blud/blob/master/app/Rekening.php): Collections<br>
+&emsp;&emsp;[User](https://github.com/ivan17051/blud/blob/master/app/User.php): Collections<br>
+&emsp;&emsp;[Pejabat](https://github.com/ivan17051/blud/blob/master/app/Pejabat.php): Collections<br>
+&emsp;&emsp;[Pajak](#https://github.com/ivan17051/blud/blob/master/app/Pajak.php): Collections
 
 :cyclone: [to top](#contents)
 
@@ -126,14 +126,46 @@ Redirect
 :cyclone: [to top](#contents)
 
 ## spm
+Menampilkan PDF SPM yang dapat di-_print_.
+
+#### Parameters
+Request, id: [Transaksi](https://github.com/ivan17051/blud/blob/master/app/Transaksi.php)
+
+#### Return Value
+[Report SPM View](https://github.com/ivan17051/blud/blob/master/resources/views/report/spm.blade.php)<br>
+with:<br>
+&emsp;&emsp;[Transaksi](https://github.com/ivan17051/blud/blob/master/app/Transaksi.php): Collections<br>
+&emsp;&emsp;Bendahara: [Pejabat](https://github.com/ivan17051/blud/blob/master/app/Pejabat.php)<br>
+&emsp;&emsp;Otorisator: [Pejabat](https://github.com/ivan17051/blud/blob/master/app/Pejabat.php)<br>
+&emsp;&emsp;Pihak Lain: ([Pejabat](https://github.com/ivan17051/blud/blob/master/app/Pejabat.php) or [Rekanan](https://github.com/ivan17051/blud/blob/master/app/Rekanan.php))<br>
 
 :cyclone: [to top](#contents)
 
 ## sp2d
+Menampilkan PDF SP2D yang dapat di-_print_.
+
+#### Parameters
+Request, id: [Transaksi](https://github.com/ivan17051/blud/blob/master/app/Transaksi.php)
+
+#### Return Value
+[Report SP2D View](https://github.com/ivan17051/blud/blob/master/resources/views/report/sp2d.blade.php)<br>
+with:<br>
+&emsp;&emsp;[Transaksi](https://github.com/ivan17051/blud/blob/master/app/Transaksi.php): Collections<br>
+&emsp;&emsp;Bendahara: [Pejabat](https://github.com/ivan17051/blud/blob/master/app/Bendahara.php)<br>
+&emsp;&emsp;Otorisator: [Pejabat](https://github.com/ivan17051/blud/blob/master/app/Pejabat.php)<br>
+&emsp;&emsp;Unitkerja: [UnitKerja](https://github.com/ivan17051/blud/blob/master/app/Unitkerja.php)<br>
+&emsp;&emsp;Request: Request<br>
 
 :cyclone: [to top](#contents)
 
 ## espjToTransaksi
+Membuat atau menyunting SPP-LS dari inputan satu atau lebih dari menu e-SPJ.
+
+#### Parameters
+Request
+
+#### Return Value
+Redirect
 
 :cyclone: [to top](#contents)
 
