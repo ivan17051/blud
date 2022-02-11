@@ -419,7 +419,7 @@ $role = Auth::user()->id;
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
                 <button type="submit" class="btn btn-primary">SPP</button>
                 <button type="submit" id="cetaksppup" class="btn btn-info" formaction="">Rincian</button>
-                <button type="submit" id="cetakceklist" class="btn btn-success" formaction="" disabled>Ceklist</button>
+                <button type="button" id="viewCeklist" class="btn btn-success" onclick="showCeklist(this)" value="" data-cek="" data-toggle="modal" data-target="#ceklist">Ceklist</button>
             </div>
             </form>
         </div>
@@ -582,6 +582,34 @@ $role = Auth::user()->id;
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
                 <button type="submit" class="btn btn-primary">Proses</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ceklist -->
+<div class="modal modal-danger fade" id="ceklist" tabindex="-1" role="dialog" aria-labelledby="Ceklist" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form id="formCeklist" action="" method="POST" target="_blank">
+            @csrf
+            @method('PUT')
+            <div class="modal-header">
+                <h5 class="modal-title" id="cetakLabel">Ceklist</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" id="idCeklist" name="ceklist" value="">
+              <table class="table">
+                <tbody id="bodyCeklist"></tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="submit" id="cetakceklist" class="btn btn-success cetakCeklist" formaction="">Cetak</button>
             </div>
             </form>
         </div>
@@ -762,6 +790,137 @@ $role = Auth::user()->id;
 @section('script')
 @include('layouts.alert')
 <script type="text/javascript">
+
+function showCeklist(self){
+    var mainContainer = document.getElementById("bodyCeklist");
+    mainContainer.innerHTML = `
+        <tr>
+            <th scope="row" style="width:5%;"><input type="checkbox" class="sub_chk" data-id="0" ></th>
+            <td>Surat Pengantar SPP</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="1"></th>
+            <td>Ringkasan SPP</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="2"></th>
+            <td>Rincian SPP</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="3"></th>
+            <td>Salinan SPD</td>
+        </tr>
+    `;
+    if(self.value=='LS'){
+        mainContainer.innerHTML += `
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="4"></th>
+            <td>Salinan Surat Rekomendasi dari SKPD teknis terkait</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="5"></th>
+            <td>SSP disertai faktur pajak (PPN dan PPh) yang telah ditandatangani wajib pajak dan wajib pungut</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="6"></th>
+            <td>Surat perjanjian kerjasama/kontrak antara pengguna anggaran/kuasa pengguna anggaran dengan pihak ketiga serta mencantumkan nomor rekening bank (dibuktikan dengan referensi bank yang diterbitkan pada Tahun Anggaran berkenaan, untuk kepentingan mengikuti pekerjaan di Pemerintah Kota Surabaya) pihak ketiga</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="7"></th>
+            <td>Berita Acara penyelesaian pekerjaan</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="8"></th>
+            <td>Berita Acara serah terima barang dan jasa</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="9"></th>
+            <td>Berita Acara Pembayaran</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="10"></th>
+            <td>Kwitansi bermaterai, nota/faktur yang ditandatangani pihak ketiga dan PPTK serta disetujui oleh pengguna anggaran/kuasa pengguna anggaran</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="11"></th>
+            <td>Surat jaminan bank atau yang dipersamakan yang dikeluarkan oleh bank atau lembaga keuangan non bank</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="12"></th>
+            <td>Dokumen lain yang dipersyaratkan untuk kontrak-kontrak yang dananya sebagian atau seluruhnya bersumber dari penerusan pinjaman/hibah luar negeri</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="13"></th>
+            <td>Berita Acara pemeriksaan yang ditandatangani oleh pihak ketiga/rekanan serta unsur panitia pemeriksaan barang berikut lampiran daftar barang yang diperiksa</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="14"></th>
+            <td>Surat angkutan atau konosemen apabila pengadaan barang dilaksanakan diluar wilayah kerja Surat pemberitahuan potongan denda keterlambatan pekerjaan dari PPTK apabila pekerjaan mengalami keterlambatan</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="15"></th>
+            <td>Foto/Buku/Dokumentasi tingkat kemajuan/penyelesaian pekerjaan</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="16"></th>
+            <td>Potongan jamsostek (potongan sesuai dengan ketentuan yang berlaku/surat pemberitahuan jamsostek)</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="17"></th>
+            <td>Khusus untuk pekerjaan konsultan yang perhitungan harganya menggunakan biaya personil (billing rate), Berita Acara prestasi kemajuan pekerjaan dilampiri dengan bukti kehadiran dari tenaga konsultan sesual pentahapan waktu pekerjaan dan bukti penyewaan/pembelian alat penunjang serta bukti pengeluaran lainnya berdasarkan rincian dalam surat penawaran</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="18"></th>
+            <td>Surat Ijin Usaha Perdagangan (SIUP) atau dokumen sejenisnya</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="19"></th>
+            <td>Ijin Usaha Jasa Konstruksi (IUJK) atau dokumen sejenisnya</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="20"></th>
+            <td>Surat Setoran Bukan Pajak (SSBP)</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="21"></th>
+            <td>Daftar Pembayaran</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="22"></th>
+            <td>Lampiran lain yang diperlukan</td>
+        </tr>
+        `;
+    }
+    else{
+        mainContainer.innerHTML += `
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="23"></th>
+            <td>Draft Surat Pernyataan untuk ditandatangani oleh Pengguna Anggaran/Kuasa Pengguna Anggaran yang menyatakan bahwa uang yang diminta tidak dipergunakan untuk keperluan selain uang persediaan saat pengejuan SP2D kepada Kuasa BUD</td>
+        </tr>
+        <tr>
+            <th scope="row"><input type="checkbox" class="sub_chk" data-id="24"></th>
+            <td>Lampiran lainnya</td>
+        </tr>`;
+    }
+
+    $('#bodyCeklist input[type=checkbox]').removeAttr('checked');
+    
+    var ceklist = self.dataset.cek.split(',');
+    ceklist.forEach(unit =>{
+        $('#bodyCeklist input[data-id='+unit+']').prop('checked', true);
+    });
+}
+
+$('.cetakCeklist').on('click', function(e) {
+    
+    allVals = [];
+    $(".sub_chk:checked").each(function() {
+        allVals.push($(this).attr('data-id'));
+    });
+    
+    $("#idCeklist").attr("value", allVals);
+    
+});
 
 const bendahara = @json($pejabat);
 const rekanan = @json($rekanan);
@@ -963,8 +1122,7 @@ function batal(self){
 }
 
 var oData={};
-async function cetak(type, id, tipepembukuan=null, nocek){
-    var pejabatPKM = await my.request.get('{{route('pejabat.byunitkerja',['idunitkerja'=>''])}}/'+id);
+async function cetak(type, id, tipepembukuan=null, nocek, tipe, listCek){
     var user = "{{Auth::user()->role}}";
     
     switch (type) {
@@ -972,6 +1130,8 @@ async function cetak(type, id, tipepembukuan=null, nocek){
             $('#cetakspp form').attr('action',"{{url('spp')}}/"+id);
             $('#cetaksppup').attr('formaction',"{{url('sppup')}}/"+id);
             $('#cetakceklist').attr('formaction',"{{url('ceklist')}}/"+id);
+            $('#viewCeklist').attr("value", tipe).attr("data-cek", listCek);
+            $("#formCeklist").attr("action", "{{url('/ceklist')}}/"+id);
             $('#cetakspp').modal('show');
             break;
         case 'spm':
@@ -1033,7 +1193,7 @@ function edit(self){
     var $modal=$('#sunting');
     var tr = $(self).closest('tr');
     var data = oTable.fnGetData(tr);
-    console.log(data);
+    
     $modal.find('input[name=id]').val(data['id']);
     $modal.find('select[name=tipe]').val(data['tipe_raw']).change();
     $modal.find('input[name=tanggalref]').val(moment(data['tanggal_raw'], 'YYYY-MM-DD').format('L'));

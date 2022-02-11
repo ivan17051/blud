@@ -184,7 +184,7 @@ class TransaksiController extends Controller
                     return $html;
                 })
                 ->addColumn('spp',function($t){
-                    return '<button class="btn btn-sm btn-primary " onclick="cetak(\'spp\',\''.$t->id.'\')" title="Cetak SPP">Cetak</button>';
+                    return '<button class="btn btn-sm btn-primary " onclick="cetak(\'spp\',\''.$t->id.'\',\'\',\'\',\''.$t->tipe.'\',\''.implode(',',$t->ceklist).'\')" title="Cetak SPP">Cetak</button>';
         
                 })
                 ->addColumn('spm',function($t){
@@ -668,6 +668,16 @@ class TransaksiController extends Controller
         return view('report.sptb', ['transaksi' => $transaksi, 'otorisator' => $otorisator]);
     }
     public function ceklist(Request $request, $id){
+        $userId = Auth::id();
+        $listCeklist = explode(',',$request->ceklist);
+        try {
+            $model=Transaksi::find($id);
+            $model->ceklist = $listCeklist;
+            $model->idm=$userId;
+            $model->save();
+        } catch (\Throwable $th) {
+            return back()->with('error','Gagal mengisi No. Cek dan Tanggal Cek');
+        }
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
         $otorisator = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'PPK UPTD')->first();
         return view('report.ceklist', ['transaksi' => $transaksi, 'otorisator' => $otorisator]);
