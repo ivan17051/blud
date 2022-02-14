@@ -82,9 +82,11 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/bku', 'BkuController@deleteBKU')->name('bku.delete');
     Route::post('/bku/getspp', 'BkuController@getSPP')->name('bku.getspp');
 
-    Route::get('/pejabat/byunitkerja/{idunitkerja}','DataController@getPejabatByUnitKerja')->name('pejabat.byunitkerja');
     Route::get('/spj', 'SPJController@spj');
     Route::post('/spj/data', 'SPJController@data')->name('spj.data');
     Route::put('/spj', 'SPJController@storeUpdateSPJ')->name('spj.update');
     Route::delete('/spj', 'SPJController@deleteSPJ')->name('spj.delete');
+
+    
 });
+Route::get('/lpj', 'LPJController@lpj');
