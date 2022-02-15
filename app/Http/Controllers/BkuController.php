@@ -254,7 +254,6 @@ class BkuController extends Controller
                     'idm'=>$user->id,
                 ]);
 
-
                 // Rekening LS pasti masuk Buku Pembantu RO
                 $bku->fill([
                     'RO'=> 1,

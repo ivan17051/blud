@@ -600,6 +600,19 @@ $role = Auth::user()->role;
                     <label><b>No. Bukti</b></label>
                     <input type="text" pattern="[0-9]{1,5}" maxlength="5" name="nomorsp2d" class="form-control" placeholder="00000" required>
                 </div>
+                <div class="form-group">
+                    <label><b>Buku Pembantu</b></label>
+                    <div class="bukupembantu">
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" value="1"  name="KT" id="KT3" type="checkbox" >
+                            <label class="form-check-label" for="KT3">Kas Tunai</label>
+                        </div>
+                        <div class="form-check mb-2 mr-2 d-inline-block">
+                            <input class="form-check-input" value="1"  name="SB" id="SB3" type="checkbox" >
+                            <label class="form-check-label" for="SB3">Simpanan Bank</label>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
