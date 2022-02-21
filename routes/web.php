@@ -90,3 +90,9 @@ Route::middleware(['auth'])->group(function () {
     
 });
 Route::get('/lpj', 'LPJController@lpj');
+
+Route::get('/bukuBank', 'BukuBankController@bukuBank');
+Route::post('/bukuBank', 'BukuBankController@bukuBankTable');
+Route::post('/bukuBank/create', 'BukuBankController@store')->name('bukuBank.create');
+Route::put('/bukuBank/edit', 'BukuBankController@update')->name('bukuBank.edit');
+Route::put('/bukuBank/delete', 'BukuBankController@destroy')->name('bukuBank.delete');
