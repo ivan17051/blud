@@ -163,3 +163,21 @@ td.day.disabled{
     -o-transform: scale(1.5); /* Opera */
     transform: scale(1.5);
 }
+
+.dropdown-menu{
+    position: absolute;
+    top: 98%;
+    left: 5px;
+    will-change: transform;
+}
+
+.dropdown:hover>.dropdown-menu {
+    display: block;
+    position: absolute;
+}
+
+.c-dropdown-right > .dropdown-menu{
+    transform: unset!important;
+    left: 100%!important;
+    top: -1px!important;
+}

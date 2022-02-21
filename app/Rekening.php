@@ -32,4 +32,9 @@ class Rekening extends Model
     {
         return $this->hasMany(Saldo::class, 'idrekening');
     }
+
+    public function saldoawal()
+    {
+        return $this->hasOne(Saldo::class, 'idrekening')->where('tipe', 'saldo awal');
+    }
 }

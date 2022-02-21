@@ -123,4 +123,18 @@ const my={
         rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
         return prefix.toString() + rupiah ;
     },
+    "openModalView": async function(url, id){
+        var modal = document.getElementById(id);
+        if(modal){
+            $(modal).modal('show');
+        }else{
+            var res = await this.request.get(url);
+            const modaldiv = document.createElement("div");
+            modaldiv.innerHTML = res.html;
+            modal = modaldiv.firstChild;
+            modal.id = id;
+            document.body.prepend(modal);
+            $(modal).modal('show');
+        }
+    },
 }

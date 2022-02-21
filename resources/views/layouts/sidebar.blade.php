@@ -82,6 +82,48 @@ $user = Auth::user()->role;
             <span>BKU</span></a>
     </li>
 
+    <!-- <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporan"
+            aria-expanded="true" aria-controls="collapseLaporan">
+            <i class="fas fa-fw fa-table"></i>
+            <span>Laporan</span>
+        </a>
+        <div id="collapseLaporan" class="collapse " aria-labelledby="headingLaporan" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Laporan</h6>
+                <div class="dropdown c-dropdown-right" >
+                    <a class="collapse-item dropdown-toggle" href="#" id="dropdownFungsional" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Fungsional</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                        <a class="dropdown-item" href="#">per Rekening</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li> -->
+
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- SAMPLE DROPDOWN MENU -->
+    <li class="nav-item">
+        <div class="dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="dropdownLaporan" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-fw fa-book"></i>
+                <span>Laporan</span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="dropdownLaporan">
+                <!-- <a class="dropdown-item" href="#">per Rekening</a> -->
+                <!-- <a class="dropdown-item" href="#">Another action</a> -->
+                <div class="dropdown c-dropdown-right"  >
+                    <a class="dropdown-item dropdown-toggle" href="#" id="dropdownLaporanPertanggungjawaban" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pertanggungjawaban</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownLaporanPertanggungjawaban">
+                        <a class="dropdown-item" href="#" onclick="my.openModalView('{{route('fungsional')}}', 'laporanFungsional')" >Fungsional</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </li>
+
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 
