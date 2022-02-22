@@ -91,11 +91,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/laporan/fungsional','LaporanFungsional@index')->name('fungsional');
     Route::get('/laporan/fungsional/excel','LaporanFungsional@excel')->name('fungsional.excel');
-});
-Route::get('/lpj', 'LPJController@lpj');
 
-Route::get('/bukuBank', 'BukuBankController@bukuBank');
-Route::post('/bukuBank', 'BukuBankController@bukuBankTable');
-Route::post('/bukuBank/create', 'BukuBankController@store')->name('bukuBank.create');
-Route::put('/bukuBank/edit', 'BukuBankController@update')->name('bukuBank.edit');
-Route::put('/bukuBank/delete', 'BukuBankController@destroy')->name('bukuBank.delete');
+    Route::get('/bukuBank', 'BukuBankController@bukuBank')->name('bukuBank.view');
+    Route::post('/bukuBank', 'BukuBankController@bukuBankTable');
+    Route::post('/bukuBank/create', 'BukuBankController@store')->name('bukuBank.create');
+    Route::put('/bukuBank/edit', 'BukuBankController@update')->name('bukuBank.edit');
+    Route::delete('/bukuBank/delete', 'BukuBankController@delete')->name('bukuBank.delete');
+});

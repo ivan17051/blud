@@ -8,6 +8,8 @@ class BukuBank extends Model
 {
     protected $table = 'bukubank';
 
+    public $timestamps = false;
+
     protected $fillable = [
         "noref",
         "tanggalref",

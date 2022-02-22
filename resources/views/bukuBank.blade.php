@@ -6,7 +6,7 @@ active
 
 @section('content')
 <!-- Modal Tambah Saldo -->
-<div class="modal modal-danger fade" id="tambah" tabindex="-1" role="dialog" aria-labelledby="Tambah Saldo" aria-hidden="true">
+<div class="modal modal-danger fade" id="tambah" tabindex="-1" role="dialog" aria-labelledby="Tambah Buku Bank" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -24,7 +24,7 @@ active
                 </div>
                 <div class="form-group">
                     <label><b>Uraian Transaksi</b></label>
-                    <textarea id="uraian" name="uraian" class="form-control" placeholder="Uraian Transaksi" maxlength="99" rows="3" style="resize: none;"></textarea>
+                    <textarea id="uraian" name="uraian" class="form-control" placeholder="Uraian Transaksi" maxlength="99" rows="3" style="resize: none;" required></textarea>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
@@ -43,13 +43,13 @@ active
                 <label><b>Nominal</b></label>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <select class="custom-select" id="mutasi" name="mutasi" style="border-radius:0.35rem 0 0 0.35rem;">
+                        <select class="custom-select" id="jenis" name="jenis" style="border-radius:0.35rem 0 0 0.35rem;" required>
                             <option value="" disabled selected>Mutasi</option>
                             <option value="1">Debet</option>
                             <option value="0">Kredit</option>
                         </select>
                     </div>
-                    <input type="text" id="saldo" name="saldo" class="form-control" placeholder="Saldo" pattern="^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$" required>
+                    <input type="text" id="nominal" name="nominal" class="form-control" placeholder="Saldo" pattern="^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$" required>
                 </div>
                 
             </div>
@@ -61,6 +61,74 @@ active
         </div>
     </div>
 </div>
+
+<!-- Modal Sunting Saldo -->
+<div class="modal modal-danger fade" id="sunting" tabindex="-1" role="dialog" aria-labelledby="Tambah Saldo" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tambahLabel">Sunting Buku Bank</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{route('bukuBank.create')}}" method="POST">
+            @csrf
+            <div class="modal-body">
+                <div class="form-group">
+                    <label><b>Tanggal</b></label>
+                    <input type="date" id="tanggal" name="tanggal" class="form-control" placeholder="Tanggal" required>
+                </div>
+                <div class="form-group">
+                    <label><b>Uraian Transaksi</b></label>
+                    <textarea id="uraian" name="uraian" class="form-control" placeholder="Uraian Transaksi" maxlength="99" rows="3" style="resize: none;" required></textarea>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>No. Referensi</b></label>
+                            <input type="text" id="noref" name="noref" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>Tanggal Referensi</b></label>
+                            <input type="date" id="tanggalref" name="tanggalref" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <label><b>Nominal</b></label>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <select class="custom-select" id="jenis" name="jenis" style="border-radius:0.35rem 0 0 0.35rem;" required>
+                            <option value="" disabled selected>Mutasi</option>
+                            <option value="1">Debet</option>
+                            <option value="0">Kredit</option>
+                        </select>
+                    </div>
+                    <input type="text" id="nominal" name="nominal" class="form-control" placeholder="Saldo" pattern="^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$" required>
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Form Delete -->
+<form hidden action="{{route('bukuBank.delete')}}" method="POST" id="delete">
+    @csrf
+    @method('delete')
+    <input type="hidden" name="id">
+    <input type="hidden" name="pkm" value="{{$pkm}}">
+    <input type="hidden" name="tanggal" value="{{$bulan}}">
+</form>
+
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -188,15 +256,17 @@ active
                 <table class="table table-bordered" id="saldotable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th rowspan="2" data-priority="1" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem; width:110px;">Tanggal</th>
-                            <th rowspan="2" data-priority="3" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem;">Uraian Transaksi</th>
-                            <th rowspan="2" data-priority="1" width="1" class="disabled-sorting" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem;">Referensi</th>
-                            <th colspan="2" data-priority="3" class="text-center" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem;">Mutasi</th>
-                            <th rowspan="2" data-priority="1" class="text-right disabled-sorting" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem;">Saldo</th>
+                            <th rowspan="2" hidden>ID</th>
+                            <th rowspan="2" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem; width:110px;">Tanggal</th>
+                            <th rowspan="2" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem;">Uraian Transaksi</th>
+                            <th rowspan="2" width="1" class="disabled-sorting" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem;">Referensi</th>
+                            <th colspan="2" class="text-center" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem;">Mutasi</th>
+                            <th rowspan="2" class="text-right disabled-sorting" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem;">Saldo</th>
+                            <th rowspan="2" class="text-right disabled-sorting" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem;">Aksi</th>
                         </tr>
                         <tr>
-                            <th data-priority="2" class="text-center" style="padding:5px 0.75rem 5px 0.75rem;">Debit</th>
-                            <th data-priority="2" class="text-center" style="padding:5px 0.75rem 5px 0.75rem;">Kredit</th>
+                            <th class="text-center" style="padding:5px 0.75rem 5px 0.75rem;">Debit</th>
+                            <th class="text-center" style="padding:5px 0.75rem 5px 0.75rem;">Kredit</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -206,13 +276,16 @@ active
                     $saldoAwal = 0;
                     $jumlah = $saldoAwal;
                     @endphp
+                    <th hidden></th>
                     <th></th>
                     <th colspan="4">Saldo Awal</th>
                     <th class="text-right">{{number_format($saldoAwal,2,',','.')}} </th>
+                    <th></th>
                 </tr>
                 
                 @foreach($bukuBank as $unit)
                 <tr>
+                    <td hidden>{{$unit->id}}</td>
                     <td>{{date_format(date_create($unit->tanggal), "d-m-Y")}}</td>
                     <td>{{$unit->uraian}}</td>
                     <td>{{$unit->noref}}</td>
@@ -233,16 +306,23 @@ active
                         @else - 
                         @endif</td>
                     <td class="text-right">
-                        {{number_format($jumlah,2,',','.')}}</td>
+                        {{number_format($jumlah,2,',','.')}}
+                    </td>
+                    <td class="text-center">
+                        <button onclick="edit(this)" class="btn btn-sm btn-outline-warning border-0" style="width:2rem;" title="Sunting Transaksi" data-toggle="modal" data-target="#sunting"><i class="fas fa-edit fa-sm"></i></button>
+                        <button onclick="hapus({{$unit->id}})" class="btn btn-sm btn-outline-danger border-0" style="width:2rem;" title="Hapus Transaksi"><i class="fas fa-trash fa-sm"></i></button>
+                    </td>
                 </tr>
                 @endforeach
                 
                 </tbody>
                 <tfoot>
                     <tr class="bg-dark text-white">
+                        <th hidden></th>
                         <th></th>
                         <th colspan="4">Saldo Akhir</th>
                         <th class="text-right">{{number_format($jumlah,2,',','.')}}</th>
+                        <th></th>
                     </tr>
                 </tfoot>
                 </table>
@@ -254,108 +334,55 @@ active
 <!-- /.container-fluid -->
 @endsection
 @section('script')
-@include('layouts.alert')
-<script type="text/javascript">
-var oIdunitkerja;
-var oUnitkerja;
-
+    @include('layouts.alert')
+<script>
 document.getElementById("filterSelect").value = "{{$pkm}}";
-$(document).ready(function(){
-    //tambahkan swal pada set isall
-    $('#isall').change(function(e){
-        var self=this;
-        if(self.checked){
-            Swal.fire({
-                customClass: {
-                    confirmButton: 'btn btn-danger mr-2',
-                    cancelButton: 'btn btn-dark'
-                },
-                buttonsStyling: false,
-                icon: 'warning',
-                iconColor: '#f4b619',
-                title: 'Yakin appli ke semua PKM?',
-                showCancelButton: true,
-                confirmButtonText: 'Ya',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed === false) {
-                    self.checked=false;
-                }
-            })
+
+function hapus(id){
+    $('#delete').find('input[name=id]').val(id);
+    
+    Swal.fire({
+        customClass: {
+            confirmButton: 'btn btn-primary mr-2',
+            cancelButton: 'btn btn-dark'
+        },
+        buttonsStyling: false,
+        icon: 'warning',
+        iconColor: '#f4b619',
+        title: 'Yakin ingin menghapus?',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $('#delete').submit();
         }
+    })
+}
+
+function edit(self){
+    var $modal=$('#sunting');
+    var tr = $(self).closest('tr');
+    var data=oTable.row(tr).data().reduce(function(res,val,i){
+        res[oTable.cols[i]]=val;
+        return res;
+    },{});
+    console.log(data);
+    $modal.find('input[name=id]').val(data['ID']);
+    $modal.find('select[name=noref]').val(data['Referensi']);
+    $modal.find('input[name=tanggalref]').val(data['Tanggal Ref']);
+    $modal.find('select[name=tanggal]').val(data['Tanggal']);
+    $modal.find('select[name=jenis]').val(data['Jenis']);
+    $modal.find('input[name=uraian]').val(data['Uraian Transaksi']);
+    $modal.find('input[name=nominal]').val(data['Nominal']);
+}
+
+$(function () {
+    $('#datetimepicker1').datetimepicker({
+        viewMode: 'years',
+        format: 'MM/YYYY',
     });
 });
-
-function show(self){
-    var tr = $(self).closest('tr');
-    var row = oTable.api().row( tr );
-    var data=oTable.fnGetData(tr);
-    var btn=tr.find('td .dt-control');
-
-    if ( row.child.isShown() ) {
-        // This row is already open - close it
-        row.child.hide();
-        btn.removeClass('btn-outline-danger');
-        btn.addClass('btn-outline-success');
-        btn.html('<i class="fas fa-plus fa-md"></i>')
-    }
-    else {
-        row.child( format(data)).show();
-        btn.addClass('btn-outline-danger');
-        btn.removeClass('btn-outline-success');
-        btn.html('<i class="fas fa-minus fa-md"></i>')
-    }
-}
-
-function format(data){
-    var detailstr = data.saldo.reduce(function(e,i){
-        return e+='<tr><td>'+moment(i['tanggal']).format('MMM YYYY')+'</td><td>'+i['saldo']+'</td><td>'+(i['tipe']?i['tipe']:'-')+'</td></tr>';
-    },'');
-
-    if(detailstr===''){
-        detailstr='<tr><td colspan="3" class="text-center">kosong</td></tr>'
-    }
-
-    var str='<tr><td></td>'+
-    '<td colspan="6">'+
-    `<table class="table">
-        <thead>
-            <tr><th><b>Bulan</b></th><th><b>Nominal</b></th><th><b>Tipe</b></th></tr>
-        </thead>
-        <tbody>
-        ${detailstr}
-        </tbody>
-    </table>`
-    '</td></tr>';
-            
-    var $view=$(str);
-
-    return $view;
-}
-
-function tambah(self){
-    var $modal=$('#tambah');
-    var tr = $(self).closest('tr');
-    var row = oTable.api().row( tr );
-    var data=oTable.fnGetData(tr);
-    console.log(data);
-    // $modal.find('input[name=id]').val(data['ID']);
-    let saldolen = data.saldo.length;
-    $modal.find('input[name=saldo]').val(data['anggaran']);
-    $modal.find('input[name=idrekening]').val(data['id']);
-    $modal.find('input[name=koderekening]').val(data['kode']).prop('readonly', true);
-    $modal.find('input[name=namarekening]').val(data['nama']).prop('readonly', true);
-    $modal.find('input[name=idunitkerja]').val(oIdunitkerja);
-    $modal.find('#tambahLabel').html('Ubah Saldo <b>'+oUnitkerja+'</b>')
-    $modal.modal('show');
-}
-
-    $(function () {
-        $('#datetimepicker1').datetimepicker({
-            viewMode: 'years',
-            format: 'MM/YYYY',
-        });
-    });
 
 </script>
 @endsection

@@ -81,6 +81,12 @@ $user = Auth::user()->role;
             <i class="fas fa-fw fa-book"></i>
             <span>BKU</span></a>
     </li>
+    <!-- Nav Item - LPJ -->
+    <li class="nav-item @yield('lpjStatus')">
+        <a class="nav-link" href="{{url('/lpj')}}">
+            <i class="fas fa-fw fa-file-alt"></i>
+            <span>LPJ</span></a>
+    </li>
 
     <!-- <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaporan"
@@ -101,6 +107,17 @@ $user = Auth::user()->role;
         </div>
     </li> -->
 
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- Nav Item - LPJ -->
+    <li class="nav-item @yield('bukuBankStatus')">
+        <a class="nav-link" href="{{url('/bukuBank')}}">
+            <i class="fas fa-fw fa-book"></i>
+            <span>Buku Bank</span></a>
+    </li>
+
+    
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 
