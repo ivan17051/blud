@@ -88,6 +88,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/spj', 'SPJController@deleteSPJ')->name('spj.delete');
 
     Route::get('/lpj', 'LPJController@lpj');
+    Route::post('/lpj/data', 'LPJController@data')->name('lpj.data');
+    Route::get('/lpj/getrelatedbku/{idlpj}', 'LPJController@getRelatedBKU')->name('lpj.getrelatedbku');
 
     Route::get('/laporan/fungsional','LaporanFungsional@index')->name('fungsional');
     Route::get('/laporan/fungsional/excel','LaporanFungsional@excel')->name('fungsional.excel');

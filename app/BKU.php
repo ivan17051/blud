@@ -37,6 +37,7 @@ class BKU extends Model
 	    "isactive",
         "idc",
         "idm",
+        "lpjparent",
     ];
 
     public function transaksi(){
