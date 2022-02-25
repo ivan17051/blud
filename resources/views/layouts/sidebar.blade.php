@@ -123,7 +123,7 @@ $user = Auth::user()->role;
 
     <!-- SAMPLE DROPDOWN MENU -->
     <li class="nav-item">
-        <div class="dropdown">
+        <div class="dropdown auto-hover">
             <a class="nav-link dropdown-toggle" href="#" id="dropdownLaporan" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-fw fa-book"></i>
                 <span>Laporan</span>
@@ -131,7 +131,7 @@ $user = Auth::user()->role;
             <div class="dropdown-menu" aria-labelledby="dropdownLaporan">
                 <!-- <a class="dropdown-item" href="#">per Rekening</a> -->
                 <!-- <a class="dropdown-item" href="#">Another action</a> -->
-                <div class="dropdown c-dropdown-right"  >
+                <div class="dropdown auto-hover c-dropdown-right"  >
                     <a class="dropdown-item dropdown-toggle" href="#" id="dropdownLaporanPertanggungjawaban" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pertanggungjawaban</a>
                     <div class="dropdown-menu" aria-labelledby="dropdownLaporanPertanggungjawaban">
                         <a class="dropdown-item" href="#" onclick="my.openModalView('{{route('fungsional')}}', 'laporanFungsional')" >Fungsional</a>
