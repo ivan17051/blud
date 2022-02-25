@@ -15,8 +15,9 @@ active
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{route('bukuBank.create')}}" method="POST">
+            <form action="{{route('bukuBank.update')}}" method="POST">
             @csrf
+            @method('PUT')
             <div class="modal-body">
                 <div class="form-group">
                     <label><b>Tanggal</b></label>
@@ -72,9 +73,11 @@ active
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{route('bukuBank.create')}}" method="POST">
+            <form action="{{route('bukuBank.update')}}" method="POST">
             @csrf
+            @method('PUT')
             <div class="modal-body">
+                <input type="hidden" name="id">
                 <div class="form-group">
                     <label><b>Tanggal</b></label>
                     <input type="date" id="tanggal" name="tanggal" class="form-control" placeholder="Tanggal" required>
@@ -253,16 +256,15 @@ active
             </div>
 
             <div class="table-responsive">
-                <table class="table table-bordered" id="saldotable" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="bukuBankTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th rowspan="2" hidden>ID</th>
-                            <th rowspan="2" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem; width:110px;">Tanggal</th>
-                            <th rowspan="2" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem;">Uraian Transaksi</th>
-                            <th rowspan="2" width="1" class="disabled-sorting" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem;">Referensi</th>
-                            <th colspan="2" class="text-center" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem;">Mutasi</th>
-                            <th rowspan="2" class="text-right disabled-sorting" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem;">Saldo</th>
-                            <th rowspan="2" class="text-right disabled-sorting" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem;">Aksi</th>
+                            <th rowspan="2" class="ambil" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem; width:110px;">Tanggal</th>
+                            <th rowspan="2" class="ambil" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem;">Uraian Transaksi</th>
+                            <th rowspan="2" width="1" class="disabled-sorting ambil" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem;">Referensi</th>
+                            <th colspan="2" class="text-center ambil" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem;">Mutasi</th>
+                            <th rowspan="2" class="text-right disabled-sorting ambil" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem;">Saldo</th>
+                            <th rowspan="2" class="text-right disabled-sorting ambil" style="vertical-align:middle; padding:5px 0.75rem 5px 0.75rem;">Aksi</th>
                         </tr>
                         <tr>
                             <th class="text-center" style="padding:5px 0.75rem 5px 0.75rem;">Debit</th>
@@ -286,7 +288,9 @@ active
                 @foreach($bukuBank as $unit)
                 <tr>
                     <td hidden>{{$unit->id}}</td>
-                    <td>{{date_format(date_create($unit->tanggal), "d-m-Y")}}</td>
+                    <td hidden>{{$unit->tanggal}}</td>
+                    <td hidden>{{$unit->tanggalref}}</td>
+                    <td>{{date_format(date_create($unit->tanggal), 'd-m-Y')}}</td>
                     <td>{{$unit->uraian}}</td>
                     <td>{{$unit->noref}}</td>
                     <td class="text-right">
@@ -363,18 +367,30 @@ function hapus(id){
 function edit(self){
     var $modal=$('#sunting');
     var tr = $(self).closest('tr');
-    var data=oTable.row(tr).data().reduce(function(res,val,i){
-        res[oTable.cols[i]]=val;
-        return res;
-    },{});
-    console.log(data);
-    $modal.find('input[name=id]').val(data['ID']);
-    $modal.find('select[name=noref]').val(data['Referensi']);
-    $modal.find('input[name=tanggalref]').val(data['Tanggal Ref']);
-    $modal.find('select[name=tanggal]').val(data['Tanggal']);
-    $modal.find('select[name=jenis]').val(data['Jenis']);
-    $modal.find('input[name=uraian]').val(data['Uraian Transaksi']);
-    $modal.find('input[name=nominal]').val(data['Nominal']);
+    var id=tr.find("td:eq(0)").text().trim(); 
+    var tanggal=tr.find("td:eq(1)").text().trim(); 
+    var tanggalref=tr.find("td:eq(2)").text().trim(); 
+    var uraian=tr.find("td:eq(4)").text().trim();
+    var noref=tr.find("td:eq(5)").text().trim();
+    var debit=tr.find("td:eq(6)").text().trim().replace(/,/g,''); 
+    var kredit=tr.find("td:eq(7)").text().trim().replace(/,/g,'');
+    
+    if(debit=='-'){
+        var jenis = 0;
+        var nominal = kredit;
+    }
+    else if(kredit=='-'){
+        var jenis = 1;
+        var nominal = debit;
+    }
+    
+    $modal.find('input[name=id]').val(id);
+    $modal.find('input[name=noref]').val(noref);
+    $modal.find('input[name=tanggalref]').val(tanggalref);
+    $modal.find('input[name=tanggal]').val(tanggal);
+    $modal.find('select[name=jenis]').val(jenis).change();
+    $modal.find('textarea[name=uraian]').val(uraian);
+    $modal.find('input[name=nominal]').val(nominal);
 }
 
 $(function () {

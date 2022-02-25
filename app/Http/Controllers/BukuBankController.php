@@ -40,8 +40,13 @@ class BukuBankController extends Controller
         return view('bukuBank', ['bukuBank' => $bukuBank, 'bulan'=>$request->bulan, 'pkm'=>$request->PKM]);
     }
 
-    public function store(Request $request){
-        $data = $request->validate([
+    public function storeUpdateBukuBank(Request $request){
+        
+        $user = Auth::user();
+        
+        $input = array_map('trim', $request->all());
+        $validator = Validator::make($input, [
+            'id' => 'nullable|exists:bukubank,id',
             "noref" => "required",
             "tanggalref" => "required",
             "tanggal" => "required",
@@ -49,17 +54,27 @@ class BukuBankController extends Controller
             "uraian" => "required",
             "nominal" => "required",
         ]);
-        try {
-            $bukuBank = new BukuBank($data);
-            $bukuBank->idunitkerja = Auth::user()->idunitkerja;
-            $bukuBank->idc = Auth::id();
-            $bukuBank->idm = Auth::id();
-            
-            $bukuBank->save();
-        }catch (QueryException $exception) {
-            return redirect(url('/bukuBank'))->with('error', $exception->getMessage());
+        if ($validator->fails()) return back()->with('error','Gagal menyimpan');
+        
+        $input = $validator->valid();
+        if(isset($input['id'])){
+            $model = BukuBank::firstOrNew([
+                'id' => $input['id']
+            ]);
+            $model->fill([
+                'idm'=>$user->id
+            ]);
+        }else{
+            $model = new BukuBank();
+            $model->fill([
+                'idunitkerja'=>$user->idunitkerja,
+                'idc'=>$user->id,
+                'idm'=>$user->id
+            ]);
         }
-        return redirect(url('/bukuBank'))->with('success','Data Berhasil Ditambahkan');
+        $model->fill($input);
+        $model->save();
+        return back()->with('success','Berhasil menyimpan');
     }
 
     public function delete(Request $request){

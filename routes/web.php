@@ -96,7 +96,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/bukuBank', 'BukuBankController@bukuBank')->name('bukuBank.view');
     Route::post('/bukuBank', 'BukuBankController@bukuBankTable');
-    Route::post('/bukuBank/create', 'BukuBankController@store')->name('bukuBank.create');
-    Route::put('/bukuBank/edit', 'BukuBankController@update')->name('bukuBank.edit');
+    Route::put('/bukuBank/create', 'BukuBankController@storeUpdateBukuBank')->name('bukuBank.update');
     Route::delete('/bukuBank/delete', 'BukuBankController@delete')->name('bukuBank.delete');
 });
