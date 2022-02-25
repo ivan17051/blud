@@ -164,7 +164,7 @@ td.day.disabled{
     transform: scale(1.5);
 }
 
-.dropdown-menu{
+.auto-hover .dropdown-menu{
     position: absolute;
     top: 98%;
     left: 5px;
