@@ -15,6 +15,10 @@ class LPJ extends Model
 
     public $timestamps = false;
 
+    protected $casts = [
+        'tanggal' => 'date:Y-m-d',
+   ];
+
     protected $fillable = [
         "nomor",
         "tanggal",

@@ -43,9 +43,11 @@ class LPJController extends Controller
         $datatable = Datatables::of($data);
         $datatable->addColumn('action', function ($t) { 
             return '<div class="text-nowrap">'.
-                    '<button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" title="info"><i class="fas fa-list fa-sm"></i></button>&nbsp'.
+                    '<button onclick="openDetilLPJ(this, \'/'.$t->id.'\', \'#detil\')" class="btn btn-sm btn-outline-info border-0" title="info"><i class="fas fa-list fa-sm"></i></button>&nbsp'.
                     '<button onclick="show(this)" class="btn btn-sm btn-outline-danger border-0" title="info"><i class="fas fa-lock fa-sm"></i></button>'.
                     '</div>';
+        })->addColumn('tipe_raw', function ($t) { 
+            return $t->tipe;
         })->editColumn('tipe', function ($t) { 
             switch ($t->tipe) {
                 case 'TU':
@@ -65,7 +67,11 @@ class LPJController extends Controller
     }
 
     public function getRelatedBKU($idlpj){
-        $data=BKU::where('isactive',1)->where('lpjparent', $idlpj)
+        $lpj = LPJ::where('id',$idlpj)->select('id','tanggal','tipe')->first();
+        $data=BKU::where('isactive',1)
+            ->whereMonth('tanggalref',$lpj->tanggal->month)
+            ->whereYear('tanggalref',$lpj->tanggal->year)
+            ->where('tipe',$lpj->tipe)
             ->select('nomor','tanggalref','idtransaksi','idrekening','uraian','nominal')
             ->with(['transaksi:id,kodetransaksi,isspj', 'rekening:id,kode,nama']);
         $datatable = Datatables::of($data);

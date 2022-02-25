@@ -6,8 +6,8 @@ active
 
 @section('content')
 
-<!-- Modal Tambah SPJ -->
-<div class="modal modal-danger fade" id="tambah" tabindex="-1" role="dialog" aria-labelledby="Tambah SPJ" aria-hidden="true">
+<!-- Modal Tambah LPJ -->
+<div class="modal modal-danger fade" id="tambah" tabindex="-1" role="dialog" aria-labelledby="Tambah LPJ" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -62,31 +62,8 @@ active
                 
                 <table class="table table-bordered">
                 <thead>
-                  <tr>
-                    <th scope="col">ID BKU</th>
-                    <th scope="col">Tanggal</th>
-                    <th scope="col">eSPJ</th>
-                    <th scope="col">Handle</th>
-                  </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td colspan="2">Larry the Bird</td>
-                    <td>@twitter</td>
-                  </tr>
                 </tbody>
               </table>
             </div>
@@ -99,12 +76,17 @@ active
     </div>
 </div>
 
-<!-- Modal Detil SPJ -->
-<div class="modal modal-danger fade" id="detil" tabindex="-1" role="dialog" aria-labelledby="Tambah SPJ" aria-hidden="true">
+<!-- Modal Detil LPJ -->
+<style>
+#table-detil-2{
+    width: 100%!important;
+}
+</style>
+<div class="modal modal-danger fade" id="detil" tabindex="-1" role="dialog" aria-labelledby="Detil LPJ" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deilLabel">Detil LPJ-UP</h5>
+                <h5 class="modal-title" >Detil LPJ-UP</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
@@ -117,13 +99,13 @@ active
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><b>Tanggal Pengeluaran</b></label>
-                            <input type="date" id="tanggalref" name="tanggalref" class="form-control" onchange="fillBulanLPJ(this, '#detil')" required>
+                            <input type="date" name="tanggalref" class="form-control" onchange="fillBulanLPJ(this, '#detil')" required>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><b>Bulan akan di-SPJ kan</b></label>
-                            <select class="form-control" id="bulanlpj" name="bulanlpj" required disabled>
+                            <select class="form-control" name="bulanlpj" required disabled>
                               <option value="" selected disabled>--Pilih--</option>
                               <option value="1">Januari</option>
                               <option value="2">Februari</option>
@@ -140,25 +122,25 @@ active
                             </select>
                         </div>
                     </div>
-                  <div class="col-md-6">
-                    <div class="form-group">
-                        <label><b>Subkegiatan</b></label>
-                        <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" data-size="5" name="rekening" required>
-                          <option value="" selected disabled>--Pilih--</option>
-                          @foreach($subkegiatan as $unit)
-                          <option value="{{$unit->id}}">{{$unit->kode}} - {{$unit->nama}}</option>
-                          @endforeach
-                        </select>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label><b>Subkegiatan</b></label>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" data-size="5" name="rekening" required>
+                            <option value="" selected disabled>--Pilih--</option>
+                            @foreach($subkegiatan as $unit)
+                            <option value="{{$unit->id}}">{{$unit->kode}} - {{$unit->nama}}</option>
+                            @endforeach
+                            </select>
+                        </div>
                     </div>
-                  </div>
                 </div>
                 
-                <table class="table table-bordered">
-                <thead>
-                </thead>
-                <tbody>
-                </tbody>
-              </table>
+                <table class="table table-bordered" id="table-detil-2">
+                    <thead>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
@@ -330,30 +312,43 @@ const fillBulanLPJ = async function(e, modal){
     $modal.find('select[name=bulanlpj]').val(month+1).change();
 }
 
-function openDetilLPJ(urlparams, idtable){
-    if ($.fn.dataTable.isDataTable(idtable) ) {
-        $(idtable).DataTable().clear();
-        $(idtable).DataTable().destroy();
-        $(idtable).empty();
+function renderKodeTransaksi(e,d,row){
+    if(row['transaksi']){
+        return '<button type="button" class="btn btn-sm btn-light text-nowrap border-1-gray-1 rounded-pill" ><i class="o-f-edelivery" ></i> '+row['kodetransaksi']+'</button>';
+    }
+    return '-';
+}
+
+function openDetilLPJ(self, urlparams, idmodal, isReadOnly=true){
+    var tr = $(self).closest('tr');
+    var data = oTable.api().row(tr).data();
+
+    $table = $(idmodal).find('table');
+    if ($.fn.dataTable.isDataTable($table) ) {
+        $table.DataTable().clear();
+        $table.DataTable().destroy();
+        $table.empty();
     }
     
-    $(idtable).dataTable({
+    $table.dataTable({
         processing: true,
-        order: [[ 1, "desc" ]],
-        select: {
-            style:    'multi',
-            selector: 'td:first-child input'
-        },
-        ajax: {type: "POST", url: '{{route("lpj.getrelatedbku")}}'+urlparams, data:{'_token':@json(csrf_token())}},
+        ajax: {type: "GET", url: '{{route("lpj.getrelatedbku", ["idlpj"=>''])}}'+urlparams, data:{'_token':@json(csrf_token())}},
         columns: [
             {title:"Nomor", data: "nomor"},
-            {title:"tanggal", data: "tanggalref"},
-            {title:"e-SPJ", data: "transaksi.kodetransaksi"},
+            {title:"tanggal", data: "tanggalref", render: function(e,d,row){return moment(row['tanggalref']).format('L');}},
+            {title:"e-SPJ", data: "transaksi", render: renderKodeTransaksi },
             {title:"Rekening", data: "rekening.kode"},
             {title:"Uraian", data: "uraian"},
             {title:"Nominal", data: "nominal"}
         ],
-        initComplete: onComplete,
+        initComplete: function(){
+            let $modal = $(idmodal);
+            $modal.find('.modal-title').text('Detil LPJ-'+data['tipe_raw'])
+            $modal.modal('show');
+            if(isReadOnly){
+                $modal.find('[name=tanggalref]').val(data['tanggal']).change().attr('readonly',true);
+            }
+        },
     });
 }
 
