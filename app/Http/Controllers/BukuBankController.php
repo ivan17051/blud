@@ -8,10 +8,8 @@ use Carbon\Carbon;
 use Validator;
 use Datatables;
 use App\UnitKerja;
-use App\Rekanan;
 use App\BukuBank;
-use App\SubKegiatan;
-use App\Rekening;
+use App\SaldoBukuBank;
 use DB;
 
 class BukuBankController extends Controller
@@ -20,24 +18,40 @@ class BukuBankController extends Controller
     public function bukuBank(){
         $bulan = Carbon::now();
         $user = Auth::user();
+        
         if($user->role=='PKM'){
             $pkm = UnitKerja::where('id', $user->idunitkerja)->first();
             $bukuBank = BukuBank::where('isactive', 1)->where('idunitkerja', $pkm->id)
-                ->whereYear('tanggal', $bulan->year)->whereMonth('tanggal', $bulan->month)->get();
+                ->whereYear('tanggal', $bulan->year)->whereMonth('tanggal', $bulan->month)->get()
+                ->sortBy('tanggal');
         }
         else{
-            $pkm = 0;
+            $pkm = (object) array('id'=>0);
             $bukuBank = [];
         }
-        return view('bukuBank', ['bukuBank' => $bukuBank, 'bulan' => $bulan->format('m/Y'), 'pkm' => $pkm->id]);
+
+        $saldo = SaldoBukuBank::where('idunitkerja', $user->idunitkerja)
+            ->whereMonth('tanggal', $bulan->month-1)->first();
+        if(!$saldo){
+            $saldo=(object) array('nominal'=>0, 'jenis'=>1);
+        }
+        // dd($saldo);
+        return view('bukuBank', ['bukuBank' => $bukuBank, 'bulan' => $bulan->format('m/Y'), 'pkm' => $pkm->id, 'saldoAwal' => $saldo]);
     }
 
     public function bukuBankTable(Request $request){
+        $user = Auth::user();
         $bulan = Carbon::createFromFormat('m/Y', $request->bulan);
         $bukuBank = BukuBank::where('isactive', 1)->where('idunitkerja', $request->PKM)
-                ->whereYear('tanggal', $bulan->year)->whereMonth('tanggal', $bulan->month)->get();
-        // dd($request);
-        return view('bukuBank', ['bukuBank' => $bukuBank, 'bulan'=>$request->bulan, 'pkm'=>$request->PKM]);
+                ->whereYear('tanggal', $bulan->year)->whereMonth('tanggal', $bulan->month)->get()
+                ->sortBy('tanggal');
+        $saldo = SaldoBukuBank::where('idunitkerja', $request->PKM)
+                ->whereMonth('tanggal', $bulan->month-1)->first();
+        if(!$saldo){
+            $saldo=(object) array('nominal'=>0, 'jenis'=>1);
+        }
+        // dd($saldo);
+        return view('bukuBank', ['bukuBank' => $bukuBank, 'bulan'=>$request->bulan, 'pkm'=>$request->PKM, 'saldoAwal'=>$saldo]);
     }
 
     public function storeUpdateBukuBank(Request $request){

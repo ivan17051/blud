@@ -5,7 +5,7 @@ active
 @endsection
 
 @section('content')
-<!-- Modal Tambah Saldo -->
+<!-- Modal Tambah BukuBank -->
 <div class="modal modal-danger fade" id="tambah" tabindex="-1" role="dialog" aria-labelledby="Tambah Buku Bank" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -63,7 +63,7 @@ active
     </div>
 </div>
 
-<!-- Modal Sunting Saldo -->
+<!-- Modal Sunting BukuBank -->
 <div class="modal modal-danger fade" id="sunting" tabindex="-1" role="dialog" aria-labelledby="Tambah Saldo" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -248,7 +248,8 @@ active
                     </div>
                     <div class="col" style="padding-left:0;">
                         <div class="mb-2" style="max-width: 10rem;">
-                            <button type="submit" class="btn btn-primary">Proses</button>
+                            <button type="submit" class="btn btn-info">Proses</button>
+                            <button class="btn btn-success" formaction="/">Cetak</button>
                         </div>
                     </div>
                 </div>
@@ -275,14 +276,17 @@ active
                 
                 <tr class="bg-dark text-white">
                     @php
-                    $saldoAwal = 0;
-                    $jumlah = $saldoAwal;
+                    $jumlah = $saldoAwal->nominal;
                     @endphp
                     <th hidden></th>
                     <th></th>
                     <th colspan="4">Saldo Awal</th>
-                    <th class="text-right">{{number_format($saldoAwal,2,',','.')}} </th>
-                    <th></th>
+                    <th class="text-right">{{number_format($saldoAwal->nominal,2,',','.')}} </th>
+                    <th class="text-center">
+                        @if($saldoAwal->jenis==1)
+                        <button onclick="edit(this)" class="btn btn-sm btn-outline-warning border-0" style="width:2rem;" title="Sunting Transaksi" data-toggle="modal" data-target="#sunting"><i class="fas fa-edit fa-sm"></i></button>
+                        @endif
+                    </th>
                 </tr>
                 
                 @foreach($bukuBank as $unit)
