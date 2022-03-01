@@ -132,6 +132,40 @@ active
     <input type="hidden" name="tanggal" value="{{$bulan}}">
 </form>
 
+<!-- Form Update Saldo -->
+<div class="modal modal-danger fade" id="updateSaldo" tabindex="-1" role="dialog" aria-labelledby="Update Saldo" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tambahLabel">Sunting Saldo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{route('bukuBank.updateSaldo')}}" method="POST" id="updateSaldo">
+            @csrf
+            @method('PUT')
+            <div class="modal-body">
+                <input type="hidden" id=tanggal name="tanggal" value="{{$saldoAwal->tanggal}}">
+                <input type="hidden" id="idunitkerja" name="idunitkerja" class="form-control" value="{{$pkm}}" required>
+                
+                <label><b>Nominal</b></label>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">Rp</div>
+                    </div>
+                    <input type="text" id="nominal" name="nominal" class="form-control" placeholder="Saldo Awal" pattern="^(?=.+)(?:[1-9]\d*|0)(?:\.\d{0,2})?$" required>
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <!-- Begin Page Content -->
 <div class="container-fluid">
@@ -249,7 +283,7 @@ active
                     <div class="col" style="padding-left:0;">
                         <div class="mb-2" style="max-width: 10rem;">
                             <button type="submit" class="btn btn-info">Proses</button>
-                            <button class="btn btn-success" formaction="/">Cetak</button>
+                            <button class="btn btn-success" formaction="">Cetak</button>
                         </div>
                     </div>
                 </div>
@@ -284,7 +318,7 @@ active
                     <th class="text-right">{{number_format($saldoAwal->nominal,2,',','.')}} </th>
                     <th class="text-center">
                         @if($saldoAwal->jenis==1)
-                        <button onclick="edit(this)" class="btn btn-sm btn-outline-warning border-0" style="width:2rem;" title="Sunting Transaksi" data-toggle="modal" data-target="#sunting"><i class="fas fa-edit fa-sm"></i></button>
+                        <button onclick="updateSaldo(this)" class="btn btn-sm btn-outline-warning border-0" style="width:2rem;" title="Sunting Saldo" data-toggle="modal" data-target="#updateSaldo"><i class="fas fa-edit fa-sm"></i></button>
                         @endif
                     </th>
                 </tr>
@@ -397,6 +431,19 @@ function edit(self){
     $modal.find('input[name=nominal]').val(nominal);
 }
 
+function updateSaldo(self){
+    var $modal=$('#updateSaldo');
+    var jenis = 0;
+    
+    $modal.find('input[name=tanggal]').val('{{$saldoAwal->tanggal}}');
+    $modal.find('input[name=nominal]').val('{{$saldoAwal->nominal}}');
+}
+$(function () {
+    $('#datetimepicker').datetimepicker({
+        viewMode: 'years',
+        format: 'MM/YYYY',
+    });
+});
 $(function () {
     $('#datetimepicker1').datetimepicker({
         viewMode: 'years',

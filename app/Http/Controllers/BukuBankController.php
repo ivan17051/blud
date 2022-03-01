@@ -29,13 +29,19 @@ class BukuBankController extends Controller
             $pkm = (object) array('id'=>0);
             $bukuBank = [];
         }
-
-        $saldo = SaldoBukuBank::where('idunitkerja', $user->idunitkerja)
-            ->whereMonth('tanggal', $bulan->month-1)->first();
-        if(!$saldo){
-            $saldo=(object) array('nominal'=>0, 'jenis'=>1);
+        if($bulan->month == 1){
+            $saldo = SaldoBukuBank::where('idunitkerja', $user->idunitkerja)
+                ->whereYear('tanggal', $bulan->year-1)->whereMonth('tanggal', 12)->first();
         }
-        // dd($saldo);
+        else{
+            $saldo = SaldoBukuBank::where('idunitkerja', $user->idunitkerja)
+                ->whereYear('tanggal', $bulan->year)->whereMonth('tanggal', $bulan->month-1)->first();
+        }
+        if(!$saldo){
+            $saldo=(object) array('tanggal'=> $bulan->addMonth(-1),'nominal'=>0, 'jenis'=>1);
+            $bulan->addMonth(1);
+        }
+        
         return view('bukuBank', ['bukuBank' => $bukuBank, 'bulan' => $bulan->format('m/Y'), 'pkm' => $pkm->id, 'saldoAwal' => $saldo]);
     }
 
@@ -45,12 +51,19 @@ class BukuBankController extends Controller
         $bukuBank = BukuBank::where('isactive', 1)->where('idunitkerja', $request->PKM)
                 ->whereYear('tanggal', $bulan->year)->whereMonth('tanggal', $bulan->month)->get()
                 ->sortBy('tanggal');
-        $saldo = SaldoBukuBank::where('idunitkerja', $request->PKM)
-                ->whereMonth('tanggal', $bulan->month-1)->first();
-        if(!$saldo){
-            $saldo=(object) array('nominal'=>0, 'jenis'=>1);
+        if($bulan->month == 1){
+            $saldo = SaldoBukuBank::where('idunitkerja', $user->idunitkerja)
+                ->whereYear('tanggal', $bulan->year-1)->whereMonth('tanggal', 12)->first();
         }
-        // dd($saldo);
+        else{
+            $saldo = SaldoBukuBank::where('idunitkerja', $user->idunitkerja)
+            ->whereYear('tanggal', $bulan->year)->whereMonth('tanggal', $bulan->month-1)->first();
+        }
+        if(!$saldo){
+            $saldo=(object) array('tanggal'=> $bulan->addMonth(-1)->translatedFormat('Y-m-d'),'nominal'=>0, 'jenis'=>1);
+            $bulan->addMonth(1);
+        }
+        
         return view('bukuBank', ['bukuBank' => $bukuBank, 'bulan'=>$request->bulan, 'pkm'=>$request->PKM, 'saldoAwal'=>$saldo]);
     }
 
@@ -108,5 +121,46 @@ class BukuBankController extends Controller
         } catch (\Throwable $th) {
             return back()->with('error','Gagal menghapus');
         }
+    }
+
+    public function storeUpdateSaldo(Request $request){
+        $user = Auth::user();
+        $input = array_map('trim', $request->all());
+        $validator = Validator::make($input, [
+            'idunitkerja' => 'required|exists:munitkerja,id',
+            "tanggal" => "required",
+            "nominal" => "required",
+        ]);
+        if ($validator->fails()) return back()->with('error','Gagal menyimpan');
+        $input = $validator->valid();
+        $tanggal = Carbon::create($input['tanggal']);
+        // dd($input, $tanggal);
+        if($tanggal->month == 1){
+            $saldo = SaldoBukuBank::where('idunitkerja', $input['idunitkerja'])
+                ->whereYear('tanggal', $tanggal->year-1)->whereMonth('tanggal', 12)->first();
+        }
+        else{
+            $saldo = SaldoBukuBank::where('idunitkerja', $input['idunitkerja'])
+                ->whereYear('tanggal', $tanggal->year)->whereMonth('tanggal', $tanggal->month-1)->first();
+        }
+        // dd($tanggal);
+        if(isset($saldo)){
+            $saldo->fill([
+                'nominal'=>$input['nominal'],
+                'idm'=>$user->id
+            ]);
+        }else{
+            $saldo = new SaldoBukuBank();
+            $saldo->fill([
+                'idunitkerja'=>$input['idunitkerja'],
+                'tanggal'=>$tanggal->translatedFormat('Y-m-d'),
+                'nominal'=>$input['nominal'],
+                'idc'=>$user->id,
+                'idm'=>$user->id
+            ]);
+        }
+        // dd($saldo);
+        $saldo->save();
+        return back()->with('success','Berhasil menyimpan');
     }
 }

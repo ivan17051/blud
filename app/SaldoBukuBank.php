@@ -8,6 +8,8 @@ class SaldoBukuBank extends Model
 {
     protected $table = 'saldobb';
 
+    public $timestamps = false;
+
     protected $fillable = [
 	    "tanggal",
         "idunitkerja",
