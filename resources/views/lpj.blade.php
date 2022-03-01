@@ -16,7 +16,7 @@ active
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{route('spj.update')}}" method="POST">
+            <form action="{{route('lpj.update')}}" method="POST">
             @csrf
             @method('PUT')
             <div class="modal-body">
@@ -50,7 +50,7 @@ active
                   <div class="col-md-6">
                     <div class="form-group">
                         <label><b>Subkegiatan</b></label>
-                        <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" data-size="5" name="rekening" required>
+                        <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" data-size="5" name="idsubkegiatan" required>
                           <option value="" selected disabled>--Pilih--</option>
                           @foreach($subkegiatan as $unit)
                           <option value="{{$unit->id}}">{{$unit->kode}} - {{$unit->nama}}</option>
@@ -125,7 +125,7 @@ active
                     <div class="col-md-6">
                         <div class="form-group">
                             <label><b>Subkegiatan</b></label>
-                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" data-size="5" name="rekening" required>
+                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" data-size="5" name="idsubkegiatan" required>
                             <option value="" selected disabled>--Pilih--</option>
                             @foreach($subkegiatan as $unit)
                             <option value="{{$unit->id}}">{{$unit->kode}} - {{$unit->nama}}</option>
@@ -180,8 +180,8 @@ active
                         Tambah
                       </button>
                       <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#tambah" data-placement="top" title="Lihat Detail Siswa">LPJ-UP</a>
-                        <a class="dropdown-item" href="#">LPJ-TU</a>
+                        <a class="dropdown-item" href="#" onclick="handleOpenModalTambah('UP')" title="Add LPJ-UP">LPJ-UP</a>
+                        <a class="dropdown-item" href="#" onclick="handleOpenModalTambah('TU')" title="Add LPJ-TU">LPJ-TU</a>
                       </div>
                     </div>
                   </div>
@@ -319,20 +319,24 @@ function renderKodeTransaksi(e,d,row){
     return '-';
 }
 
-function openDetilLPJ(self, urlparams, idmodal, isReadOnly=true){
-    var tr = $(self).closest('tr');
-    var data = oTable.api().row(tr).data();
-
+function openDetilLPJ(self, urlparams, idmodal, route='getrelatedbku'){
     $table = $(idmodal).find('table');
     if ($.fn.dataTable.isDataTable($table) ) {
         $table.DataTable().clear();
         $table.DataTable().destroy();
         $table.empty();
     }
-    
+
+    if(route === 'getrelatedbku'){
+        url = '{{route("lpj.getrelatedbku", ["idlpj"=>''])}}';
+    }else{
+        url = '{{route("lpj.getbkubyperiod", ["idsubkegiatan"=> '', "tipe"=>'', "month"=>'', "year"=>''])}}';
+    }
+    console.log(url);
+
     $table.dataTable({
         processing: true,
-        ajax: {type: "GET", url: '{{route("lpj.getrelatedbku", ["idlpj"=>''])}}'+urlparams, data:{'_token':@json(csrf_token())}},
+        ajax: {type: "GET", url: url+urlparams, data:{'_token':@json(csrf_token())}},
         columns: [
             {title:"Nomor", data: "nomor"},
             {title:"tanggal", data: "tanggalref", render: function(e,d,row){return moment(row['tanggalref']).format('L');}},
@@ -343,13 +347,36 @@ function openDetilLPJ(self, urlparams, idmodal, isReadOnly=true){
         ],
         initComplete: function(){
             let $modal = $(idmodal);
-            $modal.find('.modal-title').text('Detil LPJ-'+data['tipe_raw'])
-            $modal.modal('show');
-            if(isReadOnly){
+            if(route === 'getrelatedbku'){
+                var tr = $(self).closest('tr');
+                var data = oTable.api().row(tr).data();
                 $modal.find('[name=tanggalref]').val(data['tanggal']).change().attr('readonly',true);
+                $modal.find('[name=idsubkegiatan]').val(data['idsubkegiatan']).change().attr('readonly',true);
+                $modal.find('.modal-title').text('Detil LPJ-'+data['tipe_raw']);
+                $modal.modal('show');
             }
+            
         },
     });
+}
+
+function handleChangeModalTambah(tipe){
+    let $modal = $('#tambah');
+    let tanggal = $modal.find('[name=tanggalref]').val();
+    let idsubkegiatan = $modal.find('[name=idsubkegiatan]').val();
+    console.log(tanggal, idsubkegiatan);
+    if( tanggal === '' || idsubkegiatan === null) return;
+    tanggal = moment(tanggal);
+    let urlparams = '/'+idsubkegiatan+'/'+tipe+'/'+tanggal.format('MM')+'/'+tanggal.format('y');
+    openDetilLPJ($modal[0], urlparams, '#tambah', route='getbkubyperiod');
+}
+
+function handleOpenModalTambah(tipe){
+    let $modal = $('#tambah');
+    $modal.find('[name=tanggalref]').on( "change", function() {handleChangeModalTambah(tipe);});
+    $modal.find('[name=idsubkegiatan]').on('change', function() {handleChangeModalTambah(tipe);});
+    $modal.find('.modal-title').text('Detil LPJ-'+tipe);
+    $modal.modal('show');
 }
 
 $(document).ready(function(){

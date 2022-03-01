@@ -30,4 +30,8 @@ class SubKegiatan extends Model
     public function getKegiatan(){
         return $this->belongsTo(Kegiatan::class, 'idkegiatan');
     }
+
+    public function unitkerja(){
+        return $this->belongsTo(UnitKerja::class, 'idunitkerja');
+    }
 }
