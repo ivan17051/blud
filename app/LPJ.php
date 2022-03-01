@@ -23,10 +23,14 @@ class LPJ extends Model
         "nomor",
         "tanggal",
         "tipe",
-        "idunitkerja",
+        "idsubkegiatan",
         "total",
 	    "isactive",
         "idc",
         "idm",
     ];
+
+    public function subkegiatan(){
+        return $this->belongsTo(SubKegiatan::class, 'idsubkegiatan');
+    }
 }

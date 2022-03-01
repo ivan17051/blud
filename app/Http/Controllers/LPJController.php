@@ -36,9 +36,11 @@ class LPJController extends Controller
     public function data(Request $request){
         $user = Auth::user();
         if(in_array($user->role,['admin','PIH','KEU'])){
-            $data = LPJ::where('isactive',1)->with(['unitkerja']);
+            $data = LPJ::where('isactive',1)->with(['subkegiatan:id,idunitkerja,nama','subkegiatan.unitkerja:id,nama']);
         }else{
-            $data = LPJ::where('isactive',1)->where('idunitkerja',$user->idunitkerja);
+            $data = LPJ::where('isactive',1)->with(['subkegiatan'=>function($q) use($user){
+                $q->select('id','idunitkerja','nama')->where('idunitkerja',$user->idunitkerja);
+            },'subkegiatan.unitkerja:id,nama']);
         }
         $datatable = Datatables::of($data);
         $datatable->addColumn('action', function ($t) { 
@@ -78,8 +80,29 @@ class LPJController extends Controller
         return $datatable->make(true);
     }
 
+    public function getBKUByPeriod($idsubkegiatan, $tipe, $month, $year){
+        $data=BKU::where('isactive',1)
+            ->whereMonth('tanggalref',$month)
+            ->whereYear('tanggalref',$year)
+            ->where('tipe',$tipe)
+            ->where('idsubkegiatan',$idsubkegiatan)
+            ->select('nomor','tanggalref','idtransaksi','idrekening','uraian','nominal')
+            ->with(['transaksi:id,kodetransaksi,isspj', 'rekening:id,kode,nama']);
+        $datatable = Datatables::of($data);
+        return $datatable->make(true);
+    }
+
     public function storeUpdateLPJ(Request $request){
+        $input = $request->all();
         
+
+        $validator = Validator::make($input, [
+            'tanggalref' => 'required',
+            'idsubkegiatan' => 'required_without:id|integer',
+        ]);
+        if ($validator->fails()) return back()->with('error','Gagal menyimpan');
+        
+        $input = $validator->valid();
     }
 
     public function deleteLPJ(Request $request){
