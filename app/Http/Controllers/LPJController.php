@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Validator;
+use Illuminate\Support\Facades\DB;
 use Datatables;
 use App\Pejabat;
 use App\UnitKerja;
@@ -46,7 +47,7 @@ class LPJController extends Controller
         $datatable->addColumn('action', function ($t) { 
             return '<div class="text-nowrap">'.
                     '<button onclick="openDetilLPJ(this, \'/'.$t->id.'\', \'#detil\')" class="btn btn-sm btn-outline-info border-0" title="info"><i class="fas fa-list fa-sm"></i></button>&nbsp'.
-                    '<button onclick="show(this)" class="btn btn-sm btn-outline-danger border-0" title="info"><i class="fas fa-lock fa-sm"></i></button>'.
+                    '<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" title="info"><i class="fas fa-trash fa-sm"></i></button>'.
                     '</div>';
         })->addColumn('tipe_raw', function ($t) { 
             return $t->tipe;
@@ -93,19 +94,91 @@ class LPJController extends Controller
     }
 
     public function storeUpdateLPJ(Request $request){
+        $user = Auth::user();
         $input = $request->all();
-        
-
         $validator = Validator::make($input, [
-            'tanggalref' => 'required',
+            'id' => 'nullable|exists:lpj,id',
+            'tanggal' => 'required_without:id|string',
             'idsubkegiatan' => 'required_without:id|integer',
+            'tipe' => 'required_without:id|string|in:UP,LS,TU,GU',
         ]);
         if ($validator->fails()) return back()->with('error','Gagal menyimpan');
         
         $input = $validator->valid();
+        //jika edit lpj old
+        if (isset($input['id'])) {
+            $lpj=LPJ::find($input['id']);
+            if($lpj == NULL){ return back()->with('error','LPJ tidak ditemukan.');}
+            $lpj->fill([
+                'idm' => $user->id,
+            ]);
+            $lpj->fill($input);
+            $date=$lpj->tanggal;
+        }
+        else{ //jika create lpj baru
+            $date=Carbon::parse($input['tanggal']);
+            $exist=LPJ::where('idsubkegiatan', $input['idsubkegiatan'])
+                ->where('isactive',1)
+                ->whereMonth('tanggal',$date->month)
+                ->whereYear('tanggal',$date->year)
+                ->where('tipe', $input['tipe'])->first();
+            if($exist) { return back()->with('error','LPJ periode tsb sudah ada.');}
+            $lpj = new LPJ();
+            $lpj->fill([
+                'idm' => $user->id,
+                'idc' => $user->id,
+            ]);
+            $lpj->fill($input);
+
+            //set nomor pada LPJ
+            $latest=LPJ::select('id','nomor')
+                ->where('isactive',1)
+                ->where('nomor','<>',NULL)
+                ->whereYear('tanggal',$date->year)
+                ->orderBy('id', 'DESC')
+                ->where('tipe', $input['tipe'])
+                ->where('idsubkegiatan',  $input['idsubkegiatan'])->first();
+            if(isset($latest)){
+                $nomor=intval($latest->nomor)+1;
+            }else{
+                $nomor=1;
+            }
+            $lpj->fill([
+                'nomor' =>substr(str_repeat(0, 5).strval($nomor), - 5),   //convert agar nomor ada leading zero
+            ]);
+        }
+        // fill total nominal
+        $total=BKU::where('isactive',1)
+            ->whereMonth('tanggalref',$date->month)
+            ->whereYear('tanggalref',$date->year)
+            ->where('tipe',$lpj->tipe)
+            ->where('idsubkegiatan',$lpj->idsubkegiatan)
+            ->select('nomor','tanggalref','idtransaksi','idrekening','uraian','nominal')
+            ->sum('nominal');
+        $lpj->fill(['total'=>$total]);
+        $lpj->save();
+
+        return back()->with('success','Berhasil menyimpan');
     }
 
     public function deleteLPJ(Request $request){
-        
+        $user = Auth::user();
+        $userId = $user->id;
+        try {
+            DB::beginTransaction();
+            $model=LPJ::where('id',$request->input('id'))->with(['subkegiatan:id,idunitkerja,nama'])->first();
+            if($user->idunitkerja !== $model->subkegiatan->idunitkerja ){
+                throw new \Exception("restricted");
+            }
+            $model->idm=$userId;
+            $model->isactive=0;
+            $model->save();
+
+            DB::commit();
+            return back()->with('success','Berhasil menghapus');
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return back()->with('error','Gagal menghapus');
+        }
     }
 }

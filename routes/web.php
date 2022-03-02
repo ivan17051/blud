@@ -89,6 +89,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/lpj', 'LPJController@lpj');
     Route::put('/lpj', 'LPJController@storeUpdateLPJ')->name('lpj.update');
+    Route::delete('/lpj', 'LPJController@deleteLPJ')->name('lpj.delete');
     Route::post('/lpj/data', 'LPJController@data')->name('lpj.data');
     Route::get('/lpj/getrelatedbku/{idlpj}', 'LPJController@getRelatedBKU')->name('lpj.getrelatedbku');
     Route::get('/lpj/getbkubyperiod/{idsubkegiatan}/{tipe}/{month}/{year}', 'LPJController@getBKUByPeriod')->name('lpj.getbkubyperiod');

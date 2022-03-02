@@ -19,12 +19,13 @@ active
             <form action="{{route('lpj.update')}}" method="POST">
             @csrf
             @method('PUT')
+            <input type="hidden" name="tipe">
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><b>Tanggal Pengeluaran</b></label>
-                            <input type="date" id="tanggalref" name="tanggalref" class="form-control" onchange="fillBulanLPJ(this, '#tambah')" required>
+                            <input type="date" id="tanggal" name="tanggal" class="form-control" onchange="fillBulanLPJ(this, '#tambah')" required>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -99,7 +100,7 @@ active
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><b>Tanggal Pengeluaran</b></label>
-                            <input type="date" name="tanggalref" class="form-control" onchange="fillBulanLPJ(this, '#detil')" required>
+                            <input type="date" name="tanggal" class="form-control" onchange="fillBulanLPJ(this, '#detil')" required>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -151,7 +152,7 @@ active
 </div>
 
 <!-- Form Delete -->
-<form hidden action="{{route('spj.update')}}" method="POST" id="delete">
+<form hidden action="{{route('lpj.delete')}}" method="POST" id="delete">
     @csrf
     @method('delete')
     <input type="hidden" name="id">
@@ -332,14 +333,13 @@ function openDetilLPJ(self, urlparams, idmodal, route='getrelatedbku'){
     }else{
         url = '{{route("lpj.getbkubyperiod", ["idsubkegiatan"=> '', "tipe"=>'', "month"=>'', "year"=>''])}}';
     }
-    console.log(url);
 
     $table.dataTable({
         processing: true,
         ajax: {type: "GET", url: url+urlparams, data:{'_token':@json(csrf_token())}},
         columns: [
             {title:"Nomor", data: "nomor"},
-            {title:"tanggal", data: "tanggalref", render: function(e,d,row){return moment(row['tanggalref']).format('L');}},
+            {title:"tanggal", data: "tanggal", render: function(e,d,row){return moment(row['tanggal']).format('L');}},
             {title:"e-SPJ", data: "transaksi", render: renderKodeTransaksi },
             {title:"Rekening", data: "rekening.kode"},
             {title:"Uraian", data: "uraian"},
@@ -350,7 +350,7 @@ function openDetilLPJ(self, urlparams, idmodal, route='getrelatedbku'){
             if(route === 'getrelatedbku'){
                 var tr = $(self).closest('tr');
                 var data = oTable.api().row(tr).data();
-                $modal.find('[name=tanggalref]').val(data['tanggal']).change().attr('readonly',true);
+                $modal.find('[name=tanggal]').val(data['tanggal']).change().attr('readonly',true);
                 $modal.find('[name=idsubkegiatan]').val(data['idsubkegiatan']).change().attr('readonly',true);
                 $modal.find('.modal-title').text('Detil LPJ-'+data['tipe_raw']);
                 $modal.modal('show');
@@ -362,7 +362,7 @@ function openDetilLPJ(self, urlparams, idmodal, route='getrelatedbku'){
 
 function handleChangeModalTambah(tipe){
     let $modal = $('#tambah');
-    let tanggal = $modal.find('[name=tanggalref]').val();
+    let tanggal = $modal.find('[name=tanggal]').val();
     let idsubkegiatan = $modal.find('[name=idsubkegiatan]').val();
     console.log(tanggal, idsubkegiatan);
     if( tanggal === '' || idsubkegiatan === null) return;
@@ -373,10 +373,34 @@ function handleChangeModalTambah(tipe){
 
 function handleOpenModalTambah(tipe){
     let $modal = $('#tambah');
-    $modal.find('[name=tanggalref]').on( "change", function() {handleChangeModalTambah(tipe);});
+    $modal.find('[name=tipe]').val(tipe);
+    $modal.find('[name=tanggal]').on( "change", function() {handleChangeModalTambah(tipe);});
     $modal.find('[name=idsubkegiatan]').on('change', function() {handleChangeModalTambah(tipe);});
     $modal.find('.modal-title').text('Detil LPJ-'+tipe);
     $modal.modal('show');
+}
+
+function hapus(self){
+    var tr = $(self).closest('tr');
+    var data=oTable.fnGetData(tr); 
+    $('#delete').find('input[name=id]').val(data['id']);
+    Swal.fire({
+        customClass: {
+            confirmButton: 'btn btn-primary mr-2',
+            cancelButton: 'btn btn-dark'
+        },
+        buttonsStyling: false,
+        icon: 'warning',
+        iconColor: '#f4b619',
+        title: 'Yakin ingin menghapus?',
+        showCancelButton: true,
+        confirmButtonText: 'Ya',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $('#delete').submit();
+        }
+    })
 }
 
 $(document).ready(function(){
