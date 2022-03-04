@@ -75,6 +75,7 @@ class LPJController extends Controller
             ->whereMonth('tanggalref',$lpj->tanggal->month)
             ->whereYear('tanggalref',$lpj->tanggal->year)
             ->where('tipe',$lpj->tipe)
+            ->where('idsubkegiatan',$lpj->idsubkegiatan)
             ->select('nomor','tanggalref','idtransaksi','idrekening','uraian','nominal')
             ->with(['transaksi:id,kodetransaksi,isspj', 'rekening:id,kode,nama']);
         $datatable = Datatables::of($data);
@@ -180,5 +181,49 @@ class LPJController extends Controller
             DB::rollback();
             return back()->with('error','Gagal menghapus');
         }
+    }
+
+    public function getLPJ(Request $request){
+        if(isset($request->upls)==False) return abort(404);
+        $user = Auth::user();
+        $upls = explode(',',$request->upls);
+        $idunitKerja = $user->idunitkerja;
+        $date=Carbon::now();
+        $data = LPJ::select('id','nomor')
+            ->where('isactive',1)
+            ->whereYear('tanggal',$date->year)
+            ->orderBy('id', 'DESC')
+            ->whereIn('tipe',$upls)
+            ->with(['subkegiatan'=>function($q) use($idunitkerja){
+                $q->where('idunitkerja', $idunitkerja);
+            }]);
+
+        if(isset($request->tipe)){
+            $tipe = $request->tipe=='NULL'? null : $request->tipe;
+            $data->where('tipe', $tipe);     //tipe
+        }
+        
+        if(isset($request->nomor)){
+            $nomor = $request->nomor=='NULL'? null : $request->nomor;
+            $data->where('nomor',$nomor);     //nomor
+        }
+        else{
+            $data->where('nomor','<>',NULL);
+        }
+
+        if(isset($request->transaksiterikat)){
+            if($request->transaksiterikat=='NULL'){
+                $data->where('transaksiterikat',null);      //ambil LPJ yg BELUM terikat SPP sama sekali
+            }else{
+                $transaksiterikat = $request->transaksiterikat;         //ambil LPJ yg terikat dengan SPP tertentu dan yg belum terikat SPP sama sekali
+                $data->where(function($q) use($transaksiterikat){
+                    $q->where('transaksiterikat',null)
+                        ->orWhere('transaksiterikat',$transaksiterikat);
+                });     
+            }
+        }
+
+        $datatable = Datatables::of($data);
+        return $datatable->addIndexColumn()->make(true);
     }
 }

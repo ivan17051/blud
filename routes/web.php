@@ -64,6 +64,7 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/transaksi/batal', 'TransaksiController@batalkanPengajuanSP2D')->name('transaksi.batal');
     Route::put('/transaksi/inputCek', 'TransaksiController@inputCek')->name('transaksi.inputCek');
     Route::post('/transaksi/espj2transaksi', 'TransaksiController@espjToTransaksi')->name('transaksi.espj2transaksi');
+    Route::post('/transaksi/lpjToTransaksi', 'TransaksiController@lpjToTransaksi')->name('transaksi.lpj2transaksi');
 
     Route::put('/ubah-password', 'PasswordController@update');
 
@@ -93,6 +94,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/lpj/data', 'LPJController@data')->name('lpj.data');
     Route::get('/lpj/getrelatedbku/{idlpj}', 'LPJController@getRelatedBKU')->name('lpj.getrelatedbku');
     Route::get('/lpj/getbkubyperiod/{idsubkegiatan}/{tipe}/{month}/{year}', 'LPJController@getBKUByPeriod')->name('lpj.getbkubyperiod');
+    Route::post('/lpj/getlpj', 'LPJController@getLPJ')->name('lpj.getlpj');
 
     Route::get('/laporan/fungsional','LaporanFungsional@index')->name('fungsional');
     Route::get('/laporan/fungsional/excel','LaporanFungsional@excel')->name('fungsional.excel');

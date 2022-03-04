@@ -52,7 +52,7 @@ class Transaksi extends Model
         "idc",
         "idm",
         "pesanpenolakan",
-        "lpjparent",
+        "lpjterikat",
     ];
 
     public function unitkerja(){

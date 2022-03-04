@@ -28,6 +28,7 @@ class LPJ extends Model
 	    "isactive",
         "idc",
         "idm",
+        "transaksiterikat",
     ];
 
     public function subkegiatan(){

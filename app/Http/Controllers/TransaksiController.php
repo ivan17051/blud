@@ -829,4 +829,8 @@ class TransaksiController extends Controller
             return back()->with('error','Gagal menarik e-SPJ.');
         }
     }
+
+    public function lpjToTransaksi(Request $request){
+        
+    }
 }

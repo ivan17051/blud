@@ -588,6 +588,83 @@ $role = Auth::user()->id;
     </div>
 </div>
 
+<!-- Modal Tarik LPJ menjadi SPP Baru -->
+<div class="modal modal-danger fade" id="tarik_LPJ" tabindex="-1" role="dialog" aria-labelledby="tarik_LPJ" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tarik_LPJ">Tarik LPJ</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{route('transaksi.lpj2transaksi')}}" method="post" onsubmit="return submit_lpj(event);">
+                @csrf
+                <input type="hidden" name="idtransaksi">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label><b>Tanggal</b></label>
+                            <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker3" name="tanggalref" required/>
+                                <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label><b>Bendahara Pengeluaran</b></label>
+                            <select name="idbendahara" class="form-control">
+                                <option value="">--PILIH--</option>
+                                @foreach($pejabat as $e)
+                                <option value="{{$e->id}}">{{$e->nama}}</option>
+                                @endforeach
+                            </select>
+                        </div>  
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label><b>SPD Awal</b></label>
+                            <input type="text" class="form-control" readonly value="00009 / (03-01-2022)" />
+                        </div>  
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label><b>SPD Akhir</b></label>
+                            <input type="text" class="form-control" readonly value="00076 / (24-02-2022)" />
+                        </div> 
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label><b>Keperluan</b></label>
+                            <textarea name="keterangan" class="form-control" placeholder="Keterangan" maxlength="250" rows="3" style="resize: none;" required></textarea>
+                        </div> 
+                    </div>
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label><b>ID LPJ</b></label>
+                            <div class="input-group">
+                                <input readonly type="text" pattern="[0-9]{1,7}" name="idlpj" class="form-control" placeholder="ID LPJ" required>
+                                <div class="input-group-append">
+                                <button class="btn btn-dark" type="button" onclick="$('#pilihSpp').modal({backdrop: 'static', keyboard: false}).modal('show');">?</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="submit" class="btn btn-primary">Proses</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <!-- Modal Ceklist -->
 <div class="modal modal-danger fade" id="ceklist" tabindex="-1" role="dialog" aria-labelledby="Ceklist" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -675,7 +752,7 @@ $role = Auth::user()->id;
                             
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="#" onclick="pilih_espj_ls()" title="Tambah SPP LS">SPP LS</a>
-                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#tarikSPP_GU" data-placement="top" title="Tambah SPP GU">SPP GU</a>
+                                <a class="dropdown-item" href="#" onclick="open_form_tarik_lpj()" title="Tambah SPP GU">SPP GU</a>
                             </div>
                         </div>
                         <button class="btn btn-sm btn-primary " type="button" data-toggle="modal" data-target="#tambah" data-placement="top" title="Tambah Transaksi">
@@ -1418,6 +1495,27 @@ function openPilihSPP(urlparams, sign_, callback, FORCE_REFRESH=false, onComplet
             initComplete: onComplete,
         });
     }
+    else if(sign==5){   // LPJ ditarik menjadi SPP GU
+        $('#pilihSppLabel').text('Pilih LPJ-UP');
+        sppTable = $("#spptable").dataTable({
+            processing: true,
+            // serverSide: true,
+            order: [[ 1, "desc" ]],
+            select: {
+                style:    'multi',
+                selector: 'td:first-child input'
+            },
+            ajax: {type: "POST", url: '{{route("lpj.getlpj")}}'+urlparams, data:{'_token':@json(csrf_token())}},
+            columns: [
+                { data:'DT_RowIndex', orderable: false, searchable: false,  className: 'select-checkbox', render: function(){return '<input class="scale-1-5" type="checkbox" >';}} ,
+                { data:'id', title:'ID-LPJ' },
+                { data:'nomor', title:'Nomor' },
+                { data:'tanggal', title:'Tanggal', render: function(e,d,row){return moment(row['tanggalref']).format('L');}},
+                { data:'total', title:'Nominal', orderable: false },
+            ],
+            initComplete: onComplete,
+        });
+    }
 }
 
 function pilih_espj_ls(){
@@ -1499,6 +1597,19 @@ function edit_pilihan_espj_ls(idtransaksi){
 }
 //END of FORM Pilih SPP
 
+// FORM PILIH LPJ
+function open_form_tarik_lpj(){
+    $form = $('#tarik_LPJ form');
+    // $form.find('input[name=currentIdTransaksi]').val('');
+    // $form.find('input[name=idtransaksi]').val('');
+    // $form.find('input[name=kodetransaksi]').val('');
+    openPilihSPP('?upls=LS&isspj=1&nomor=NULL&parent=NULL',5, function(){
+        $('#pilihSpp').modal('hide');
+    });
+    $('#tarik_LPJ').modal('show');
+}
+// END of FORM Pilih LPJ
+
 $(document).ready(function(){
     $('#tambah').find('select[name=jenis]').val('0').change().attr('readonly',true);
 
@@ -1515,15 +1626,7 @@ $(document).ready(function(){
     const curDate='{{$curDate}}';
     const maxDate='{{$maxDate}}';
     const minDate='{{$minDate}}';
-    $('#datetimepicker').datetimepicker({
-        locale: 'id',
-        format: 'L',
-        defaultDate: curDate,
-        maxDate: maxDate,
-        minDate: minDate,
-    });
-
-    $('#datetimepicker2').datetimepicker({
+    $('#datetimepicker, #datetimepicker2, #datetimepicker3').datetimepicker({
         locale: 'id',
         format: 'L',
         defaultDate: curDate,

@@ -324,10 +324,10 @@ class BkuController extends Controller
 
         if(isset($request->parent)){
             if($request->parent=='NULL'){
-                $data->where('parent',null);     //parent
+                $data->where('parent',null);     //ambil SPP yg BELUM memiliki parent
             }else{
                 $parent = $request->parent;
-                $data->where(function($q) use($parent){
+                $data->where(function($q) use($parent){     //ambil SPP yg memiliki parent tsb ataupun yang masih belum memiliki parent
                     $q->where('parent',null)
                         ->orWhere('parent',$parent);
                 });     
