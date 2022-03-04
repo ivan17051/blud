@@ -9,6 +9,7 @@ use App\BukuBank;
 
 class BukuBankObserver
 {
+    
     public function saving(BukuBank $bukubank)
     {
         DB::beginTransaction();
@@ -16,12 +17,13 @@ class BukuBankObserver
             $old = BukuBank::find($bukubank->id);
             if(!$old){
                 $old=(object) array('jenis'=>0, 'nominal'=>0);
+                $this->updateSaldo($bukubank->idunitkerja , $bukubank->jenis, $old->jenis, $bukubank->tanggal, $bukubank->nominal, $old->nominal);
             }
             elseif($bukubank->isactive==0){
                 $this->updateSaldo($bukubank->idunitkerja , $bukubank->jenis, $old->jenis, $bukubank->tanggal, 0, $old->nominal);
             }
             else{
-                $this->updateSaldo($bukubank->idunitkerja , $bukubank->jenis, $old->jenis, $bukubank->tanggal, $bukubank->nominal, $old->nominal);    
+                $this->updateSaldo($bukubank->idunitkerja , $bukubank->jenis, $old->jenis, $bukubank->tanggal, $bukubank->nominal, $old->nominal);
             }
         }catch (\Exception $exception) {
             DB::rollBack();
