@@ -163,4 +163,27 @@ class BukuBankController extends Controller
         $saldo->save();
         return back()->with('success','Berhasil menyimpan');
     }
+
+    public function cetak(Request $request){
+        $user = Auth::user();
+        $bulan = Carbon::createFromFormat('m/Y', $request->bulan);
+        $pkm = UnitKerja::find($request->PKM);
+        $bukuBank = BukuBank::where('isactive', 1)->where('idunitkerja', $request->PKM)
+                ->whereYear('tanggal', $bulan->year)->whereMonth('tanggal', $bulan->month)->get()
+                ->sortBy('tanggal');
+        if($bulan->month == 1){
+            $saldo = SaldoBukuBank::where('idunitkerja', $user->idunitkerja)
+                ->whereYear('tanggal', $bulan->year-1)->whereMonth('tanggal', 12)->first();
+        }
+        else{
+            $saldo = SaldoBukuBank::where('idunitkerja', $user->idunitkerja)
+            ->whereYear('tanggal', $bulan->year)->whereMonth('tanggal', $bulan->month-1)->first();
+        }
+        if(!$saldo){
+            $saldo=(object) array('tanggal'=> $bulan->addMonth(-1)->translatedFormat('Y-m-d'),'nominal'=>0, 'jenis'=>1);
+            $bulan->addMonth(1);
+        }
+        
+        return view('report.bukubank', ['bukuBank' => $bukuBank, 'bulan'=>$bulan, 'pkm'=>$pkm, 'saldoAwal'=>$saldo]);
+    }
 }

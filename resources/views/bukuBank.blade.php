@@ -283,7 +283,7 @@ active
                     <div class="col" style="padding-left:0;">
                         <div class="mb-2" style="max-width: 10rem;">
                             <button type="submit" class="btn btn-info">Proses</button>
-                            <button class="btn btn-success" formaction="">Cetak</button>
+                            <button class="btn btn-success" formaction="{{route('bukuBank.cetak')}}">Cetak</button>
                         </div>
                     </div>
                 </div>

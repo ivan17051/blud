@@ -9,6 +9,7 @@ use App\BukuBank;
 
 class BukuBankObserver
 {
+    
     public function saving(BukuBank $bukubank)
     {
         DB::beginTransaction();
@@ -16,12 +17,13 @@ class BukuBankObserver
             $old = BukuBank::find($bukubank->id);
             if(!$old){
                 $old=(object) array('jenis'=>0, 'nominal'=>0);
+                $this->updateSaldo($bukubank->idunitkerja , $bukubank->jenis, $old->jenis, $bukubank->tanggal, $bukubank->nominal, $old->nominal);
             }
             elseif($bukubank->isactive==0){
                 $this->updateSaldo($bukubank->idunitkerja , $bukubank->jenis, $old->jenis, $bukubank->tanggal, 0, $old->nominal);
             }
             else{
-                $this->updateSaldo($bukubank->idunitkerja , $bukubank->jenis, $old->jenis, $bukubank->tanggal, $bukubank->nominal, $old->nominal);    
+                $this->updateSaldo($bukubank->idunitkerja , $bukubank->jenis, $old->jenis, $bukubank->tanggal, $bukubank->nominal, $old->nominal);
             }
         }catch (\Exception $exception) {
             DB::rollBack();
@@ -35,10 +37,16 @@ class BukuBankObserver
         $saldo=SaldoBukuBank::where('idunitkerja', $idunitkerja)->whereYear('tanggal',$tanggal2->year)->whereMonth('tanggal',$tanggal2->month)->first();
         
         if($saldo === NULL){
+            if($tanggal2->month==1){
+                $saldo_awal = SaldoBukuBank::where('idunitkerja', $idunitkerja)->whereYear('tanggal',$tanggal2->year-1)->whereMonth('tanggal',12)->first();
+            }
+            else{
+                $saldo_awal = SaldoBukuBank::where('idunitkerja', $idunitkerja)->whereYear('tanggal',$tanggal2->year)->whereMonth('tanggal',$tanggal2->month-1)->first();
+            }
             $saldo = new SaldoBukuBank([
                 'idunitkerja'=>$idunitkerja,
                 'jenis'=>0,
-                'nominal'=>$saldo_new,
+                'nominal'=>$saldo_awal->nominal+$saldo_new,
                 'tanggal'=>$tanggal,
                 'idc'=>Auth::id(),
                 'idm'=>Auth::id()
@@ -46,7 +54,7 @@ class BukuBankObserver
         }
         
         //pastikan jenis sesuai untuk menjumlah saldo
-        if($jenis_new==1 && $jenis_old==1){
+        elseif($jenis_new==1 && $jenis_old==1){
             $saldo->nominal-=$saldo_old;
             $saldo->nominal+=$saldo_new;
         }
