@@ -98,6 +98,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/laporan/fungsional/excel','LaporanFungsional@excel')->name('fungsional.excel');
 
     Route::get('/bukuBank', 'BukuBankController@bukuBank')->name('bukuBank.view');
+    Route::post('bukuBank/cetak', 'BukuBankController@cetak')->name('bukuBank.cetak');
     Route::post('/bukuBank', 'BukuBankController@bukuBankTable');
     Route::put('/bukuBank/saldo', 'BukuBankController@storeUpdateSaldo')->name('bukuBank.updateSaldo');
     Route::put('/bukuBank/create', 'BukuBankController@storeUpdateBukuBank')->name('bukuBank.update');
