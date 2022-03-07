@@ -530,8 +530,8 @@ $role = Auth::user()->id;
     </div>
 </div>
 
-<!-- Modal Pilih SPP -->
-<div class="modal modal-danger fade" id="pilihSpp" tabindex="-1" role="dialog" aria-labelledby="Pilih SPP" aria-hidden="true" style="z-index: 9999;">
+<!-- Modal Pilih Universal -->
+<div class="modal modal-danger fade" id="pilihSpp" tabindex="-1" role="dialog" aria-labelledby="Pilih Universal" aria-hidden="true" style="z-index: 9999;">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -548,7 +548,7 @@ $role = Auth::user()->id;
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary" onclick="pilih_multi_espj()">Pilih</button>
+                <button type="submit" class="btn btn-primary" onclick="pilih_multi()">Pilih</button>
             </div>
         </div>
     </div>
@@ -593,14 +593,15 @@ $role = Auth::user()->id;
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="tarik_LPJ">Tarik LPJ</h5>
+                <h5 class="modal-title" id="tarik_LPJ">SPP GU</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{route('transaksi.lpj2transaksi')}}" method="post" onsubmit="return submit_lpj(event);">
+            <form action="{{route('transaksi.lpj2transaksi')}}" method="post" onsubmit="return submit_form_tarik_lpj(event);">
                 @csrf
-                <input type="hidden" name="idtransaksi">
+                <input type="hidden" name="idlpj">
+                <input type="hidden" name="tipe">
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-4">
@@ -617,7 +618,7 @@ $role = Auth::user()->id;
                     <div class="col-md-8">
                         <div class="form-group">
                             <label><b>Bendahara Pengeluaran</b></label>
-                            <select name="idbendahara" class="form-control">
+                            <select name="idbendahara" class="form-control" required>
                                 <option value="">--PILIH--</option>
                                 @foreach($pejabat as $e)
                                 <option value="{{$e->id}}">{{$e->nama}}</option>
@@ -647,7 +648,7 @@ $role = Auth::user()->id;
                         <div class="form-group">
                             <label><b>ID LPJ</b></label>
                             <div class="input-group">
-                                <input readonly type="text" pattern="[0-9]{1,7}" name="idlpj" class="form-control" placeholder="ID LPJ" required>
+                                <input readonly type="text" pattern="[0-9]{1,7}" name="nomorlpj" class="form-control" placeholder="Nomor LPJ" required>
                                 <div class="input-group-append">
                                 <button class="btn btn-dark" type="button" onclick="$('#pilihSpp').modal({backdrop: 'static', keyboard: false}).modal('show');">?</button>
                                 </div>
@@ -1500,7 +1501,7 @@ function openPilihSPP(urlparams, sign_, callback, FORCE_REFRESH=false, onComplet
         sppTable = $("#spptable").dataTable({
             processing: true,
             // serverSide: true,
-            order: [[ 1, "desc" ]],
+            order: [[ 1, "asc" ]],
             select: {
                 style:    'multi',
                 selector: 'td:first-child input'
@@ -1511,7 +1512,7 @@ function openPilihSPP(urlparams, sign_, callback, FORCE_REFRESH=false, onComplet
                 { data:'id', title:'ID-LPJ' },
                 { data:'nomor', title:'Nomor' },
                 { data:'tanggal', title:'Tanggal', render: function(e,d,row){return moment(row['tanggalref']).format('L');}},
-                { data:'total', title:'Nominal', orderable: false },
+                { data:'total', className:'text-right', title:'Nominal', orderable: false, render: function(e,d,row){return my.formatRupiah(Math.trunc(row['total'])); } },
             ],
             initComplete: onComplete,
         });
@@ -1533,20 +1534,23 @@ function pilih_espj_ls(){
 }
 
 //fungsi untuk milih espj apa aja yg dicentang dari tabel sppTable
-function pilih_multi_espj(){
+function pilih_multi(){
     let indexes = sppTable.api().rows({ selected: true })[0];
     let dataSelected = sppTable.api().rows({ selected: true }).data();
-    var kodetransaksis='', ids='';
+    var infoCentang='', ids='';
     for (let i = 0; i < indexes.length; i++) {
-        if(i!=0){
-            kodetransaksis+=','+dataSelected[i].kodetransaksi.toString();
-            ids+=','+dataSelected[i].id.toString();
+        if('kodetransaksi' in dataSelected[i]){
+            infoCentang+=','+dataSelected[i].kodetransaksi.toString();
+        }else if('nomor' in dataSelected[i]){
+            infoCentang+=','+dataSelected[i].nomor.toString();
         }else{
-            kodetransaksis+=dataSelected[i].kodetransaksi.toString();
-            ids+=dataSelected[i].id.toString();
+            infoCentang+=','+dataSelected[i].id.toString();
         }
+        ids+=','+dataSelected[i].id.toString();
     }
-    callbackPilihSpp(kodetransaksis, ids);
+    infoCentang=infoCentang.substr(1);
+    ids=ids.substr(1);
+    callbackPilihSpp(infoCentang, ids);
 }
 
 function submit_espj_ls(e){
@@ -1603,10 +1607,19 @@ function open_form_tarik_lpj(){
     // $form.find('input[name=currentIdTransaksi]').val('');
     // $form.find('input[name=idtransaksi]').val('');
     // $form.find('input[name=kodetransaksi]').val('');
-    openPilihSPP('?upls=LS&isspj=1&nomor=NULL&parent=NULL',5, function(){
+    $form.find('input[name=tipe]').val('GU');
+    openPilihSPP('?upls=UP&transaksiterikat=NULL',5, function(infoCentang, ids){
         $('#pilihSpp').modal('hide');
+        $form.find('input[name=idlpj]').val(ids);
+        $form.find('input[name=nomorlpj]').val(infoCentang);
     });
     $('#tarik_LPJ').modal('show');
+}
+function submit_form_tarik_lpj(e){
+    if(my.getFormData($(e.target)).idlpj===''){
+        e.preventDefault();
+        alert('belum memilih lpj');
+    }
 }
 // END of FORM Pilih LPJ
 
