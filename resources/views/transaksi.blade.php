@@ -1595,20 +1595,53 @@ function edit_pilihan_espj_ls(idtransaksi){
         $form.find('input[name=idtransaksi]').val(id);
         $form.find('input[name=kodetransaksi]').val(kodetransaksi);
         $('#pilihSpp').modal('hide');
-    }, true, 
-        function(s,j){select_espj_terpilih(s,j,idsObject);});   //force refresh tabel true
+    }, true,                                                             //force refresh tabel true
+        function(s,j){select_espj_terpilih(s,j,idsObject);});   
     $('#tarik_eSPJ_LS').modal('show');
 }
 //END of FORM Pilih SPP
 
 // FORM PILIH LPJ
-function open_form_tarik_lpj(){
+function open_form_tarik_lpj(currentidtransaksi=null){
     $form = $('#tarik_LPJ form');
-    // $form.find('input[name=currentIdTransaksi]').val('');
-    // $form.find('input[name=idtransaksi]').val('');
-    // $form.find('input[name=kodetransaksi]').val('');
+    var urlparams='';
+    var sign;
+    if(currentidtransaksi){
+        var infoCentang='', ids='';
+        let idsObject={};
+        dataSelected
+        for (let i = 0; i < dataSelected.length; i++) {
+            if(i!=0){
+                infoCentang+=','+dataSelected[i].nomor.toString();
+                ids+=','+dataSelected[i].id.toString();
+            }else{
+                infoCentang+=dataSelected[i].nomor.toString();
+                ids+=dataSelected[i].id.toString();
+            }
+            idsObject[dataSelected[i].id] = dataSelected[i].id;
+        }
+        $form.find('input[name=idlpj]').val(ids);
+        $form.find('input[name=nomorlpj]').val(infoCentang);
+        $form.find('input[name=tanggalref]').val('');
+        $form.find('input[name=currentIdTransaksi]').val('');
+        $form.find('input[name=tipe]').val('GU');
+        $form.find('input[name=idbendahara]').val('').change();
+        $form.find('input[name=keterangan]').val('');
+        urlparams='?upls=UP&transaksiterikat='+currentidtransaksi;
+        sign=6;
+    }else{
+        urlparams='?upls=UP&transaksiterikat=NULL';
+        $form.find('input[name=idlpj]').val('');
+        $form.find('input[name=nomorlpj]').val('');
+        $form.find('input[name=tanggalref]').val('');
+        $form.find('input[name=currentIdTransaksi]').val('');
+        $form.find('input[name=tipe]').val('GU');
+        $form.find('input[name=idbendahara]').val('').change();
+        $form.find('input[name=keterangan]').val('');
+        sign=5;
+    }
     $form.find('input[name=tipe]').val('GU');
-    openPilihSPP('?upls=UP&transaksiterikat=NULL',5, function(infoCentang, ids){
+    openPilihSPP(urlparams,sign, function(infoCentang, ids){
         $('#pilihSpp').modal('hide');
         $form.find('input[name=idlpj]').val(ids);
         $form.find('input[name=nomorlpj]').val(infoCentang);
@@ -1670,7 +1703,9 @@ $(document).ready(function(){
             { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' , title:'No.', name:'no'},
             { data:'tipe', orderable: false, width: 1 , title:'Tipe', name:'tipe'},
             { data:'tanggalref', title:'Tanggal', name:'tanggalref', render: function(e,d,row){return moment(row['tanggalref']).format('L');} },
-            { data:'subkegiatan.nama',orderable: false, title:'Subkegiatan', name:'subkegiatan.nama'},
+            { data:'subkegiatan.nama',orderable: false, title:'Subkegiatan', name:'subkegiatan.nama', render: function(e,d,row){
+                return e ? e : '-';
+            }},
             { data:'nomor', title:'Nomor', name:'nomor', render:renderNomor},
             { data:'keterangan', orderable: false, width: '23rem', title:'Keperluan', name:'keterangan'},
             { data:'jumlah', title:'Jumlah', name:'jumlah'},

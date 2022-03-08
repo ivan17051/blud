@@ -108,6 +108,9 @@ class TransaksiController extends Controller
                     case 'UP':
                         return "<span class=\"badge bg-info text-white\">UP</span>";
                         break;
+                    case 'GU':
+                        return "<span class=\"badge bg-secondary text-white\">GU</span>";
+                        break;
                 }
             })
             ->editColumn('jenis', function ($t) { 
@@ -141,7 +144,11 @@ class TransaksiController extends Controller
         if(in_array($user->role,['KEU'])){
             $datatable
                 ->addColumn('action', function ($t) { 
-                    return '<button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" title="info">&nbsp<i class="fas fa-ellipsis-v fa-sm"></i>&nbsp</button>';
+                    if ($t->tipe == 'GU') {
+                        // DO NOTHING
+                    }else{
+                        return '<button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" title="info">&nbsp<i class="fas fa-ellipsis-v fa-sm"></i>&nbsp</button>';
+                    }
                 })
                 // ->addColumn('sptb',function($t){
                 //     return '<button class="btn btn-sm btn-primary " onclick="cetak(\'sptb\',\''.$t->id.'\')">Cetak</button>';
@@ -177,11 +184,19 @@ class TransaksiController extends Controller
             $datatable
                 ->addColumn('action', function ($t) use($user){ 
                     $html='';
-                    if ($t->status<2 || $t->status==4) {
-                        $html.='<button onclick="edit(this)" class="btn btn-sm btn-outline-warning border-0" style="width:2rem;" title="Sunting Transaksi" data-toggle="modal" data-target="#sunting"><i class="fas fa-edit fa-sm"></i></button>';
-                        $html.='<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" style="width:2rem;" title="Hapus Transaksi"><i class="fas fa-trash fa-sm"></i></button>';
+                    if ($t->tipe == 'GU') {
+                        if ($t->status<2 || $t->status==4) {
+                            $html.='<button onclick="open_form_tarik_lpj('.$t->id.')" class="btn btn-sm btn-outline-warning border-0" style="width:2rem;" title="Sunting SPP GU" ><i class="fas fa-edit fa-sm"></i></button>';
+                            $html.='<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" style="width:2rem;" title="Hapus Transaksi"><i class="fas fa-trash fa-sm"></i></button>';
+                        }
+                    }else{
+                        if ($t->status<2 || $t->status==4) {
+                            $html.='<button onclick="edit(this)" class="btn btn-sm btn-outline-warning border-0" style="width:2rem;" title="Sunting Transaksi" data-toggle="modal" data-target="#sunting"><i class="fas fa-edit fa-sm"></i></button>';
+                            $html.='<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" style="width:2rem;" title="Hapus Transaksi"><i class="fas fa-trash fa-sm"></i></button>';
+                        }
+                        $html.='<button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" style="width:2rem;" title="Info"><i class="fas fa-ellipsis-v fa-sm"></i></button>';   
                     }
-                    $html.='<button onclick="show(this)" class="btn btn-sm btn-outline-info border-0" style="width:2rem;" title="Info"><i class="fas fa-ellipsis-v fa-sm"></i></button>';
+
                     return $html;
                 })
                 ->addColumn('spp',function($t){
