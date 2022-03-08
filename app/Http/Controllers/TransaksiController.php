@@ -15,6 +15,7 @@ use App\User;
 use App\Saldo;
 use App\Transaksi;
 use App\Pajak;
+use App\LPJ;
 use Datatables;
 use Carbon\Carbon;
 use Validator;
@@ -831,6 +832,96 @@ class TransaksiController extends Controller
     }
 
     public function lpjToTransaksi(Request $request){
+        $user = Auth::user();
+        $input = $request->all();
+        $idunitkerja=$user->idunitkerja;
         
+        $idlpjs=explode(',',$input['idlpj']);
+        
+        $models=LPJ::whereIn('id',$idlpjs)
+            ->where('isactive',1)
+            ->with(['subkegiatan'=>function($q) use($idunitkerja) {
+                $q->where('idunitkerja', $idunitkerja);
+            }])
+            ->get();
+        $ids=$models->pluck('id')->toArray();
+        $total=$models->sum('total');
+
+        if($models->isEmpty()){
+            return back()->with('error','ID transaksi tidak ditemukan.');
+        }
+
+        $tanggalref=Carbon::createFromFormat('d/m/Y',$input['tanggalref']);
+        $date=Carbon::now();
+
+        try {
+            DB::beginTransaction();
+            $year=$date->year;
+
+            if(isset($input['currentIdTransaksi'])){
+                //edit
+                // // remove old children
+                // LPJ::where('transaksiterikat',$input['currentIdTransaksi'])
+                //     ->whereNotIn('id',$ids)
+                //     ->where('isbku',0)
+                //     ->where('isactive',1)
+                //     ->update(['parent' => NULL]);
+             
+                // // Edit Existing
+                // $newModel=Transaksi::select('id','nomor')
+                //     ->whereYear('tanggalref',$year)
+                //     ->where('id',$input['currentIdTransaksi'])
+                //     ->where('idunitkerja', $user->idunitkerja)->first();
+                // $newModel->fill([
+                //     'idm' => $user->id,
+                //     'idc' => $user->id,
+                //     'saldo'=>$newSaldo,
+                //     'jumlah'=>$newJumlah,
+                //     'rekening'=>$rekenings,
+                //     'kodetransaksi'=>$models->first()->kodetransaksi,
+                // ]);
+            }else{
+                // create Baru
+                $transaksi_aktual=Transaksi::select('id','nomor')
+                    ->where('isactive',1)
+                    ->where('nomor','<>',NULL)
+                    ->whereYear('tanggalref',$year)
+                    ->orderBy('id', 'DESC')
+                    ->where('idunitkerja', $user->idunitkerja)->first();
+                if(isset($transaksi_aktual)){
+                    $nomor=intval($transaksi_aktual->nomor)+1;
+                }else{
+                    $nomor=1;
+                }
+
+                $newModel=new Transaksi();
+                $newModel->fill([
+                    'nomor'=>substr(str_repeat(0, 5).strval($nomor), - 5),   //convert agar nomor ada leading zero
+                    'tipe'=>$input['tipe'],
+                    'idunitkerja'=>$idunitkerja,
+                    'idkepada'=>$input['idbendahara'],
+                    'flagkepada'=>1,
+                    'jumlah'=>$total,
+                    'tanggalref'=>$tanggalref->format('Y-m-d'),     //tanggal spp
+                    'tanggal'=>$date->format('Y-m-d'),
+                    'keterangan'=>$input['keterangan'],
+                    'idc'=>$user->id,
+                    'idm'=>$user->id,
+                ]);
+            }
+            
+            $newModel->save();
+
+            //row transaksi yg sudah dipilih menjadi CHILDREN dari transaksi yg baru
+            foreach ($models as $m) {
+                $m->transaksiterikat=$newModel->id;
+                $m->save();
+            }
+            DB::commit();
+            return back()->with('success','Berhasil membuat SPP.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return back()->with('error','Gagal membuat SPP.');
+        }
     }
 }

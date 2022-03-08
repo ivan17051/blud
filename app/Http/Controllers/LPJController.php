@@ -187,21 +187,15 @@ class LPJController extends Controller
         if(isset($request->upls)==False) return abort(404);
         $user = Auth::user();
         $upls = explode(',',$request->upls);
-        $idunitKerja = $user->idunitkerja;
+        $idunitkerja = $user->idunitkerja;
         $date=Carbon::now();
-        $data = LPJ::select('id','nomor')
+        $data = LPJ::select('id','nomor','tanggal','total')
             ->where('isactive',1)
             ->whereYear('tanggal',$date->year)
-            ->orderBy('id', 'DESC')
             ->whereIn('tipe',$upls)
-            ->with(['subkegiatan'=>function($q) use($idunitkerja){
+            ->with(['subkegiatan'=>function($q) use($idunitkerja) {
                 $q->where('idunitkerja', $idunitkerja);
             }]);
-
-        if(isset($request->tipe)){
-            $tipe = $request->tipe=='NULL'? null : $request->tipe;
-            $data->where('tipe', $tipe);     //tipe
-        }
         
         if(isset($request->nomor)){
             $nomor = $request->nomor=='NULL'? null : $request->nomor;
