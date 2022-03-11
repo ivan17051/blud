@@ -8,6 +8,8 @@
 
 #### Contents
 
+- [penyebut](#penyebut)
+- [terbilang](#terbilang)
 - [index](#index)
 - [data](#data)
 - [storeUpdateTransaksi](#storeupdatetransaksi)
@@ -23,6 +25,23 @@
 - [spm](#spm)
 - [sp2d](#sp2d)
 - [espjToTransaksi](#espjtotransaksi)
+
+## penyebut 
+Mengkonversi nominal menjadi dalam bentuk tertulis.
+
+#### Return Value
+Hasil konversi nominal menjadi dalam bentuk tertulis.
+
+:cyclone: [to top](#contents)
+
+## terbilang 
+Mendeteksi jika nominal adalah bilangan lebih kecil dari nol atau tidak.
+
+#### Return Value
+Hasil konversi nominal melalui fungsi [penyebut](#penyebut) beserta dengan hasil deteksi bilangan minus atau tidak.
+
+:cyclone: [to top](#contents)
+
 
 ## index 
 Menampilkan halaman SPP-SPM kosong.
@@ -106,22 +125,72 @@ Redirect
 :cyclone: [to top](#contents)
 
 ## inputCek
+Menyimpan data nomor cek dan tanggal cek pada tabel transaksi
+
+#### Parameters
+Request
+
+#### Return Value
+Redirect
 
 :cyclone: [to top](#contents)
 
 ## sptb
+Menampilkan SPTB yang dapat diprint
+
+#### Parameters
+Request, id: [Transaksi](https://github.com/ivan17051/blud/blob/master/app/Transaksi.php)
+
+#### Return Value
+[Report SPTB View](https://github.com/ivan17051/blud/blob/master/resources/views/report/sptb.blade.php)<br>
+with:<br>
+&emsp;&emsp;[Transaksi](https://github.com/ivan17051/blud/blob/master/app/Transaksi.php): Collections<br>
+&emsp;&emsp;Otorisator: [Pejabat](https://github.com/ivan17051/blud/blob/master/app/Pejabat.php)<br>
 
 :cyclone: [to top](#contents)
 
 ## ceklist
+Menampilkan Ceklist yang dapat diprint
+
+#### Parameters
+Request, id: [Transaksi](https://github.com/ivan17051/blud/blob/master/app/Transaksi.php)
+
+#### Return Value
+[Report Ceklist View](https://github.com/ivan17051/blud/blob/master/resources/views/report/ceklist.blade.php)<br>
+with:<br>
+&emsp;&emsp;[Transaksi](https://github.com/ivan17051/blud/blob/master/app/Transaksi.php): Collections<br>
+&emsp;&emsp;Otorisator: [Pejabat](https://github.com/ivan17051/blud/blob/master/app/Pejabat.php)<br>
 
 :cyclone: [to top](#contents)
 
 ## spp
+Menampilkan SPP yang dapat diprint
+
+#### Parameters
+Request, id: [Transaksi](https://github.com/ivan17051/blud/blob/master/app/Transaksi.php)
+
+#### Return Value
+[Report SPP View](https://github.com/ivan17051/blud/blob/master/resources/views/report/spp.blade.php)<br>
+with:<br>
+&emsp;&emsp;[Transaksi](https://github.com/ivan17051/blud/blob/master/app/Transaksi.php): Collections<br>
+&emsp;&emsp;Bendahara: [Pejabat](https://github.com/ivan17051/blud/blob/master/app/Pejabat.php)<br>
+&emsp;&emsp;Otorisator: [Pejabat](https://github.com/ivan17051/blud/blob/master/app/Pejabat.php)<br>
+
 
 :cyclone: [to top](#contents)
 
 ## sppup
+Menampilkan Rincian Rencana Penggunaan yang dapat di-print
+
+#### Parameters
+Request, id: [Transaksi](https://github.com/ivan17051/blud/blob/master/app/Transaksi.php)
+
+#### Return Value
+[Report SPPUP View](https://github.com/ivan17051/blud/blob/master/resources/views/report/sppup.blade.php)<br>
+with:<br>
+&emsp;&emsp;[Transaksi](https://github.com/ivan17051/blud/blob/master/app/Transaksi.php): Collections<br>
+&emsp;&emsp;Bendahara: [Pejabat](https://github.com/ivan17051/blud/blob/master/app/Pejabat.php)<br>
+&emsp;&emsp;Otorisator: [Pejabat](https://github.com/ivan17051/blud/blob/master/app/Pejabat.php)<br>
 
 :cyclone: [to top](#contents)
 

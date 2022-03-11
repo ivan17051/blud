@@ -677,7 +677,7 @@ class TransaksiController extends Controller
             $model->idm=$userId;
             $model->save();
         } catch (\Throwable $th) {
-            return back()->with('error','Gagal mengisi No. Cek dan Tanggal Cek');
+            return back()->with('error','Gagal mengisi ceklist');
         }
         $transaksi = Transaksi::with(['unitkerja','subkegiatan'])->find($id);
         $otorisator = Pejabat::where('idunitkerja', $transaksi->idunitkerja)->where('jabatan', 'PPK UPTD')->first();
