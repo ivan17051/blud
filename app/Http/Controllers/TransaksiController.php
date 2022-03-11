@@ -186,7 +186,7 @@ class TransaksiController extends Controller
                     $html='';
                     if ($t->tipe == 'GU') {
                         if ($t->status<2 || $t->status==4) {
-                            $html.='<button onclick="open_form_tarik_lpj('.$t->id.')" class="btn btn-sm btn-outline-warning border-0" style="width:2rem;" title="Sunting SPP GU" ><i class="fas fa-edit fa-sm"></i></button>';
+                            $html.='<button onclick="open_form_tarik_lpj(this, '.$t->id.')" class="btn btn-sm btn-outline-warning border-0" style="width:2rem;" title="Sunting SPP GU" ><i class="fas fa-edit fa-sm"></i></button>';
                             $html.='<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" style="width:2rem;" title="Hapus Transaksi"><i class="fas fa-trash fa-sm"></i></button>';
                         }
                     }else{
@@ -866,7 +866,6 @@ class TransaksiController extends Controller
             return back()->with('error','ID transaksi tidak ditemukan.');
         }
 
-        $tanggalref=Carbon::createFromFormat('d/m/Y',$input['tanggalref']);
         $date=Carbon::now();
 
         try {
@@ -875,27 +874,31 @@ class TransaksiController extends Controller
 
             if(isset($input['currentIdTransaksi'])){
                 //edit
-                // // remove old children
-                // LPJ::where('transaksiterikat',$input['currentIdTransaksi'])
-                //     ->whereNotIn('id',$ids)
-                //     ->where('isbku',0)
-                //     ->where('isactive',1)
-                //     ->update(['parent' => NULL]);
+                // remove old transaksiterikat
+                LPJ::where('transaksiterikat',$input['currentIdTransaksi'])
+                    ->whereNotIn('id',$idlpjs)
+                    ->where('isactive',1)
+                    ->update(['parent' => NULL]);
              
-                // // Edit Existing
-                // $newModel=Transaksi::select('id','nomor')
-                //     ->whereYear('tanggalref',$year)
-                //     ->where('id',$input['currentIdTransaksi'])
-                //     ->where('idunitkerja', $user->idunitkerja)->first();
-                // $newModel->fill([
-                //     'idm' => $user->id,
-                //     'idc' => $user->id,
-                //     'saldo'=>$newSaldo,
-                //     'jumlah'=>$newJumlah,
-                //     'rekening'=>$rekenings,
-                //     'kodetransaksi'=>$models->first()->kodetransaksi,
-                // ]);
+                // Edit Existing Model
+                $newModel=Transaksi::select('id','nomor')
+                    ->where('isactive',1)
+                    ->whereYear('tanggalref',$year)
+                    ->where('id',$input['currentIdTransaksi'])
+                    ->where('idunitkerja', $user->idunitkerja)->first();
+
+                $tanggalref= isset($input['tanggalref']) ? Carbon::createFromFormat('d/m/Y',$input['tanggalref'])->format('Y-m-d') : $newModel->tanggalref;
+                $idkepada= isset($input['idbendahara']) ? $input['idbendahara'] : $newModel->idkepada;
+
+                $newModel->fill([
+                    'idm' => $user->id,
+                    'idc' => $user->id,
+                    'jumlah'=>$total,
+                    'tanggalref'=>$tanggalref,
+                    'idkepada'=>$idkepada,
+                ]);
             }else{
+                $tanggalref=Carbon::createFromFormat('d/m/Y',$input['tanggalref'])->format('Y-m-d');
                 // create Baru
                 $transaksi_aktual=Transaksi::select('id','nomor')
                     ->where('isactive',1)
@@ -917,7 +920,7 @@ class TransaksiController extends Controller
                     'idkepada'=>$input['idbendahara'],
                     'flagkepada'=>1,
                     'jumlah'=>$total,
-                    'tanggalref'=>$tanggalref->format('Y-m-d'),     //tanggal spp
+                    'tanggalref'=>$tanggalref,     //tanggal spp
                     'tanggal'=>$date->format('Y-m-d'),
                     'keterangan'=>$input['keterangan'],
                     'idc'=>$user->id,

@@ -453,7 +453,7 @@ function edit(self){
     
     $modal.find('input[name=id]').val(data['id']);
     $modal.find('select[name=tipe]').val(data['tipe_raw']).change();
-    $modal.find('input[name=tanggalref]').val(data['tanggal_raw']);
+    $modal.find('input[name=tanggalref]').val(data['tanggalref_raw']);
     $modal.find('input[name=kodetransaksi]').val(data['kodetransaksi']);
     $modal.find('input[name=kodepekerjaan]').val(data['kodepekerjaan']);
     $modal.find('select[name=idrekanan]').val(data['idkepada']).change();
@@ -462,7 +462,7 @@ function edit(self){
     $modal.find('input[name=jumlah]').val(data['rekening'][0][3]);
 
     var pos = rekanan.findIndex(function(e){return e.id==data['idkepada'];});
-    var date = new Date(data['tanggal_raw']);
+    var date = new Date(data['tanggalref_raw']);
     var month = date.getMonth();
 
     $modal.find('input[name=pimpinan]').val(rekanan[pos]['pimpinan']);
@@ -547,7 +547,7 @@ $(document).ready(function(){
         columns: [
             { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' , title:'No.', name:'no'},
             { data:'tipe', orderable: false, width: 1 , title:'Tipe', name:'tipe'},
-            { data:'tanggal', title:'Tanggal', name:'tanggal'},
+            { data:'tanggalref', title:'Tanggal', name:'tanggalref'},
             { data:'kodetransaksi', title:'ID Transaksi', name:'kodetransaksi'},
             { data:'kodepekerjaan', title:'ID Pekerjaan', name:'kodepekerjaan'},
             { data:'keterangan', orderable: false, width: '23rem', title:'Keperluan', name:'keterangan'},
@@ -556,7 +556,7 @@ $(document).ready(function(){
             @endif
             { data:'unitkerja', visible: false, name:'unitkerja.nama_alias'},
             { data:'idrekanan', visible: false, name:'idrekanan'},
-            { data:'tanggal_raw', visible: false, name:'tanggal_raw'},
+            { data:'tanggalref_raw', visible: false, name:'tanggalref_raw'},
             { data:'rekening', visible: false, name:'rekening'},
             { data:'tipe_raw', visible: false, name:'tipe_raw'},
         ],

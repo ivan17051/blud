@@ -40,13 +40,13 @@ class SPJController extends Controller
             // dd($data);
         }else{
             $data = Transaksi::where('isactive',1)->where('isspj',1)->where('idunitkerja',$user->idunitkerja)
-                ->select('id','idunitkerja','kodetransaksi','kodepekerjaan','tanggal','keterangan','isactive','idkepada','rekening','tipe');
+                ->select('id','idunitkerja','kodetransaksi','kodepekerjaan','tanggal','tanggalref','keterangan','isactive','idkepada','rekening','tipe');
         }
         
         $datatable = Datatables::of($data);
-        $datatable->editColumn('tanggal', function ($t) { return Carbon::parse($t->tanggal)->translatedFormat('d M Y');})
-            ->addColumn('tanggal_raw', function ($t) { 
-                return $t->tanggal;
+        $datatable->editColumn('tanggalref', function ($t) { return Carbon::parse($t->tanggalref)->translatedFormat('d M Y');})
+            ->addColumn('tanggalref_raw', function ($t) { 
+                return $t->tanggalref;
             })
             ->addIndexColumn()
             ->editColumn('unitkerja', function ($t){

@@ -753,7 +753,7 @@ $role = Auth::user()->id;
                             
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="#" onclick="pilih_espj_ls()" title="Tambah SPP LS">SPP LS</a>
-                                <a class="dropdown-item" href="#" onclick="open_form_tarik_lpj()" title="Tambah SPP GU">SPP GU</a>
+                                <a class="dropdown-item" href="#" onclick="open_form_tarik_lpj(this)" title="Tambah SPP GU">SPP GU</a>
                             </div>
                         </div>
                         <button class="btn btn-sm btn-primary " type="button" data-toggle="modal" data-target="#tambah" data-placement="top" title="Tambah Transaksi">
@@ -1511,7 +1511,7 @@ function openPilihSPP(urlparams, sign_, callback, FORCE_REFRESH=false, onComplet
                 { data:'DT_RowIndex', orderable: false, searchable: false,  className: 'select-checkbox', render: function(){return '<input class="scale-1-5" type="checkbox" >';}} ,
                 { data:'id', title:'ID-LPJ' },
                 { data:'nomor', title:'Nomor' },
-                { data:'tanggal', title:'Tanggal', render: function(e,d,row){return moment(row['tanggalref']).format('L');}},
+                { data:'tanggal', title:'Tanggal', render: function(e,d,row){return moment(row['tanggal']).format('L');}},
                 { data:'total', className:'text-right', title:'Nominal', orderable: false, render: function(e,d,row){return my.formatRupiah(Math.trunc(row['total'])); } },
             ],
             initComplete: onComplete,
@@ -1602,42 +1602,47 @@ function edit_pilihan_espj_ls(idtransaksi){
 //END of FORM Pilih SPP
 
 // FORM PILIH LPJ
-function open_form_tarik_lpj(currentidtransaksi=null){
+function open_form_tarik_lpj(self, currentidtransaksi=null){
     $form = $('#tarik_LPJ form');
     var urlparams='';
     var sign;
     if(currentidtransaksi){
         var infoCentang='', ids='';
         let idsObject={};
-        dataSelected
-        for (let i = 0; i < dataSelected.length; i++) {
-            if(i!=0){
-                infoCentang+=','+dataSelected[i].nomor.toString();
-                ids+=','+dataSelected[i].id.toString();
-            }else{
-                infoCentang+=dataSelected[i].nomor.toString();
-                ids+=dataSelected[i].id.toString();
-            }
-            idsObject[dataSelected[i].id] = dataSelected[i].id;
-        }
+        var tr = $(self).closest('tr');
+        var data = oTable.fnGetData(tr);
+
+        // console.log(dataSelected);
+        // return;
+        // for (let i = 0; i < dataSelected.length; i++) {
+        //     if(i!=0){
+        //         infoCentang+=','+dataSelected[i].nomor.toString();
+        //         ids+=','+dataSelected[i].id.toString();
+        //     }else{
+        //         infoCentang+=dataSelected[i].nomor.toString();
+        //         ids+=dataSelected[i].id.toString();
+        //     }
+        //     idsObject[dataSelected[i].id] = dataSelected[i].id;
+        // }
         $form.find('input[name=idlpj]').val(ids);
         $form.find('input[name=nomorlpj]').val(infoCentang);
-        $form.find('input[name=tanggalref]').val('');
-        $form.find('input[name=currentIdTransaksi]').val('');
+        $form.find('input[name=tanggalref]').datetimepicker('date', data['tanggalref'])
+        $form.find('input[name=currentIdTransaksi]').val(currentidtransaksi);
         $form.find('input[name=tipe]').val('GU');
-        $form.find('input[name=idbendahara]').val('').change();
-        $form.find('input[name=keterangan]').val('');
+        $form.find('select[name=idbendahara]').val(data['idkepada']).change();
+        $form.find('textarea[name=keterangan]').val(data['keterangan']);
+        console.log(data);
         urlparams='?upls=UP&transaksiterikat='+currentidtransaksi;
         sign=6;
     }else{
         urlparams='?upls=UP&transaksiterikat=NULL';
         $form.find('input[name=idlpj]').val('');
         $form.find('input[name=nomorlpj]').val('');
-        $form.find('input[name=tanggalref]').val('');
+        $form.find('input[name=tanggalref]').datetimepicker('date', curDate);
         $form.find('input[name=currentIdTransaksi]').val('');
         $form.find('input[name=tipe]').val('GU');
-        $form.find('input[name=idbendahara]').val('').change();
-        $form.find('input[name=keterangan]').val('');
+        $form.find('select[name=idbendahara]').val('').change();
+        $form.find('textarea[name=keterangan]').val('');
         sign=5;
     }
     $form.find('input[name=tipe]').val('GU');
@@ -1655,23 +1660,22 @@ function submit_form_tarik_lpj(e){
     }
 }
 // END of FORM Pilih LPJ
-
+@php
+$date=Carbon\Carbon::now();
+$curDate=$date->format('Y-m-d');
+$date->day=31;
+$date->month=12;
+$maxDate=$date->format('Y-m-d');
+$date->day=1;
+$date->month=1;
+$minDate=$date->format('Y-m-d');
+@endphp
+const curDate='{{$curDate}}';
+const maxDate='{{$maxDate}}';
+const minDate='{{$minDate}}';
 $(document).ready(function(){
     $('#tambah').find('select[name=jenis]').val('0').change().attr('readonly',true);
 
-    @php
-    $date=Carbon\Carbon::now();
-    $curDate=$date->format('Y-m-d');
-    $date->day=31;
-    $date->month=12;
-    $maxDate=$date->format('Y-m-d');
-    $date->day=1;
-    $date->month=1;
-    $minDate=$date->format('Y-m-d');
-    @endphp
-    const curDate='{{$curDate}}';
-    const maxDate='{{$maxDate}}';
-    const minDate='{{$minDate}}';
     $('#datetimepicker, #datetimepicker2, #datetimepicker3').datetimepicker({
         locale: 'id',
         format: 'L',
@@ -1721,19 +1725,7 @@ $(document).ready(function(){
             { data:'unitkerja.nama', visible: false, name:'unitkerja.nama'},
             { data:'status_raw', visible: false, name:'status'},
         ],
-    }).yadcf([
-        // {
-        //     column_number: 1,
-        //     filter_default_label: 'Tipe',
-        //     filter_type: "select",
-        //     style_class:'c-filter-1',
-        //     reset_button_style_class:'c-filter-btn-1 btn btn-sm btn-warning',
-        //     data:[
-        //         {value:'LS',label:'LS'},
-        //         {value:'TU',label:'TU'},
-        //     ]
-        // },
-    ]);
+    });
 
     $('#addrekening').submit(function(e){
         e.preventDefault();
