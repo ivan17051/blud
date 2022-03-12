@@ -193,7 +193,7 @@ class LPJController extends Controller
         $upls = explode(',',$request->upls);
         $idunitkerja = $user->idunitkerja;
         $date=Carbon::now();
-        $data = LPJ::select('id','nomor','tanggal','total')
+        $data = LPJ::select('id','nomor','tanggal','total','transaksiterikat')
             ->where('isactive',1)
             ->whereYear('tanggal',$date->year)
             ->whereIn('tipe',$upls)

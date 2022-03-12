@@ -1496,7 +1496,7 @@ function openPilihSPP(urlparams, sign_, callback, FORCE_REFRESH=false, onComplet
             initComplete: onComplete,
         });
     }
-    else if(sign==5){   // LPJ ditarik menjadi SPP GU
+    else if(sign==5 || sign==6){   // LPJ ditarik menjadi SPP GU
         $('#pilihSppLabel').text('Pilih LPJ-UP');
         sppTable = $("#spptable").dataTable({
             processing: true,
@@ -1606,24 +1606,26 @@ function open_form_tarik_lpj(self, currentidtransaksi=null){
     $form = $('#tarik_LPJ form');
     var urlparams='';
     var sign;
+    var onComplete=function(s, j){return '';}
     if(currentidtransaksi){
         var infoCentang='', ids='';
         let idsObject={};
         var tr = $(self).closest('tr');
         var data = oTable.fnGetData(tr);
 
-        // console.log(dataSelected);
-        // return;
-        // for (let i = 0; i < dataSelected.length; i++) {
-        //     if(i!=0){
-        //         infoCentang+=','+dataSelected[i].nomor.toString();
-        //         ids+=','+dataSelected[i].id.toString();
-        //     }else{
-        //         infoCentang+=dataSelected[i].nomor.toString();
-        //         ids+=dataSelected[i].id.toString();
-        //     }
-        //     idsObject[dataSelected[i].id] = dataSelected[i].id;
-        // }
+        onComplete=function(s, j){
+            for(let d of j.data){
+                if(d.transaksiterikat == currentidtransaksi ){
+                    infoCentang+=','+d.nomor.toString();
+                    ids+=','+d.id.toString();
+                    idsObject[d.id] = d.id;
+                }
+            }
+            infoCentang=infoCentang.substr(1);
+            ids=ids.substr(1);
+            select_espj_terpilih(s,j,idsObject);
+        }
+        
         $form.find('input[name=idlpj]').val(ids);
         $form.find('input[name=nomorlpj]').val(infoCentang);
         $form.find('input[name=tanggalref]').datetimepicker('date', data['tanggalref'])
@@ -1631,7 +1633,6 @@ function open_form_tarik_lpj(self, currentidtransaksi=null){
         $form.find('input[name=tipe]').val('GU');
         $form.find('select[name=idbendahara]').val(data['idkepada']).change();
         $form.find('textarea[name=keterangan]').val(data['keterangan']);
-        console.log(data);
         urlparams='?upls=UP&transaksiterikat='+currentidtransaksi;
         sign=6;
     }else{
@@ -1650,7 +1651,7 @@ function open_form_tarik_lpj(self, currentidtransaksi=null){
         $('#pilihSpp').modal('hide');
         $form.find('input[name=idlpj]').val(ids);
         $form.find('input[name=nomorlpj]').val(infoCentang);
-    });
+    }, true, onComplete);
     $('#tarik_LPJ').modal('show');
 }
 function submit_form_tarik_lpj(e){
