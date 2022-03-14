@@ -468,6 +468,11 @@ class TransaksiController extends Controller
                 ->where('isactive',1)
                 ->update(['parent' => NULL]);
 
+            //cek apakah row transaksi ini memiliki data LPJ yang terikat
+            LPJ::where('transaksiterikat',$model->id)
+                ->where('isactive',1)
+                ->update(['transaksiterikat' => NULL]);
+
             DB::commit();
             return back()->with('success','Berhasil menghapus');
         } catch (\Throwable $th) {
@@ -878,7 +883,7 @@ class TransaksiController extends Controller
                 LPJ::where('transaksiterikat',$input['currentIdTransaksi'])
                     ->whereNotIn('id',$idlpjs)
                     ->where('isactive',1)
-                    ->update(['parent' => NULL]);
+                    ->update(['transaksiterikat' => NULL]);
              
                 // Edit Existing Model
                 $newModel=Transaksi::select('id','nomor')
@@ -889,6 +894,7 @@ class TransaksiController extends Controller
 
                 $tanggalref= isset($input['tanggalref']) ? Carbon::createFromFormat('d/m/Y',$input['tanggalref'])->format('Y-m-d') : $newModel->tanggalref;
                 $idkepada= isset($input['idbendahara']) ? $input['idbendahara'] : $newModel->idkepada;
+                $keterangan = isset($input['keterangan']) ? $input['keterangan'] : $newModel->keterangan;
 
                 $newModel->fill([
                     'idm' => $user->id,
@@ -896,6 +902,7 @@ class TransaksiController extends Controller
                     'jumlah'=>$total,
                     'tanggalref'=>$tanggalref,
                     'idkepada'=>$idkepada,
+                    'keterangan'=>$keterangan,
                 ]);
             }else{
                 $tanggalref=Carbon::createFromFormat('d/m/Y',$input['tanggalref'])->format('Y-m-d');

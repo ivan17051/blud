@@ -600,6 +600,7 @@ $role = Auth::user()->id;
             </div>
             <form action="{{route('transaksi.lpj2transaksi')}}" method="post" onsubmit="return submit_form_tarik_lpj(event);">
                 @csrf
+                <input type="hidden" name="currentIdTransaksi">
                 <input type="hidden" name="idlpj">
                 <input type="hidden" name="tipe">
             <div class="modal-body">
@@ -1623,11 +1624,11 @@ function open_form_tarik_lpj(self, currentidtransaksi=null){
             }
             infoCentang=infoCentang.substr(1);
             ids=ids.substr(1);
+            $form.find('input[name=idlpj]').val(ids);
+            $form.find('input[name=nomorlpj]').val(infoCentang);
             select_espj_terpilih(s,j,idsObject);
         }
         
-        $form.find('input[name=idlpj]').val(ids);
-        $form.find('input[name=nomorlpj]').val(infoCentang);
         $form.find('input[name=tanggalref]').datetimepicker('date', data['tanggalref'])
         $form.find('input[name=currentIdTransaksi]').val(currentidtransaksi);
         $form.find('input[name=tipe]').val('GU');
