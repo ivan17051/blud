@@ -22,16 +22,10 @@ class LPJController extends Controller
 {
     public function lpj(){
         $user = Auth::user();
-        $unitKerja=UnitKerja::where('id',$user->idunitkerja)->select('id','nama','nama_alias')->get();
-        $rekanan=Rekanan::where('isactive', 1)->where('idc',$user->id)->get();
         $subkegiatan=SubKegiatan::where('isactive', 1)->where('idunitkerja',$user->idunitkerja)->get();
-        if(in_array($user->role,['admin','PIH'])){
-            $spj = Transaksi::where('isspj', 1)->where('isactive', 1)->get();
-        }else{
-            $spj = Transaksi::where('isspj', 1)->where('isactive', 1)->where('idunitkerja',$user->idunitkerja)->get();
-        }        
+        $sp2d_tu=Transaksi::select('id','nomor','keterangan','tanggalsp2d', 'idsubkegiatan')->where('isactive',1)->where('tipe','TU')->where('idunitkerja',$user->idunitkerja)->get();      
         
-        return view('lpj', ['user' =>$user, 'unitkerja'=>$unitKerja, 'spj'=>$spj, 'rekanan'=>$rekanan, 'subkegiatan'=>$subkegiatan]);
+        return view('lpj', ['user' =>$user, 'subkegiatan'=>$subkegiatan, 'sp2d_tu'=>$sp2d_tu]);
     }
 
     public function data(Request $request){
@@ -45,14 +39,22 @@ class LPJController extends Controller
         }
         $datatable = Datatables::of($data);
         $datatable->addColumn('action', function ($t) { 
-            if(isset($t->transaksiterikat)){
-                return '<button disabled class="btn btn-sm btn-outline-default border-0" title="lock"><i class="fas fa-lock fa-sm"></i></button>';
+            if($t->tipe === 'UP'){
+                if(isset($t->transaksiterikat)){
+                    return '<button disabled class="btn btn-sm btn-outline-default border-0" title="lock"><i class="fas fa-lock fa-sm"></i></button>';
+                }else{
+                    return '<div class="text-nowrap">'.
+                            '<button onclick="handleOpenModalTambahUP(this, '.$t->id.')" class="btn btn-sm btn-outline-info border-0" title="info"><i class="fas fa-list fa-sm"></i></button>&nbsp'.
+                            '<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" title="info"><i class="fas fa-trash fa-sm"></i></button>'.
+                            '</div>';
+                }
             }else{
                 return '<div class="text-nowrap">'.
-                        '<button onclick="openDetilLPJ(this, \'/'.$t->id.'\', \'#detil\')" class="btn btn-sm btn-outline-info border-0" title="info"><i class="fas fa-list fa-sm"></i></button>&nbsp'.
-                        '<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" title="info"><i class="fas fa-trash fa-sm"></i></button>'.
-                        '</div>';
+                    '<button onclick="openDetilLPJ_TU(this, \'/'.$t->id.'\', \'#tambahTU\')" class="btn btn-sm btn-outline-info border-0" title="info"><i class="fas fa-list fa-sm"></i></button>&nbsp'.
+                    '<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" title="info"><i class="fas fa-trash fa-sm"></i></button>'.
+                    '</div>';
             }
+            
         })->addColumn('tipe_raw', function ($t) { 
             return $t->tipe;
         })->editColumn('tipe', function ($t) { 

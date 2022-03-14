@@ -74,6 +74,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/sppup/{id}', 'TransaksiController@sppup');
     Route::get('/spm/{id}', 'TransaksiController@spm');
     Route::get('/sp2d/{id}', 'TransaksiController@sp2d');
+    Route::get('/sp2d/info/{idtransaksi}', 'TransaksiController@getsp2dinfo')->name('getsp2d.info');
 
     Route::get('/bku', 'BkuController@index')->name('bku');
     Route::post('/bku/data', 'BkuController@data')->name('bku.data');

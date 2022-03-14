@@ -949,4 +949,17 @@ class TransaksiController extends Controller
             return back()->with('error','Gagal membuat SPP.');
         }
     }
+
+    public function getSp2dInfo(Request $request, $idtransaksi){
+        $fields=$request->input('fields');
+        if(isset($fields)){
+            $fields=array_merge(['id'],explode(',',$fields));
+        }else{
+            $fields=['id'];
+        }
+        $transaksi = Transaksi::select($fields)
+            ->where('id',$idtransaksi)
+            ->first();
+        return response()->json($transaksi);
+    }
 }
