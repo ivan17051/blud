@@ -600,6 +600,7 @@ $role = Auth::user()->id;
             </div>
             <form action="{{route('transaksi.lpj2transaksi')}}" method="post" onsubmit="return submit_form_tarik_lpj(event);">
                 @csrf
+                <input type="hidden" name="currentIdTransaksi">
                 <input type="hidden" name="idlpj">
                 <input type="hidden" name="tipe">
             <div class="modal-body">
@@ -753,7 +754,7 @@ $role = Auth::user()->id;
                             
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="#" onclick="pilih_espj_ls()" title="Tambah SPP LS">SPP LS</a>
-                                <a class="dropdown-item" href="#" onclick="open_form_tarik_lpj()" title="Tambah SPP GU">SPP GU</a>
+                                <a class="dropdown-item" href="#" onclick="open_form_tarik_lpj(this)" title="Tambah SPP GU">SPP GU</a>
                             </div>
                         </div>
                         <button class="btn btn-sm btn-primary " type="button" data-toggle="modal" data-target="#tambah" data-placement="top" title="Tambah Transaksi">
@@ -1496,7 +1497,7 @@ function openPilihSPP(urlparams, sign_, callback, FORCE_REFRESH=false, onComplet
             initComplete: onComplete,
         });
     }
-    else if(sign==5){   // LPJ ditarik menjadi SPP GU
+    else if(sign==5 || sign==6){   // LPJ ditarik menjadi SPP GU
         $('#pilihSppLabel').text('Pilih LPJ-UP');
         sppTable = $("#spptable").dataTable({
             processing: true,
@@ -1511,7 +1512,7 @@ function openPilihSPP(urlparams, sign_, callback, FORCE_REFRESH=false, onComplet
                 { data:'DT_RowIndex', orderable: false, searchable: false,  className: 'select-checkbox', render: function(){return '<input class="scale-1-5" type="checkbox" >';}} ,
                 { data:'id', title:'ID-LPJ' },
                 { data:'nomor', title:'Nomor' },
-                { data:'tanggal', title:'Tanggal', render: function(e,d,row){return moment(row['tanggalref']).format('L');}},
+                { data:'tanggal', title:'Tanggal', render: function(e,d,row){return moment(row['tanggal']).format('L');}},
                 { data:'total', className:'text-right', title:'Nominal', orderable: false, render: function(e,d,row){return my.formatRupiah(Math.trunc(row['total'])); } },
             ],
             initComplete: onComplete,
@@ -1595,24 +1596,63 @@ function edit_pilihan_espj_ls(idtransaksi){
         $form.find('input[name=idtransaksi]').val(id);
         $form.find('input[name=kodetransaksi]').val(kodetransaksi);
         $('#pilihSpp').modal('hide');
-    }, true, 
-        function(s,j){select_espj_terpilih(s,j,idsObject);});   //force refresh tabel true
+    }, true,                                                             //force refresh tabel true
+        function(s,j){select_espj_terpilih(s,j,idsObject);});   
     $('#tarik_eSPJ_LS').modal('show');
 }
 //END of FORM Pilih SPP
 
 // FORM PILIH LPJ
-function open_form_tarik_lpj(){
+function open_form_tarik_lpj(self, currentidtransaksi=null){
     $form = $('#tarik_LPJ form');
-    // $form.find('input[name=currentIdTransaksi]').val('');
-    // $form.find('input[name=idtransaksi]').val('');
-    // $form.find('input[name=kodetransaksi]').val('');
+    var urlparams='';
+    var sign;
+    var onComplete=function(s, j){return '';}
+    if(currentidtransaksi){
+        var infoCentang='', ids='';
+        let idsObject={};
+        var tr = $(self).closest('tr');
+        var data = oTable.fnGetData(tr);
+
+        onComplete=function(s, j){
+            for(let d of j.data){
+                if(d.transaksiterikat == currentidtransaksi ){
+                    infoCentang+=','+d.nomor.toString();
+                    ids+=','+d.id.toString();
+                    idsObject[d.id] = d.id;
+                }
+            }
+            infoCentang=infoCentang.substr(1);
+            ids=ids.substr(1);
+            $form.find('input[name=idlpj]').val(ids);
+            $form.find('input[name=nomorlpj]').val(infoCentang);
+            select_espj_terpilih(s,j,idsObject);
+        }
+        
+        $form.find('input[name=tanggalref]').datetimepicker('date', data['tanggalref'])
+        $form.find('input[name=currentIdTransaksi]').val(currentidtransaksi);
+        $form.find('input[name=tipe]').val('GU');
+        $form.find('select[name=idbendahara]').val(data['idkepada']).change();
+        $form.find('textarea[name=keterangan]').val(data['keterangan']);
+        urlparams='?upls=UP&transaksiterikat='+currentidtransaksi;
+        sign=6;
+    }else{
+        urlparams='?upls=UP&transaksiterikat=NULL';
+        $form.find('input[name=idlpj]').val('');
+        $form.find('input[name=nomorlpj]').val('');
+        $form.find('input[name=tanggalref]').datetimepicker('date', curDate);
+        $form.find('input[name=currentIdTransaksi]').val('');
+        $form.find('input[name=tipe]').val('GU');
+        $form.find('select[name=idbendahara]').val('').change();
+        $form.find('textarea[name=keterangan]').val('');
+        sign=5;
+    }
     $form.find('input[name=tipe]').val('GU');
-    openPilihSPP('?upls=UP&transaksiterikat=NULL',5, function(infoCentang, ids){
+    openPilihSPP(urlparams,sign, function(infoCentang, ids){
         $('#pilihSpp').modal('hide');
         $form.find('input[name=idlpj]').val(ids);
         $form.find('input[name=nomorlpj]').val(infoCentang);
-    });
+    }, true, onComplete);
     $('#tarik_LPJ').modal('show');
 }
 function submit_form_tarik_lpj(e){
@@ -1622,23 +1662,22 @@ function submit_form_tarik_lpj(e){
     }
 }
 // END of FORM Pilih LPJ
-
+@php
+$date=Carbon\Carbon::now();
+$curDate=$date->format('Y-m-d');
+$date->day=31;
+$date->month=12;
+$maxDate=$date->format('Y-m-d');
+$date->day=1;
+$date->month=1;
+$minDate=$date->format('Y-m-d');
+@endphp
+const curDate='{{$curDate}}';
+const maxDate='{{$maxDate}}';
+const minDate='{{$minDate}}';
 $(document).ready(function(){
     $('#tambah').find('select[name=jenis]').val('0').change().attr('readonly',true);
 
-    @php
-    $date=Carbon\Carbon::now();
-    $curDate=$date->format('Y-m-d');
-    $date->day=31;
-    $date->month=12;
-    $maxDate=$date->format('Y-m-d');
-    $date->day=1;
-    $date->month=1;
-    $minDate=$date->format('Y-m-d');
-    @endphp
-    const curDate='{{$curDate}}';
-    const maxDate='{{$maxDate}}';
-    const minDate='{{$minDate}}';
     $('#datetimepicker, #datetimepicker2, #datetimepicker3').datetimepicker({
         locale: 'id',
         format: 'L',
@@ -1670,7 +1709,9 @@ $(document).ready(function(){
             { data:'DT_RowIndex', orderable: false, searchable: false, width: '46px' , title:'No.', name:'no'},
             { data:'tipe', orderable: false, width: 1 , title:'Tipe', name:'tipe'},
             { data:'tanggalref', title:'Tanggal', name:'tanggalref', render: function(e,d,row){return moment(row['tanggalref']).format('L');} },
-            { data:'subkegiatan.nama',orderable: false, title:'Subkegiatan', name:'subkegiatan.nama'},
+            { data:'subkegiatan.nama',orderable: false, title:'Subkegiatan', name:'subkegiatan.nama', render: function(e,d,row){
+                return e ? e : '-';
+            }},
             { data:'nomor', title:'Nomor', name:'nomor', render:renderNomor},
             { data:'keterangan', orderable: false, width: '23rem', title:'Keperluan', name:'keterangan'},
             { data:'jumlah', title:'Jumlah', name:'jumlah'},
@@ -1686,19 +1727,7 @@ $(document).ready(function(){
             { data:'unitkerja.nama', visible: false, name:'unitkerja.nama'},
             { data:'status_raw', visible: false, name:'status'},
         ],
-    }).yadcf([
-        // {
-        //     column_number: 1,
-        //     filter_default_label: 'Tipe',
-        //     filter_type: "select",
-        //     style_class:'c-filter-1',
-        //     reset_button_style_class:'c-filter-btn-1 btn btn-sm btn-warning',
-        //     data:[
-        //         {value:'LS',label:'LS'},
-        //         {value:'TU',label:'TU'},
-        //     ]
-        // },
-    ]);
+    });
 
     $('#addrekening').submit(function(e){
         e.preventDefault();

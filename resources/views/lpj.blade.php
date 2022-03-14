@@ -24,13 +24,13 @@ active
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label><b>Tanggal Pengeluaran</b></label>
+                            <label><b>Tanggal LPJ</b></label>
                             <input type="date" id="tanggal" name="tanggal" class="form-control" onchange="fillBulanLPJ(this, '#tambah')" required>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label><b>Bulan akan di-SPJ kan</b></label>
+                            <label><b>Periode</b></label>
                             <select class="form-control" id="bulanlpj" name="bulanlpj" required disabled>
                               <option value="" selected disabled>--Pilih--</option>
                               <option value="1">Januari</option>
@@ -99,13 +99,13 @@ active
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label><b>Tanggal Pengeluaran</b></label>
+                            <label><b>Tanggal LPJ</b></label>
                             <input type="date" name="tanggal" class="form-control" onchange="fillBulanLPJ(this, '#detil')" required>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label><b>Bulan akan di-SPJ kan</b></label>
+                            <label><b>Periode</b></label>
                             <select class="form-control" name="bulanlpj" required disabled>
                               <option value="" selected disabled>--Pilih--</option>
                               <option value="1">Januari</option>
@@ -315,7 +315,7 @@ const fillBulanLPJ = async function(e, modal){
 
 function renderKodeTransaksi(e,d,row){
     if(row['transaksi']){
-        return '<button type="button" class="btn btn-sm btn-light text-nowrap border-1-gray-1 rounded-pill" ><i class="o-f-edelivery" ></i> '+row['kodetransaksi']+'</button>';
+        return '<button type="button" class="btn btn-sm btn-light text-nowrap border-1-gray-1 rounded-pill" ><i class="o-f-edelivery" ></i> '+row['transaksi']['kodetransaksi']+'</button>';
     }
     return '-';
 }

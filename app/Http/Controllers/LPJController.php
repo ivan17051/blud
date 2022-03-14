@@ -45,10 +45,14 @@ class LPJController extends Controller
         }
         $datatable = Datatables::of($data);
         $datatable->addColumn('action', function ($t) { 
-            return '<div class="text-nowrap">'.
-                    '<button onclick="openDetilLPJ(this, \'/'.$t->id.'\', \'#detil\')" class="btn btn-sm btn-outline-info border-0" title="info"><i class="fas fa-list fa-sm"></i></button>&nbsp'.
-                    '<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" title="info"><i class="fas fa-trash fa-sm"></i></button>'.
-                    '</div>';
+            if(isset($t->transaksiterikat)){
+                return '<button disabled class="btn btn-sm btn-outline-default border-0" title="lock"><i class="fas fa-lock fa-sm"></i></button>';
+            }else{
+                return '<div class="text-nowrap">'.
+                        '<button onclick="openDetilLPJ(this, \'/'.$t->id.'\', \'#detil\')" class="btn btn-sm btn-outline-info border-0" title="info"><i class="fas fa-list fa-sm"></i></button>&nbsp'.
+                        '<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" title="info"><i class="fas fa-trash fa-sm"></i></button>'.
+                        '</div>';
+            }
         })->addColumn('tipe_raw', function ($t) { 
             return $t->tipe;
         })->editColumn('tipe', function ($t) { 
@@ -189,7 +193,7 @@ class LPJController extends Controller
         $upls = explode(',',$request->upls);
         $idunitkerja = $user->idunitkerja;
         $date=Carbon::now();
-        $data = LPJ::select('id','nomor','tanggal','total')
+        $data = LPJ::select('id','nomor','tanggal','total','transaksiterikat')
             ->where('isactive',1)
             ->whereYear('tanggal',$date->year)
             ->whereIn('tipe',$upls)
