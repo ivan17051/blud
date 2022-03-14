@@ -2,7 +2,7 @@
 
 :date: posted\: 09-02-2022
 
-:memo: last updated\: 11-02-2022
+:memo: last updated\: 14-03-2022
 
 :house: [to home](https://github.com/ivan17051/blud/blob/master/README.md)
 
@@ -91,6 +91,7 @@ Redirect
 
 ## tolakTransaksi
 Menolak SPP yang diajukan sebagai SP2D dengan merubah properti **status** = 4.
+
 #### Parameters
 Request
 
@@ -175,6 +176,8 @@ with:<br>
 &emsp;&emsp;[Transaksi](https://github.com/ivan17051/blud/blob/master/app/Transaksi.php): Collections<br>
 &emsp;&emsp;Bendahara: [Pejabat](https://github.com/ivan17051/blud/blob/master/app/Pejabat.php)<br>
 &emsp;&emsp;Otorisator: [Pejabat](https://github.com/ivan17051/blud/blob/master/app/Pejabat.php)<br>
+&emsp;&emsp;Pihak Lain: ([Pejabat](https://github.com/ivan17051/blud/blob/master/app/Pejabat.php) or [Rekanan](https://github.com/ivan17051/blud/blob/master/app/Rekanan.php))<br>
+&emsp;&emsp;Terbilang: [Terbilang](#terbilang)
 
 
 :cyclone: [to top](#contents)
