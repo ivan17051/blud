@@ -5,9 +5,13 @@ active
 @endsection
 
 @section('content')
-
-<!-- Modal Tambah LPJ -->
-<div class="modal modal-danger fade" id="tambah" tabindex="-1" role="dialog" aria-labelledby="Tambah LPJ" aria-hidden="true">
+<style>
+#table-detil-2{
+    width: 100%!important;
+}
+</style>
+<!-- Modal Tambah LPJ UP-->
+<div class="modal modal-danger fade" id="tambahUP" tabindex="-1" role="dialog" aria-labelledby="Tambah LPJ" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -19,20 +23,21 @@ active
             <form action="{{route('lpj.update')}}" method="POST">
             @csrf
             @method('PUT')
-            <input type="hidden" name="tipe">
+            <input type="hidden" name="idlpj_up">
+            <input type="hidden" name="tipe" value="UP">
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><b>Tanggal LPJ</b></label>
-                            <input type="date" id="tanggal" name="tanggal" class="form-control" onchange="fillBulanLPJ(this, '#tambah')" required>
+                            <input type="date" id="tanggal" name="tanggal" class="form-control" onchange="handleChangeModalTambahUP()" required>
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label><b>Periode</b></label>
-                            <select class="form-control" id="bulanlpj" name="bulanlpj" required disabled>
-                              <option value="" selected disabled>--Pilih--</option>
+                            <select class="form-control" id="bulanlpj" name="bulanlpj" required disabled >
+                              <option value="" selected disabled>*Otomatis</option>
                               <option value="1">Januari</option>
                               <option value="2">Februari</option>
                               <option value="3">Maret</option>
@@ -51,10 +56,92 @@ active
                   <div class="col-md-6">
                     <div class="form-group">
                         <label><b>Subkegiatan</b></label>
-                        <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" data-size="5" name="idsubkegiatan" required>
+                        <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" data-size="5" name="idsubkegiatan" required onchange="handleChangeModalTambahUP()">
                           <option value="" selected disabled>--Pilih--</option>
                           @foreach($subkegiatan as $unit)
                           <option value="{{$unit->id}}">{{$unit->kode}} - {{$unit->nama}}</option>
+                          @endforeach
+                        </select>
+                    </div>
+                  </div>
+                </div>
+                
+                <table class="table table-bordered" id="table-detil-2">
+                <thead>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Tambah LPJ TU-->
+<div class="modal modal-danger fade" id="tambahTU" tabindex="-1" role="dialog" aria-labelledby="Tambah LPJ TU" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" >Tambah LPJ-TU</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{route('lpj.update')}}" method="POST">
+            @csrf
+            @method('PUT')
+            <input type="hidden" name="tipe" value="TU">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label><b>Tanggal LPJ</b></label>
+                            <input type="date" name="tanggal" class="form-control" onchange="fillBulanLPJ(this, '#tambahTU')" required>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label><b>Periode</b></label>
+                            <select class="form-control" name="bulanlpj" required disabled>
+                              <option value="" selected disabled>*Otomatis</option>
+                              <option value="1">Januari</option>
+                              <option value="2">Februari</option>
+                              <option value="3">Maret</option>
+                              <option value="4">April</option>
+                              <option value="5">Mei</option>
+                              <option value="6">Juni</option>
+                              <option value="7">Juli</option>
+                              <option value="8">Agustus</option>
+                              <option value="9">September</option>
+                              <option value="10">Oktober</option>
+                              <option value="11">November</option>
+                              <option value="12">Desember</option>
+                            </select>
+                        </div>
+                    </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                        <label><b>Subkegiatan</b></label>
+                        <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" data-size="5" name="idsubkegiatan" disabled >
+                          <option value="" selected>*Otomatis</option>
+                          @foreach($subkegiatan as $unit)
+                          <option value="{{$unit->id}}">{{$unit->kode}} - {{$unit->nama}}</option>
+                          @endforeach
+                        </select>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="form-group">
+                        <label><b>SP2D TU</b></label>
+                        <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" data-size="5" name="idtransaksi" required onchange="handleChangeModalTambahTU()">
+                          <option value="" selected disabled>--Pilih--</option>
+                          @foreach($sp2d_tu as $unit)
+                          <option value="{{$unit->id}}" data-idsubkegiatan="{{$unit->idsubkegiatan}}" >{{$unit->nomor}} - {{$unit->keterangan}}</option>
                           @endforeach
                         </select>
                     </div>
@@ -71,80 +158,6 @@ active
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
                 <button type="submit" class="btn btn-primary">Simpan</button>
-            </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Detil LPJ -->
-<style>
-#table-detil-2{
-    width: 100%!important;
-}
-</style>
-<div class="modal modal-danger fade" id="detil" tabindex="-1" role="dialog" aria-labelledby="Detil LPJ" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" >Detil LPJ-UP</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form action="" method="POST">
-            @csrf
-            @method('PUT')
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label><b>Tanggal LPJ</b></label>
-                            <input type="date" name="tanggal" class="form-control" onchange="fillBulanLPJ(this, '#detil')" required>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label><b>Periode</b></label>
-                            <select class="form-control" name="bulanlpj" required disabled>
-                              <option value="" selected disabled>--Pilih--</option>
-                              <option value="1">Januari</option>
-                              <option value="2">Februari</option>
-                              <option value="3">Maret</option>
-                              <option value="4">April</option>
-                              <option value="5">Mei</option>
-                              <option value="6">Juni</option>
-                              <option value="7">Juli</option>
-                              <option value="8">Agustus</option>
-                              <option value="9">September</option>
-                              <option value="10">Oktober</option>
-                              <option value="11">November</option>
-                              <option value="12">Desember</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label><b>Subkegiatan</b></label>
-                            <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" data-size="5" name="idsubkegiatan" required>
-                            <option value="" selected disabled>--Pilih--</option>
-                            @foreach($subkegiatan as $unit)
-                            <option value="{{$unit->id}}">{{$unit->kode}} - {{$unit->nama}}</option>
-                            @endforeach
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                
-                <table class="table table-bordered" id="table-detil-2">
-                    <thead>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
             </div>
             </form>
         </div>
@@ -181,8 +194,8 @@ active
                         Tambah
                       </button>
                       <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                        <a class="dropdown-item" href="#" onclick="handleOpenModalTambah('UP')" title="Add LPJ-UP">LPJ-UP</a>
-                        <a class="dropdown-item" href="#" onclick="handleOpenModalTambah('TU')" title="Add LPJ-TU">LPJ-TU</a>
+                        <a class="dropdown-item" href="#" onclick="handleOpenModalTambahUP()" title="Add LPJ-UP">LPJ-UP</a>
+                        <a class="dropdown-item" href="#" onclick="handleOpenModalTambahTU()" title="Add LPJ-TU">LPJ-TU</a>
                       </div>
                     </div>
                   </div>
@@ -320,23 +333,16 @@ function renderKodeTransaksi(e,d,row){
     return '-';
 }
 
-function openDetilLPJ(self, urlparams, idmodal, route='getrelatedbku'){
+function openDetilLPJ_UP(self, url, idmodal){
     $table = $(idmodal).find('table');
     if ($.fn.dataTable.isDataTable($table) ) {
         $table.DataTable().clear();
         $table.DataTable().destroy();
         $table.empty();
     }
-
-    if(route === 'getrelatedbku'){
-        url = '{{route("lpj.getrelatedbku", ["idlpj"=>''])}}';
-    }else{
-        url = '{{route("lpj.getbkubyperiod", ["idsubkegiatan"=> '', "tipe"=>'', "month"=>'', "year"=>''])}}';
-    }
-
     $table.dataTable({
         processing: true,
-        ajax: {type: "GET", url: url+urlparams, data:{'_token':@json(csrf_token())}},
+        ajax: {type: "GET", url: url, data:{'_token':@json(csrf_token())}},
         columns: [
             {title:"Nomor", data: "nomor"},
             {title:"tanggal", data: "tanggal", render: function(e,d,row){return moment(row['tanggal']).format('L');}},
@@ -345,40 +351,115 @@ function openDetilLPJ(self, urlparams, idmodal, route='getrelatedbku'){
             {title:"Uraian", data: "uraian"},
             {title:"Nominal", data: "nominal"}
         ],
-        initComplete: function(){
-            let $modal = $(idmodal);
-            if(route === 'getrelatedbku'){
-                var tr = $(self).closest('tr');
-                var data = oTable.api().row(tr).data();
-                $modal.find('[name=tanggal]').val(data['tanggal']).change().attr('readonly',true);
-                $modal.find('[name=idsubkegiatan]').val(data['idsubkegiatan']).change().attr('readonly',true);
-                $modal.find('.modal-title').text('Detil LPJ-'+data['tipe_raw']);
-                $modal.modal('show');
-            }
-            
-        },
     });
 }
 
-function handleChangeModalTambah(tipe){
-    let $modal = $('#tambah');
-    let tanggal = $modal.find('[name=tanggal]').val();
-    let idsubkegiatan = $modal.find('[name=idsubkegiatan]').val();
-    console.log(tanggal, idsubkegiatan);
-    if( tanggal === '' || idsubkegiatan === null) return;
-    tanggal = moment(tanggal);
-    let urlparams = '/'+idsubkegiatan+'/'+tipe+'/'+tanggal.format('MM')+'/'+tanggal.format('y');
-    openDetilLPJ($modal[0], urlparams, '#tambah', route='getbkubyperiod');
+function openDetilLPJ_TU(self, url, idmodal){
+    $table = $(idmodal).find('table');
+    if ($.fn.dataTable.isDataTable($table) ) {
+        $table.DataTable().clear();
+        $table.DataTable().destroy();
+        $table.empty();
+    }
+    $table.dataTable({
+        processing: true,
+        ajax: {type: "GET", url: url, data:{'_token':@json(csrf_token())}},
+        columns: [
+            {title:"Nomor", data: "nomor"},
+            {title:"tanggal", data: "tanggal", render: function(e,d,row){return moment(row['tanggal']).format('L');}},
+            {title:"e-SPJ", data: "transaksi", render: renderKodeTransaksi },
+            {title:"Rekening", data: "rekening.kode"},
+            {title:"Uraian", data: "uraian"},
+            {title:"Nominal", data: "nominal"}
+        ],
+    });
 }
 
-function handleOpenModalTambah(tipe){
-    let $modal = $('#tambah');
-    $modal.find('[name=tipe]').val(tipe);
-    $modal.find('[name=tanggal]').on( "change", function() {handleChangeModalTambah(tipe);});
-    $modal.find('[name=idsubkegiatan]').on('change', function() {handleChangeModalTambah(tipe);});
-    $modal.find('.modal-title').text('Detil LPJ-'+tipe);
+/** LPJ UP */
+function handleChangeModalTambahUP(){
+    let $modal = $('#tambahUP');
+    let tanggal = $modal.find('[name=tanggal]').val();
+    let idsubkegiatan = $modal.find('[name=idsubkegiatan]').val();
+    if( tanggal !== '') fillBulanLPJ($modal.find('[name=tanggal]')[0], '#tambahUP');
+    if( tanggal === '' || idsubkegiatan === null) return;
+    tanggal = moment(tanggal);
+    let idlpj_up = $modal.find('[name=idlpj_up]').val();
+    let url = '{{route("lpj.getbkubyperiod", ["idsubkegiatan"=> '', "tipe"=>'', "month"=>'', "year"=>''])}}';
+    let urlparams = '/'+idsubkegiatan+'/UP/'+tanggal.format('MM')+'/'+tanggal.format('y');
+    openDetilLPJ_UP($modal[0], url+urlparams, '#tambahUP');
+}
+function handleOpenModalTambahUP(self=null, idlpj_up=null){
+    let $modal = $('#tambahUP');
+    if(idlpj_up !== null){
+        var tr = $(self).closest('tr');
+        var data = oTable.api().row(tr).data();
+        $modal.find('[name=idlpj_up]').val(idlpj_up);
+        $modal.find('[name=tanggal]').val(data['tanggal']).change().attr('readonly',true);
+        $modal.find('[name=idsubkegiatan]').val(data['idsubkegiatan']).change().attr('readonly',true);
+        $modal.find('.modal-title').text('Detil LPJ-'+data['tipe_raw']);
+        $modal.find('button[type=submit]').attr('hidden', true);
+    }else{
+        $modal.find('[name=idlpj_up]').val('');
+        $modal.find('[name=tanggal]').val('').change().attr('readonly',false);
+        $modal.find('select[name=bulanlpj]').val('').change();
+        $modal.find('[name=idsubkegiatan]').val('').change().attr('readonly',false);
+        $modal.find('button[type=submit]').removeAttr('hidden', false);
+        $modal.find('.modal-title').text('Tambah LPJ-UP');
+        $table = $modal.find('table');
+        if ($.fn.dataTable.isDataTable($table) ) {
+            $table.DataTable().clear();
+            $table.DataTable().destroy();
+            $table.empty();
+        }
+    }
     $modal.modal('show');
 }
+/** END of LPJ UP */
+
+/** LPJ TU */
+function handleChangeModalTambahTU(){
+    let $modal = $('#tambahTU');
+    let $idtransaksi = $modal.find('[name=idtransaksi]');
+    let idtransaksi = $idtransaksi.val();
+    let $idsubkegiatan = $modal.find('[name=idsubkegiatan]');
+    if( idtransaksi === null) return;
+    if( idtransaksi === '') {
+        $idsubkegiatan.val('').change();
+    }else{
+        let idsubkegiatan = $idtransaksi[0].dataset['idsubkegiatan'];
+        $idsubkegiatan.val(idsubkegiatan).change();
+        let url = '{{route("getsp2d.info", ["idtransaksi"=> ''])}}';
+        let urlparams = '/'+idtransaksi+'?fields=rekening,nomor';
+        // openDetilLPJ_TU($modal[0], url+urlparams, '#tambahTU');
+    }
+    
+}
+function handleOpenModalTambahTU(self=null, idlpj_up=null){
+    let $modal = $('#tambahTU');
+    if(idlpj_up !== null){
+        var tr = $(self).closest('tr');
+        var data = oTable.api().row(tr).data();
+        // $modal.find('[name=idlpj_up]').val(idlpj_up);
+        // $modal.find('[name=tanggal]').val(data['tanggal']).change().attr('readonly',true);
+        // $modal.find('[name=idsubkegiatan]').val(data['idsubkegiatan']).change().attr('readonly',true);
+        // $modal.find('.modal-title').text('Detil LPJ-'+data['tipe_raw']);
+        $modal.find('button[type=submit]').attr('hidden', true);
+    }else{
+        $modal.find('[name=tanggal]').val('').change().attr('readonly',false);
+        $modal.find('select[name=bulanlpj]').val('').change();
+        $modal.find('[name=idsubkegiatan]').val('').change();
+        $modal.find('button[type=submit]').removeAttr('hidden', false);
+        $modal.find('.modal-title').text('Tambah LPJ-TU');
+        $table = $modal.find('table');
+        if ($.fn.dataTable.isDataTable($table) ) {
+            $table.DataTable().clear();
+            $table.DataTable().destroy();
+            $table.empty();
+        }
+    }
+    $modal.modal('show');
+}
+/** END of LPJ TU */
 
 function hapus(self){
     var tr = $(self).closest('tr');
