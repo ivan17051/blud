@@ -20,7 +20,7 @@ active
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{route('lpj.update')}}" method="POST">
+            <form action="{{route('lpj.update.up')}}" method="POST">
             @csrf
             @method('PUT')
             <input type="hidden" name="idlpj_up">
@@ -92,10 +92,11 @@ active
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{route('lpj.update')}}" method="POST">
+            <form action="{{route('lpj.update.tu')}}" method="POST">
             @csrf
             @method('PUT')
             <input type="hidden" name="tipe" value="TU">
+            <input type="hidden" name="idlpj_tu">
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-3">
@@ -127,10 +128,10 @@ active
                   <div class="col-md-6">
                     <div class="form-group">
                         <label><b>Subkegiatan</b></label>
-                        <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" data-size="5" name="idsubkegiatan" disabled >
+                        <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" data-size="5" name="idsubkegiatan" readonly >
                           <option value="" selected>*Otomatis</option>
                           @foreach($subkegiatan as $unit)
-                          <option value="{{$unit->id}}">{{$unit->kode}} - {{$unit->nama}}</option>
+                          <option value="{{$unit->id}}" >{{$unit->kode}} - {{$unit->nama}}</option>
                           @endforeach
                         </select>
                     </div>
@@ -141,7 +142,7 @@ active
                         <select class="selectpicker" data-style-base="form-control" data-style="" data-live-search="true" data-size="5" name="idtransaksi" required onchange="handleChangeModalTambahTU()">
                           <option value="" selected disabled>--Pilih--</option>
                           @foreach($sp2d_tu as $unit)
-                          <option value="{{$unit->id}}" data-idsubkegiatan="{{$unit->idsubkegiatan}}" >{{$unit->nomor}} - {{$unit->keterangan}}</option>
+                          <option @if(isset($unit->lpjterikat)) disabled @endif value="{{$unit->id}}" data-idsubkegiatan="{{$unit->idsubkegiatan}}" >{{$unit->nomor}} - {{$unit->keterangan}}</option>
                           @endforeach
                         </select>
                     </div>
@@ -365,12 +366,11 @@ function openDetilLPJ_TU(self, url, idmodal){
         processing: true,
         ajax: {type: "GET", url: url, data:{'_token':@json(csrf_token())}},
         columns: [
-            {title:"Nomor", data: "nomor"},
-            {title:"tanggal", data: "tanggal", render: function(e,d,row){return moment(row['tanggal']).format('L');}},
-            {title:"e-SPJ", data: "transaksi", render: renderKodeTransaksi },
-            {title:"Rekening", data: "rekening.kode"},
-            {title:"Uraian", data: "uraian"},
-            {title:"Nominal", data: "nominal"}
+            {title:"Kode", data: "1"},
+            {title:"Nama Rekening", data: "2"},
+            {title:"Rencana TU", render: function(e,d,row){return my.formatRupiah(parseFloat(row[3]));} },
+            {title:"Realisasi", render: function(e,d,row){return my.formatRupiah(parseFloat(row[3]));} },
+            {title:"Sisa", render: function(e,d,row){return 0;}}
         ],
     });
 }
@@ -426,27 +426,31 @@ function handleChangeModalTambahTU(){
     if( idtransaksi === '') {
         $idsubkegiatan.val('').change();
     }else{
-        let idsubkegiatan = $idtransaksi[0].dataset['idsubkegiatan'];
+        let idsubkegiatan = $idtransaksi.find('option[value='+idtransaksi+']')[0].dataset['idsubkegiatan'];
         $idsubkegiatan.val(idsubkegiatan).change();
         let url = '{{route("getsp2d.info", ["idtransaksi"=> ''])}}';
-        let urlparams = '/'+idtransaksi+'?fields=rekening,nomor';
-        // openDetilLPJ_TU($modal[0], url+urlparams, '#tambahTU');
+        let urlparams = '/'+idtransaksi+'?fields=rekening,nomor&isdatatable=true&return=rekening';
+        openDetilLPJ_TU($modal[0], url+urlparams, '#tambahTU');
     }
     
 }
-function handleOpenModalTambahTU(self=null, idlpj_up=null){
+function handleOpenModalTambahTU(self=null, idlpj_tu=null){
     let $modal = $('#tambahTU');
-    if(idlpj_up !== null){
+    if(idlpj_tu !== null){
         var tr = $(self).closest('tr');
         var data = oTable.api().row(tr).data();
-        // $modal.find('[name=idlpj_up]').val(idlpj_up);
-        // $modal.find('[name=tanggal]').val(data['tanggal']).change().attr('readonly',true);
-        // $modal.find('[name=idsubkegiatan]').val(data['idsubkegiatan']).change().attr('readonly',true);
-        // $modal.find('.modal-title').text('Detil LPJ-'+data['tipe_raw']);
+        $modal.find('input[name=idlpj_tu]').val(idlpj_tu).removeAttr('disabled',false);
+        $modal.find('[name=tanggal]').val(data['tanggal']).change().attr('readonly',true);
+        $modal.find('[name=idtransaksi]').val(data['sp2d']['id']).change().attr('readonly',true);
+        $modal.find('[name=idsubkegiatan]').val(data['idsubkegiatan']).change();
+        $modal.find('button[type=submit]').attr('hidden', true);
+        $modal.find('.modal-title').text('Tambah LPJ-TU');
         $modal.find('button[type=submit]').attr('hidden', true);
     }else{
+        $modal.find('input[name=idlpj_tu]').val('').attr('disabled',true);
         $modal.find('[name=tanggal]').val('').change().attr('readonly',false);
         $modal.find('select[name=bulanlpj]').val('').change();
+        $modal.find('[name=idtransaksi]').val('').change();
         $modal.find('[name=idsubkegiatan]').val('').change();
         $modal.find('button[type=submit]').removeAttr('hidden', false);
         $modal.find('.modal-title').text('Tambah LPJ-TU');
