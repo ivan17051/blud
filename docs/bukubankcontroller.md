@@ -1,34 +1,19 @@
-## Transaksi View
+## Buku Bank Controller
 
-:date: posted\: 10-02-2022
+:date: posted\: 18-03-2022
 
-:memo: last updated\: 14-03-2022
+:memo: last updated\: 18-03-2022
 
 :house: [to home](https://github.com/ivan17051/blud/blob/master/README.md)
 
 #### Contents
 
-- [showCeklist](#showceklist)
-- [filterFormulirOnChange](#filterformulironchange)
-- [hapus](#hapus)
-- [show](#show)
-- [tolak](#tolak)
-- [acc](#acc)
-- [buatSpm](#buatspm)
-- [batal](#batal)
-- [cetak](#cetak)
-- [edit](#edit)
-- [ubahRek](#ubahrek)
-- [ubahPajak](#ubahpajak)
-- [ubahPotongan](#ubahpotongan)
-- [format](#format)
-- [infoSaldo](#infosaldo)
-- [openPilihSPP](#openpilihspp)
-- [pilih_espj_ls](#pilih_espj_ls)
-- [pilih_multi_espj](#pilih_multi_espj)
-- [submit_espj_ls](#submit_espj_ls)
-- [select_espj_terpilih](#select_espj_terpilih)
-- [edit_pilihan_espj_ls](#edit_pilihan_espj_ls)
+- [bukuBank](#showceklist)
+- [bukuBankTable](#filterformulironchange)
+- [storeUpdateBukuBank](#hapus)
+- [delete](#show)
+- [storeUpdateSaldo](#tolak)
+- [cetak](#acc)
 
 ## showCeklist
 Menampilkan modal yang berisi Ceklist sesuai dengan pilihan UPLS(UP, LS, TU)
