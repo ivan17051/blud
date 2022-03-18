@@ -8,221 +8,94 @@
 
 #### Contents
 
-- [bukuBank](#showceklist)
-- [bukuBankTable](#filterformulironchange)
-- [storeUpdateBukuBank](#hapus)
-- [delete](#show)
-- [storeUpdateSaldo](#tolak)
-- [cetak](#acc)
+- [bukuBank](#bukubank)
+- [bukuBankTable](#bukubanktable)
+- [storeUpdateBukuBank](#storeupdatebukubank)
+- [delete](#delete)
+- [storeUpdateSaldo](#storeupdatesaldo)
+- [cetak](#cetak)
 
-## showCeklist
-Menampilkan modal yang berisi Ceklist sesuai dengan pilihan UPLS(UP, LS, TU)
+## bukuBank
+Menampilkan tampilan bukuBank.blade.php dengan filter bulan saat ini
 
 #### Parameters
-e: Self
 
 #### Return Value
-Modal Ceklist<br>
+[Buku Bank View](https://github.com/ivan17051/blud/blob/master/resources/views/bukuBank.blade.php)<br>
 with:<br>
-&emsp;&emsp;Ceklist: HTML<br>
+&emsp;&emsp;[Buku Bank](https://github.com/ivan17051/blud/blob/master/app/Transaksi.php): Collections<br>
+&emsp;&emsp;Bulan: Carbon::now()<br>
+&emsp;&emsp;PKM: Auth::user()<br>
+&emsp;&emsp;[Saldo Awal](https://github.com/ivan17051/blud/blob/master/app/SaldoBukuBank.php): Collection<br>
 
 :cyclone: [to top](#contents)
 
-## filterFormulirOnChange
-Menampilkan pilihan yang dinamis sesuai dengan pilihan sebelumnya
+## bukuBankTable
+Menampilkan tampilan bukuBank.blade.php dengan filter bulan saat ini dan puskesmas yang dipilih
 
 #### Parameters
-e: Self
+Request
 
 #### Return Value
-Select<br>
+[Buku Bank View](https://github.com/ivan17051/blud/blob/master/resources/views/bukuBank.blade.php)<br>
 with:<br>
-&emsp;&emsp;Bendahara: [Pejabat](https://github.com/ivan17051/blud/blob/master/app/Pejabat.php)<br>
-&emsp;&emsp;Rekanan: [Rekanan](https://github.com/ivan17051/blud/blob/master/app/Rekanan.php)<br>
+&emsp;&emsp;[Buku Bank](https://github.com/ivan17051/blud/blob/master/app/Transaksi.php): Collections<br>
+&emsp;&emsp;Bulan: Carbon::now()<br>
+&emsp;&emsp;PKM: Auth::user()<br>
+&emsp;&emsp;[Saldo Awal](https://github.com/ivan17051/blud/blob/master/app/SaldoBukuBank.php): Collection<br>
 
 :cyclone: [to top](#contents)
 
-## hapus
-Menampilkan modal untuk konfirmasi hapus data transaksi dan menghapus data transaksi
+## storeUpdateBukuBank
+Menyimpan data baru ataupun data hasil edit dari _user_
 
 #### Parameters
-e: Self
+Request
 
 #### Return Value
-Swal: Modal<br>
+Redirect<br>
 with:<br>
-&emsp;&emsp;Form Delete: Submit<br>
+&emsp;&emsp;Success/Error: Alert<br>
 
 :cyclone: [to top](#contents)
 
-## show
-Menampilkan data rekening, informasi, dan potongan pada baris data yang dipilih
-
+## delete
+_Soft delete_ data Buku Bank dari tabel **bukuBank** dengan merubah properti **isactive** = 0.
 #### Parameters
-e: Self
+Request
 
 #### Return Value
-Show Child<br>
+Redirect
+with:<br>
+&emsp;&emsp;Success/Error: Alert<br>
 
 :cyclone: [to top](#contents)
 
-## tolak
-Menolak pengajuan SP2D dengan mengubah status transaksi menjadi = 4
+## storeUpdateSaldo
+Menyimpan data Saldo baru ataupun data Saldo hasil edit dari _user_
 
 #### Parameters
-e: Self
+Request
 
 #### Return Value
-Swal: Modal<br>
+Redirect<br>
 with:<br>
-&emsp;&emsp;Form Delete: Submit<br>
-
-:cyclone: [to top](#contents)
-
-## acc
-Meng-_acc_ pengajuan SP2D dengan mengubah status transaksi menjadi = 3
-
-#### Parameters
-e: Self
-
-#### Return Value
-Swal: Modal<br>
-with:<br>
-&emsp;&emsp;Form Acc: Submit<br>
-
-:cyclone: [to top](#contents)
-
-## buatSpm
-Menampilkan modal untuk konfirmasi pembuatan SPM dengan mengubah status transaksi menjadi = 1 dan meminta inputan jenis pembukuan dan sumber dana dari _user_.
-
-#### Parameters
-e: Self
-
-#### Return Value
-Swal: Modal<br>
-with:<br>
-&emsp;&emsp;Form Acc: Submit<br>
-
-:cyclone: [to top](#contents)
-
-## batal
-Membatalkan permintaan user untuk melakukan _forward_ data transaksi ke SP2D.
-
-#### Parameters
-e: Self
-
-#### Return Value
-Swal: Modal<br>
-with:<br>
-&emsp;&emsp;Form Batal: Submit<br>
+&emsp;&emsp;Success/Error: Alert<br>
 
 :cyclone: [to top](#contents)
 
 ## cetak
-Mencetak laporan sesuai dengan permintaan _user_.
+Melakukan cetak terhadap laporan Buku Bank yang sudah dibuat _user_
 
 #### Parameters
-type, id, tipepembukuan=null, nocek, tipe, listCek
+Request
 
 #### Return Value
-Action: Attribute<br>
-Swal: Modal<br>
-
-:cyclone: [to top](#contents)
-
-## edit
-Memasukkan 1 baris data yang telah dipilih oleh _user_ pada modal _edit_.
-
-#### Parameters
-e: Self
-
-#### Return Value
-Value: Attribute<br>
-
-:cyclone: [to top](#contents)
-
-## ubahRek
-Menampilkan modal untuk melakukan perubahan pada data rekening(menambah atau menghapus) dari satu transaksi.
-
-#### Parameters
-idtransaksi
-
-#### Return Value
-Value: HTML<br>
-
-:cyclone: [to top](#contents)
-
-## ubahPajak
-Menampilkan modal untuk melakukan perubahan pada data pajak(menambah atau menghapus) dari satu transaksi.
-
-#### Parameters
-idtransaksi
-
-#### Return Value
-Value: HTML<br>
-
-:cyclone: [to top](#contents)
-
-## ubahPotongan
-Menampilkan modal untuk melakukan perubahan pada data potongan(menambah atau menghapus) dari satu transaksi.
-
-#### Parameters
-idtransaksi
-
-#### Return Value
-Value: HTML<br>
-
-:cyclone: [to top](#contents)
-
-## format
-Membuat tampilan tabel rekening, informasi, dan potongan pada setiap baris data transaksi.
-
-#### Parameters
-data
-
-#### Return Value
-Value: HTML<br>
-
-:cyclone: [to top](#contents)
-
-## infoSaldo
-Menampilkan sisa saldo dari rekening yang dipilih.
-
-#### Parameters
-self, target
-
-#### Return Value
-Value: Attribute<br>
-
-:cyclone: [to top](#contents)
-
-## openPilihSPP
-Membuat tampilan tabel rekening, informasi, dan potongan pada setiap baris data transaksi.
-
-#### Parameters
-data
-
-#### Return Value
-Value: HTML<br>
-
-:cyclone: [to top](#contents)
-
-## pilih_espj_ls
-
-:cyclone: [to top](#contents)
-
-## pilih_multi_espj
-
-:cyclone: [to top](#contents)
-
-## submit_espj_ls
-
-:cyclone: [to top](#contents)
-
-## select_espj_terpilih
-
-:cyclone: [to top](#contents)
-
-## edit_pilihan_espj_ls
+[Report Buku Bank](https://github.com/ivan17051/blud/blob/master/resources/views/report/bukubank.blade.php)<br>
+with:<br>
+&emsp;&emsp;[Buku Bank](https://github.com/ivan17051/blud/blob/master/app/Transaksi.php): Collections<br>
+&emsp;&emsp;Bulan: Carbon::now()<br>
+&emsp;&emsp;PKM: Auth::user()<br>
+&emsp;&emsp;[Saldo Awal](https://github.com/ivan17051/blud/blob/master/app/SaldoBukuBank.php): Collection<br>
 
 :cyclone: [to top](#contents)
