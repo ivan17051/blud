@@ -952,6 +952,8 @@ class TransaksiController extends Controller
 
     public function getSp2dInfo(Request $request, $idtransaksi){
         $fields=$request->input('fields');
+        $return_atkey=$request->input('return');
+        $isdatatable=$request->input('isdatatable');
         if(isset($fields)){
             $fields=array_merge(['id'],explode(',',$fields));
         }else{
@@ -960,6 +962,18 @@ class TransaksiController extends Controller
         $transaksi = Transaksi::select($fields)
             ->where('id',$idtransaksi)
             ->first();
-        return response()->json($transaksi);
+        
+        if(isset($return_atkey)){
+            $data = $transaksi->{$return_atkey};
+        }else{
+            $data = $transaksi;
+        }
+
+        if(isset($isdatatable) AND isset($return_atkey)){
+            $datatable = Datatables::of($data);
+            return $datatable->toJson();
+        }else{
+            return response()->json($data);
+        }
     }
 }

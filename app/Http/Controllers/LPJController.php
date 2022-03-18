@@ -23,7 +23,8 @@ class LPJController extends Controller
     public function lpj(){
         $user = Auth::user();
         $subkegiatan=SubKegiatan::where('isactive', 1)->where('idunitkerja',$user->idunitkerja)->get();
-        $sp2d_tu=Transaksi::select('id','nomor','keterangan','tanggalsp2d', 'idsubkegiatan')->where('isactive',1)->where('tipe','TU')->where('idunitkerja',$user->idunitkerja)->get();      
+        $sp2d_tu=Transaksi::select('id','nomor','keterangan','tanggalsp2d', 'idsubkegiatan', 'lpjterikat')->where('isactive',1)->where('tipe','TU')  
+            ->where('status',3)->where('idunitkerja',$user->idunitkerja)->get();      
         
         return view('lpj', ['user' =>$user, 'subkegiatan'=>$subkegiatan, 'sp2d_tu'=>$sp2d_tu]);
     }
@@ -31,9 +32,9 @@ class LPJController extends Controller
     public function data(Request $request){
         $user = Auth::user();
         if(in_array($user->role,['admin','PIH','KEU'])){
-            $data = LPJ::where('isactive',1)->with(['subkegiatan:id,idunitkerja,nama','subkegiatan.unitkerja:id,nama']);
+            $data = LPJ::where('isactive',1)->with(['sp2d:id,lpjterikat','subkegiatan:id,idunitkerja,nama','subkegiatan.unitkerja:id,nama']);
         }else{
-            $data = LPJ::where('isactive',1)->with(['subkegiatan'=>function($q) use($user){
+            $data = LPJ::where('isactive',1)->with(['sp2d:id,lpjterikat','subkegiatan'=>function($q) use($user){
                 $q->select('id','idunitkerja','nama')->where('idunitkerja',$user->idunitkerja);
             },'subkegiatan.unitkerja:id,nama']);
         }
@@ -50,7 +51,7 @@ class LPJController extends Controller
                 }
             }else{
                 return '<div class="text-nowrap">'.
-                    '<button onclick="openDetilLPJ_TU(this, \'/'.$t->id.'\', \'#tambahTU\')" class="btn btn-sm btn-outline-info border-0" title="info"><i class="fas fa-list fa-sm"></i></button>&nbsp'.
+                    '<button onclick="handleOpenModalTambahTU(this, \'/'.$t->id.'\', \'#tambahTU\')" class="btn btn-sm btn-outline-info border-0" title="info"><i class="fas fa-list fa-sm"></i></button>&nbsp'.
                     '<button onclick="hapus(this)" class="btn btn-sm btn-outline-danger border-0" title="info"><i class="fas fa-trash fa-sm"></i></button>'.
                     '</div>';
             }
@@ -100,7 +101,7 @@ class LPJController extends Controller
         return $datatable->make(true);
     }
 
-    public function storeUpdateLPJ(Request $request){
+    public function storeUpdateLPJ_UP(Request $request){
         $user = Auth::user();
         $input = $request->all();
         $validator = Validator::make($input, [
@@ -114,6 +115,7 @@ class LPJController extends Controller
         $input = $validator->valid();
         //jika edit lpj old
         if (isset($input['id'])) {
+            return back()->with('error','Belum ada fungsi edit');
             $lpj=LPJ::find($input['id']);
             if($lpj == NULL){ return back()->with('error','LPJ tidak ditemukan.');}
             $lpj->fill([
@@ -168,6 +170,87 @@ class LPJController extends Controller
         return back()->with('success','Berhasil menyimpan');
     }
 
+    public function storeUpdateLPJ_TU(Request $request){
+        $user = Auth::user();
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            'id' => 'nullable|exists:lpj,id',
+            'tanggal' => 'required_without:id|string',
+            'idsubkegiatan' => 'required_without:id|integer',
+            'idtransaksi' => 'required_without:id|integer',
+            'tipe' => 'required_without:id|string|in:UP,LS,TU,GU',
+        ]);
+        if ($validator->fails()) return back()->with('error','Gagal menyimpan');
+        
+        $input = $validator->valid();
+        //jika edit lpj old
+        if (isset($input['id'])) {
+            return back()->with('error','Belum ada fungsi edit');
+            $lpj=LPJ::find($input['id']);
+            if($lpj == NULL){ return back()->with('error','LPJ tidak ditemukan.');}
+            // $lpj->fill([
+            //     'idm' => $user->id,
+            // ]);
+            // $lpj->fill($input);
+            // $date=$lpj->tanggal;
+        }
+        else{ //jika create lpj baru
+            $date=Carbon::parse($input['tanggal']);
+            $exist=LPJ::where('idsubkegiatan', $input['idsubkegiatan'])
+                ->where('isactive',1)
+                ->whereMonth('tanggal',$date->month)
+                ->whereYear('tanggal',$date->year)
+                ->where('tipe', $input['tipe'])->first();
+            if($exist) { return back()->with('error','LPJ periode tsb sudah ada.');}
+            $lpj = new LPJ();
+            $lpj->fill([
+                'idm' => $user->id,
+                'idc' => $user->id,
+            ]);
+            $lpj->fill($input);
+
+            //set nomor pada LPJ
+            $latest=LPJ::select('id','nomor')
+                ->where('isactive',1)
+                ->where('nomor','<>',NULL)
+                ->whereYear('tanggal',$date->year)
+                ->orderBy('id', 'DESC')
+                ->where('tipe', $input['tipe'])
+                ->where('idsubkegiatan',  $input['idsubkegiatan'])->first();
+            if(isset($latest)){
+                $nomor=intval($latest->nomor)+1;
+            }else{
+                $nomor=1;
+            }
+            $lpj->fill([
+                'nomor' =>substr(str_repeat(0, 5).strval($nomor), - 5),   //convert agar nomor ada leading zero
+            ]);
+        }
+
+        try {
+            DB::beginTransaction();
+            // fill total nominal
+            $transaksi=Transaksi::where('isactive',1)
+                ->where('tipe','TU')
+                ->where('id',$input['idtransaksi'])
+                ->select('id','tipe','rekening')
+                ->first();
+            $total=0;
+            foreach($transaksi->rekening as $re){
+                $total+=$re[3]; // index three is the much money the  
+            }
+            $lpj->fill(['total'=>$total]);
+            $lpj->save();
+            $transaksi->fill(['lpjterikat'=>$lpj->id])->save();
+            
+            DB::commit();
+            return back()->with('success','Berhasil membuat LPJ-TU.');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return back()->with('error','Gagal memproses LPJ-TU.');
+        }
+    }
+
     public function deleteLPJ(Request $request){
         $user = Auth::user();
         $userId = $user->id;
@@ -177,6 +260,15 @@ class LPJController extends Controller
             if($user->idunitkerja !== $model->subkegiatan->idunitkerja ){
                 throw new \Exception("restricted");
             }
+
+            // if LPJ TU, don't forget to revert back 'lpjterikat' of sp2d in relation with. 
+            if($model->tipe === 'TU'){
+                $transaksi=Transaksi::where('isactive',1)
+                    ->where('lpjterikat',$model->id)
+                    ->select('id','tipe','lpjterikat')
+                    ->update(['lpjterikat' => NULL]);
+            }
+
             $model->idm=$userId;
             $model->isactive=0;
             $model->save();

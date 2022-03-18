@@ -90,7 +90,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/spj', 'SPJController@deleteSPJ')->name('spj.delete');
 
     Route::get('/lpj', 'LPJController@lpj');
-    Route::put('/lpj', 'LPJController@storeUpdateLPJ')->name('lpj.update');
+    Route::put('/lpj/up', 'LPJController@storeUpdateLPJ_UP')->name('lpj.update.up');
+    Route::put('/lpj/tu', 'LPJController@storeUpdateLPJ_TU')->name('lpj.update.tu');
     Route::delete('/lpj', 'LPJController@deleteLPJ')->name('lpj.delete');
     Route::post('/lpj/data', 'LPJController@data')->name('lpj.data');
     Route::get('/lpj/getrelatedbku/{idlpj}', 'LPJController@getRelatedBKU')->name('lpj.getrelatedbku');

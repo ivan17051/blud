@@ -34,4 +34,8 @@ class LPJ extends Model
     public function subkegiatan(){
         return $this->belongsTo(SubKegiatan::class, 'idsubkegiatan');
     }
+
+    public function sp2d(){
+        return $this->hasOne(Transaksi::class, 'lpjterikat');
+    }
 }
