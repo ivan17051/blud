@@ -16,9 +16,9 @@
   - [transaksi.blade.php](https://github.com/ivan17051/blud/blob/master/docs/transaksiview.md)
   - [bku.blade.php](https://github.com/ivan17051/blud/blob/master/docs/bkuview.md)
   - Layouts:
-    - [alert.blade.php](https://github.com/ivan17051/blud/blob/master/docs/alertview.md)
-    - [layout.blade.php](https://github.com/ivan17051/blud/blob/master/docs/layoutview.md)
-    - [sidebar.blade.php](https://github.com/ivan17051/blud/blob/master/docs/sidebarview.md)
+    - alert.blade.php
+    - layout.blade.php
+    - sidebar.blade.php
   - Master Data:
     - kegiatan.blade.php
     - pajak.blade.php
