@@ -25,6 +25,8 @@
 - [spm](#spm)
 - [sp2d](#sp2d)
 - [espjToTransaksi](#espjtotransaksi)
+- [lpjToTransaksi](#lpjtotransaksi)
+- [getSp2dInfo](#getsp2dinfo)
 
 ## penyebut 
 Mengkonversi nominal menjadi dalam bentuk tertulis.
@@ -241,4 +243,25 @@ Redirect
 
 :cyclone: [to top](#contents)
 
+## lpjToTransaksi
+Membuat atau menyunting SPP-GU dari inputan LPJ-UP. Proses tersebut dilakukan dengan mengisi field "transaksiterikat" pada tabel lpj dengan id transaksi SPP-GU yang baru dibuat.
 
+#### Parameters
+Request
+
+#### Return Value
+Redirect
+
+:cyclone: [to top](#contents)
+
+## getSp2dInfo
+Fungsi modular untuk mendapatkan informasi detil sp2d. Bisa menggunakan paremeter pada url sebagaimana pada contoh berikut:
+`?fields=nomor,keterangan,status` , di mana akan menampilkan hasil queri dengan informasi fields tersebut.
+
+#### Parameters
+Request
+
+#### Return Value
+Response (JSON)
+
+:cyclone: [to top](#contents)
