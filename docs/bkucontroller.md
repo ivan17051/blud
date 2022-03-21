@@ -2,7 +2,7 @@
 
 :date: posted\: 09-02-2022
 
-:memo: last updated\: 10-02-2022
+:memo: last updated\: 21-03-2022
 
 :house: [to home](https://github.com/ivan17051/blud/blob/master/README.md)
 
@@ -50,6 +50,7 @@ Redirect
 
 ## deleteBKU
 _Soft delete_ data BKU dari tabel **bku** dengan merubah properti **isactive** = 0.
+
 #### Parameters
 Request
 
@@ -59,6 +60,13 @@ Redirect
 :cyclone: [to top](#contents)
 
 ## transaksiToBKU
+Fungsi menambah BKU melalui tarikan dari Transaksi SP2D bertipe LS atau juga melalui tarikan dari data e-SPJ. **CATATAN**: KHUSUS BKU YANG BERASAL DARI SP2D-LS, AKAN DIBUAT MENJADI 2 BKU BERJENIS PENERIMAAN DAN PENGELUARAN.
+
+#### Parameters
+Request
+
+#### Return Value
+Redirect
 
 :cyclone: [to top](#contents)
 
