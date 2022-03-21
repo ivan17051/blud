@@ -11,7 +11,7 @@
   - [DataController.php](https://github.com/ivan17051/blud/blob/master/docs/datacontroller.md)
   - [LPJController.php](https://github.com/ivan17051/blud/blob/master/docs/lpjcontroller.md)
   - [SPJController.php](https://github.com/ivan17051/blud/blob/master/docs/spjcontroller.md)
-  - [PasswordController.php](https://github.com/ivan17051/blud/blob/master/docs/passwordcontroller.md)
+  - PasswordController.php
 - Views
   - [transaksi.blade.php](https://github.com/ivan17051/blud/blob/master/docs/transaksiview.md)
   - [bku.blade.php](https://github.com/ivan17051/blud/blob/master/docs/bkuview.md)
@@ -20,24 +20,24 @@
     - [layout.blade.php](https://github.com/ivan17051/blud/blob/master/docs/layoutview.md)
     - [sidebar.blade.php](https://github.com/ivan17051/blud/blob/master/docs/sidebarview.md)
   - Master Data:
-    - [kegiatan.blade.php](https://github.com/ivan17051/blud/blob/master/docs/kegiatanview.md)
-    - [pajak.blade.php](https://github.com/ivan17051/blud/blob/master/docs/pajakview.md)
-    - [pejabat.blade.php](https://github.com/ivan17051/blud/blob/master/docs/pejabatview.md)
-    - [rekanan.blade.php](https://github.com/ivan17051/blud/blob/master/docs/rekananview.md)
-    - [rekening.blade.php](https://github.com/ivan17051/blud/blob/master/docs/rekeningview.md)
-    - [saldo.blade.php](https://github.com/ivan17051/blud/blob/master/docs/saldoview.md)
-    - [subkegiatan.blade.php](https://github.com/ivan17051/blud/blob/master/docs/subkegiatanview.md)
-    - [unitKerja.blade.php](https://github.com/ivan17051/blud/blob/master/docs/unitkerjaview.md)
-    - [user.blade.php](https://github.com/ivan17051/blud/blob/master/docs/userview.md)
+    - kegiatan.blade.php
+    - pajak.blade.php
+    - pejabat.blade.php
+    - rekanan.blade.php
+    - rekening.blade.php
+    - saldo.blade.php
+    - subkegiatan.blade.php
+    - unitKerja.blade.php
+    - user.blade.php
   - Report:
-    - [bku.blade.php](https://github.com/ivan17051/blud/blob/master/docs/bkureport.md)
-    - [bukubank.blade.php](https://github.com/ivan17051/blud/blob/master/docs/bukubankreport.md)
-    - [ceklist.blade.php](https://github.com/ivan17051/blud/blob/master/docs/ceklistreport.md)
-    - [spp.blade.php](https://github.com/ivan17051/blud/blob/master/docs/sppreport.md)
-    - [spm.blade.php](https://github.com/ivan17051/blud/blob/master/docs/spmreport.md)
-    - [sp2d.blade.php](https://github.com/ivan17051/blud/blob/master/docs/sp2dreport.md)
-    - [sptb.blade.php](https://github.com/ivan17051/blud/blob/master/docs/sptbreport.md)
-    - [sppup.blade.php](https://github.com/ivan17051/blud/blob/master/docs/sppupreport.md)
+    - bku.blade.php
+    - bukubank.blade.php
+    - ceklist.blade.php
+    - spp.blade.php
+    - spm.blade.php
+    - sp2d.blade.php
+    - sptb.blade.php
+    - sppup.blade.php
   
 
 ## License
