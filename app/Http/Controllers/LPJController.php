@@ -228,8 +228,8 @@ class LPJController extends Controller
             }
             $lpj->fill(['total'=>$total]);
             $lpj->save();
-            $transaksi->fill(['lpjterikat'=>$lpj->id])->save();
-            
+            $transaksi->fill(['lpjterikat'=>$lpj->id]);
+            $transaksi->save();
             DB::commit();
             return back()->with('success','Berhasil membuat LPJ-TU.');
         } catch (\Throwable $th) {
