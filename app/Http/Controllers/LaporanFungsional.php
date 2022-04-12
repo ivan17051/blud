@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Exception;
 use App\UnitKerja;
 use App\Kegiatan;
@@ -15,6 +16,7 @@ use App\User;
 use App\Saldo;
 use App\Transaksi;
 use App\Pajak;
+use App\BKU;
 use Carbon\Carbon;
 
 class LaporanFungsional extends Controller
@@ -43,10 +45,11 @@ class LaporanFungsional extends Controller
         $input['idunitkerja']=$bendahara->idunitkerja;
         
         $date=Carbon::createFromDate($input['tahun'], $input['bulan'], null);
+        $date2= clone $date;
         $now=Carbon::now();
 
         //DATA
-        $data = $this->init($input, $date);
+        $data = $this->init($input, $date2);
 
         $ex = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $ex->getProperties()->setCreator("siannasGG");
@@ -179,6 +182,12 @@ class LaporanFungsional extends Controller
             $ac->getCell('C'.$rowidx)->setValue($d->nama);
             $ac->getCell('D'.$rowidx)->setValue(($d->saldoawal ? $d->saldoawal->saldo : 0));
 
+            $ac->getCell('H'.$rowidx)->setValue(($d->nominal_bku_ls ? $d->nominal_bku_ls : 0));
+            $ac->getCell('I'.$rowidx)->setValue(($d->nominal_bku_ls_now ? $d->nominal_bku_ls_now : 0));
+
+            $ac->getCell('K'.$rowidx)->setValue(($d->nominal_bku_nonls ? $d->nominal_bku_nonls : 0));
+            $ac->getCell('L'.$rowidx)->setValue(($d->nominal_bku_nonls_now ? $d->nominal_bku_nonls_now : 0));
+
             $ac->getCell('G'.$rowidx)->setValue("=E{$rowidx}+F{$rowidx}");
             $ac->getCell('J'.$rowidx)->setValue("=H{$rowidx}+I{$rowidx}");
             $ac->getCell('M'.$rowidx)->setValue("=K{$rowidx}+L{$rowidx}");
@@ -244,20 +253,68 @@ class LaporanFungsional extends Controller
     private function init($input, Carbon $date){
         $idunitkerja=$input['idunitkerja'];
         $year = $date->year;
+
+        $bku_ls = BKU::select(DB::raw("SUM(nominal) as nominal_bku_ls"), 'idrekening')
+            ->whereMonth('tanggal', '<',$input['bulan'])
+            ->whereYear('tanggal', $year)
+            ->where('tipe','LS')
+            ->where('jenis',1)
+            ->where('idunitkerja',$idunitkerja)
+            ->groupBy('idrekening');
+
+        $bku_ls_now = BKU::select(DB::raw("SUM(nominal) as nominal_bku_ls_now"), 'idrekening')
+            ->whereMonth('tanggal', $input['bulan'])
+            ->whereYear('tanggal', $year)
+            ->where('tipe','LS')
+            ->where('jenis',1)
+            ->where('idunitkerja',$idunitkerja)
+            ->groupBy('idrekening');
+
+        $bku_nonls = BKU::select(DB::raw("SUM(nominal) as nominal_bku_nonls"), 'idrekening')
+            ->whereMonth('tanggal', '<', $input['bulan'])
+            ->whereYear('tanggal', $year)
+            ->where('tipe','<>','LS')
+            ->where('jenis',1)
+            ->where('idunitkerja',$idunitkerja)
+            ->groupBy('idrekening');
+
+        $bku_nonls_now = BKU::select(DB::raw("SUM(nominal) as nominal_bku_nonls_now"), 'idrekening')
+            ->whereMonth('tanggal', $input['bulan'])
+            ->whereYear('tanggal', $year)
+            ->where('tipe','<>','LS')
+            ->where('jenis',1)
+            ->where('idunitkerja',$idunitkerja)
+            ->groupBy('idrekening');
+
         $rekening=Rekening::where('isactive', 1)->with([
-            'saldo'=>function($q) use($idunitkerja, $date) {
-                $date->subMonth();
-                $q->select('id','idunitkerja','idrekening','saldo')->orderBy('tanggal','DESC')
-                    ->where('idunitkerja', $idunitkerja)
-                    ->whereMonth('tanggal',$date->month)
-                    ->whereYear('tanggal',$date->year);
-            },
-            'saldoawal'=>function($q) use($idunitkerja, $year) {
-                $q->select('id','idunitkerja','idrekening','saldo')
-                    ->where('idunitkerja', $idunitkerja)
-                    ->whereYear('tanggal',$year);
-            }
-        ])->select('id','kode','nama')->get();
+                'saldo'=>function($q) use($idunitkerja, $date) {
+                    $date->subMonth();
+                    $q->select('id','idunitkerja','idrekening','saldo')->orderBy('tanggal','DESC')
+                        ->where('idunitkerja', $idunitkerja)
+                        ->whereMonth('tanggal',$date->month)
+                        ->whereYear('tanggal',$date->year);
+                },
+                'saldoawal'=>function($q) use($idunitkerja, $year) {
+                    $q->select('id','idunitkerja','idrekening','saldo')
+                        ->where('idunitkerja', $idunitkerja)
+                        ->whereYear('tanggal',$year);
+                }
+            ])
+            ->leftJoinSub($bku_ls, 'bkuls', function($join){
+                $join->on('bkuls.idrekening','=','mrekening.id');
+            })
+            ->leftJoinSub($bku_ls_now, 'bkuls_now', function($join){
+                $join->on('bkuls_now.idrekening','=','mrekening.id');
+            })
+            ->leftJoinSub($bku_nonls, 'bku_nonls', function($join){
+                $join->on('bku_nonls.idrekening','=','mrekening.id');
+            })
+            ->leftJoinSub($bku_nonls_now, 'bku_nonls_now', function($join){
+                $join->on('bku_nonls_now.idrekening','=','mrekening.id');
+            })
+            ->select('id','kode','nama','nominal_bku_ls', 'nominal_bku_nonls','nominal_bku_ls_now', 'nominal_bku_nonls_now')
+            ->get();
+
         return $rekening;
     }
 }
