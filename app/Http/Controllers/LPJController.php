@@ -76,19 +76,6 @@ class LPJController extends Controller
         return $datatable->make(true);  
     }
 
-    public function getRelatedBKU($idlpj){
-        $lpj = LPJ::where('id',$idlpj)->select('id','tanggal','tipe')->first();
-        $data=BKU::where('isactive',1)
-            ->whereMonth('tanggalref',$lpj->tanggal->month)
-            ->whereYear('tanggalref',$lpj->tanggal->year)
-            ->where('tipe',$lpj->tipe)
-            ->where('idsubkegiatan',$lpj->idsubkegiatan)
-            ->select('nomor','tanggalref','idtransaksi','idrekening','uraian','nominal')
-            ->with(['transaksi:id,kodetransaksi,isspj', 'rekening:id,kode,nama']);
-        $datatable = Datatables::of($data);
-        return $datatable->make(true);
-    }
-
     public function getBKUByPeriod($idsubkegiatan, $tipe, $month, $year){
         $data=BKU::where('isactive',1)
             ->whereMonth('tanggalref',$month)
